@@ -79,6 +79,7 @@ function microphone_recorder_events()
   case "save_failed":
     var name = arguments[1];
     var errorMessage = arguments[2];
+    $('#upload_status').css({'color': '#F00'}).text(name + " failed: " + errorMessage);
     break;
   }
 }
