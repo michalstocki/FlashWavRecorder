@@ -76,17 +76,17 @@ package {
     }
 
     private function playbackStarted(event:Event):void {
-      ExternalInterface.call(this.eventHandler, MicrophoneRecorder.PLAYBACK_STARTED, this.recorder.currentSoundName);
+      ExternalInterface.call(this.eventHandler, MicrophoneRecorder.PLAYBACK_STARTED, this.recorder.currentSoundName, this.recorder.latency);
     }
 
     private function recordingStarted(event:Event):void {
-      ExternalInterface.call(this.eventHandler, MicrophoneRecorder.RECORDING_STARTED, this.recorder.currentSoundName);
+      var endTime:Date = new Date();
+      var diff:Number = endTime.time - this.recorder.samplingStartTime.time;
+      ExternalInterface.call(this.eventHandler, MicrophoneRecorder.RECORDING_STARTED, this.recorder.currentSoundName, diff);
     }
 
     private function playComplete(event:Event):void {
-      if(this.eventHandler) {
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
-      }
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
     }
 
     public function init(url:String=null, fieldName:String=null, formData:Array=null):void {

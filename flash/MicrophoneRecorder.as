@@ -28,6 +28,8 @@ package {
     public var recording:Boolean = false;
     public var playing:Boolean = false;
     public var samplingStarted:Boolean = false;
+    public var samplingStartTime:Date;
+    public var latency:Number = 0;
     private var playTimer:Timer;
 
     public function MicrophoneRecorder() {
@@ -52,6 +54,7 @@ package {
       data.position = 0;
       this.rates[name] = mic.rate;
       this.samplingStarted = true;
+      this.samplingStartTime = new Date();
       this.mic.addEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
       this.recording = true;
     }
@@ -62,12 +65,10 @@ package {
       var data:ByteArray = this.getSoundBytes();
       data.position = 0;
       this.samplingStarted = true;
+      this.samplingStartTime = new Date();
       this.sound.addEventListener(SampleDataEvent.SAMPLE_DATA, playbackSampleHandler);
       this.playing = true;
       this.soundChannel = this.sound.play();
-      playTimer = new Timer(this.duration()*1000+400, 1);
-      playTimer.addEventListener(TimerEvent.TIMER_COMPLETE, playTimerCompleteHandler);
-      playTimer.start();
     }
 
     public function stop():void {
@@ -96,6 +97,7 @@ package {
     private function playTimerCompleteHandler(event:Event):void {
       this.playing = false;
       dispatchEvent(new Event(MicrophoneRecorder.SOUND_COMPLETE));
+      this.soundChannel = null;
     }
 
     public function getSoundBytes(name:String=null, create:Boolean=false):ByteArray {
@@ -128,9 +130,13 @@ package {
     }
 
     private function playbackSampleHandler(event:SampleDataEvent):void {
-      if(this.samplingStarted) {
+      if(this.samplingStarted && this.soundChannel) {
         this.samplingStarted = false;
+	this.latency = (event.position / 44.1) - this.soundChannel.position;
         dispatchEvent(new Event(MicrophoneRecorder.PLAYBACK_STARTED));
+	playTimer = new Timer(this.duration()*1000 + this.latency, 1);
+	playTimer.addEventListener(TimerEvent.TIMER_COMPLETE, playTimerCompleteHandler);
+	playTimer.start();
       }
 
       var data:ByteArray = this.getSoundBytes();

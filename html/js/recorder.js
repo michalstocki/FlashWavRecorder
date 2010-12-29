@@ -48,10 +48,19 @@ function microphone_recorder_events()
     $('#play_button').show();
     break;
 
+  case "recording_started":
+    var name = arguments[1];
+    break;
+
   case "playing":
     var name = arguments[1];
     $('#record_button img').attr('src', 'images/record.png');
     $('#play_button img').attr('src', 'images/stop.png');
+    break;
+
+  case "playback_started":
+    var name = arguments[1];
+    var latency = arguments[2];
     break;
 
   case "stopped":
