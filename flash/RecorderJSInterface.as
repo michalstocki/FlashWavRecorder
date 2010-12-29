@@ -1,6 +1,9 @@
 package {
   import flash.display.DisplayObject;
   import flash.events.Event;
+  import flash.events.IOErrorEvent;
+  import flash.events.ProgressEvent;
+  import flash.events.SecurityErrorEvent;
   import flash.events.StatusEvent;
   import flash.external.ExternalInterface;
   import flash.media.Microphone;
@@ -30,6 +33,7 @@ package {
     public static var SAVING:String = "saving";
     public static var SAVED:String = "saved";
     public static var SAVE_FAILED:String = "save_failed";
+    public static var SAVE_PROGRESS:String = "save_progress";
 
     public var recorder:MicrophoneRecorder;
     public var authenticityToken:String = "";
@@ -199,12 +203,27 @@ package {
 
       var loader:URLLoader = new URLLoader();
       loader.addEventListener(Event.COMPLETE, onSaveComplete);
+      loader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
+      loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+      loader.addEventListener(ProgressEvent.PROGRESS, onProgress);
       loader.load(request);
     }
 
     private function onSaveComplete(event:Event):void {
       var loader:URLLoader = URLLoader(event.target);
       ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVED, this.recorder.currentSoundName, loader.data);
+    }
+
+    private function onIOError(event:Event):void {
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVE_FAILED, this.recorder.currentSoundName, IOErrorEvent(event).text);
+    }
+
+    private function onSecurityError(event:Event):void {
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVE_FAILED, this.recorder.currentSoundName, SecurityErrorEvent(event).text);
+    }
+
+    private function onProgress(event:Event):void {
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVE_PROGRESS, this.recorder.currentSoundName, ProgressEvent(event).bytesLoaded, ProgressEvent(event).bytesTotal);
     }
   }
 }

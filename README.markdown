@@ -90,6 +90,11 @@ Flash Events
 * name - of the recording
 * error - message as a string
 
+**save_progress**: upload progress
+
+* name - of the recording
+* bytes_loaded - number of bytes uploaded
+* bytes_total - number of bytes to upload
 
 Recorder JS Interface
 ---------------------

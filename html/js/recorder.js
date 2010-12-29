@@ -24,7 +24,9 @@ function microphone_recorder_events()
     break;
 
   case "microphone_connected":
+    var mic = arguments[1];
     Recorder.defaultSize();
+    $('#upload_status').css({'color': '#000'}).text("Microphone: " + mic.name);
     break;
 
   case "microphone_not_connected":
@@ -80,6 +82,13 @@ function microphone_recorder_events()
     var name = arguments[1];
     var errorMessage = arguments[2];
     $('#upload_status').css({'color': '#F00'}).text(name + " failed: " + errorMessage);
+    break;
+
+  case "save_progress":
+    var name = arguments[1];
+    var bytesLoaded = arguments[2];
+    var bytesTotal = arguments[3];
+    $('#upload_status').css({'color': '#000'}).text(name + " progress: " + bytesLoaded + " / " + bytesTotal);
     break;
   }
 }
