@@ -41,6 +41,7 @@ Flash Events
 ------------
 
 **ready**: recorder is ready for use
+
 * width - save button's width
 * height - save button's height
 
@@ -49,34 +50,43 @@ Flash Events
 **microphone_user_request**: user needs to allow the recorder to access the microphone
 
 **microphone_connected**: user allowed access to the microphone
+
 * microphone - Microphone object from flash, can be used to get the name of the microphone, i.e. microphone.name
 
 **microphone_not_connected**: user denied access to the microphone, *at this point the recorder CAN NOT be used until the user reloads the page*
 
 **recording**: recording audio data from the microphone
+
 * name - of the recording that was specified when record was called
 
 **recording_stopped**: stopped recording audio data
+
 * name - of the recording that was specified when record was called
 * duration - of the recording as a floating point value in seconds
 
 **playing**: playing back the recorded audio data
+
 * name - of the recording that was specified when play was called
 
 **stopped**: stopped playing back the recorded audio data
+
 * name - of the recording that was specified when play was called
 
 **save_pressed**: save button was pressed in the recorder, good place to update the form data in the recorder
+
 * name - of the recording
 
 **saving**: upload is in progress
+
 * name - of the recording
 
 **saved**: upload is complete
+
 * name - of the recording
 * response - from the server as a string, can use var data = jQuery.parseJSON(arguments[2]) if response is json
 
 **save_failed**: the recorder failed to upload the audio data
+
 * name - of the recording
 * error - message as a string
 
@@ -85,12 +95,14 @@ Recorder JS Interface
 ---------------------
 
 **record**: tells the recorder to record audio data from the microphone
+
 * name - of the recording, basically a reference to the recording, use this name for playback
 * filename - [optional] if saving the file on the server, this is the name of the file to save the WAV file as
 
 *will also stop recording if currently recording*
 
 **play**: tells the recorder to playback the recorded audio
+
 * name - of the recording
 
 *will stop playback if called before playback ends*
@@ -98,9 +110,11 @@ Recorder JS Interface
 **stop**: tells the recorder to stop recording or playback
 
 **duration**: returns the duration of the recording
+
 * name - of the recording
 
 **init**: setup the recorder for saving recordings
+
 * url - upload url
 * field_name - name of the form field for the WAV file
 * form_data - additional form data. Specified as an array of name/value pairs. ex: [{"name": 'authenticity_token', "value": "xxxx"}, {"name": "format", "value": "json"}]
@@ -112,9 +126,11 @@ Recorder JS Interface
 **hide**: hide the save button
 
 **update**: update the form data
+
 * form_data - additional form data, in jQuery you can use $('#upload_form').serializeArray()
 
 **configure**: configure microphone settings
+
 * rate - at which the microphone captures sound, in kHz. default is 22. Currently we only support 44 and 22.
 * gain - the amount by which the microphone should multiply the signal before transmitting it. default is 100
 * silence_level - amount of sound required to activate the microphone and dispatch the activity event. default is 0
