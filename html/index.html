@@ -6,29 +6,16 @@
 <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js'></script>
 <script type="text/javascript" src="js/swfobject.js"></script>
 <script type="text/javascript" src="js/recorder.js"></script>
+
 <script type="text/javascript">
-function microphone_recorder_init(width, height) {
-  Recorder.uploadFormId = "#uploadForm";
-  Recorder.uploadFieldName = "upload_file[filename]";
-  Recorder.connect("recorderApp", 0);
-  Recorder.recorderOriginalWidth = width;
-  Recorder.recorderOriginalHeight = height;
-  $('#play_button').css({'margin-left': width + 8});
-  $('#save_button').css({'width': width, 'height': height});
-}
-
-function microphone_recorder_update() {
-  Recorder.updateForm();
-}
-
 var appWidth = 24;
 var appHeight = 24;
-var flashvars = {'js_init_callback': 'microphone_recorder_init', 'update_form': 'microphone_recorder_update', 'upload_image': 'images/upload.png'};
+var flashvars = {'event_handler': 'microphone_recorder_events', 'upload_image': 'images/upload.png'};
 var params = {};
 var attributes = {'id': "recorderApp", 'name':  "recorderApp"};
 swfobject.embedSWF("recorder.swf", "flashcontent", appWidth, appHeight, "10.1.0", "", flashvars, params, attributes);
-
 </script>
+
 <style>
 #control_panel { white-space: nowrap; }
 #control_panel a { outline: none; display: inline-block; width: 24px; height: 24px; }

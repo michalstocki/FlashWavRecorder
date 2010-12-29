@@ -26,6 +26,10 @@ package {
       this.stage.scaleMode = StageScaleMode.NO_SCALE;
       recorderInterface = new RecorderJSInterface();
 
+      if(this.root.loaderInfo.parameters["event_handler"]) {
+	recorderInterface.eventHandler = this.root.loaderInfo.parameters["event_handler"];
+      }
+
       var url:String = this.root.loaderInfo.parameters["upload_image"];
       if(url) {
         saveButton = createSaveImage(url);
@@ -39,14 +43,11 @@ package {
       addChild(saveButton);
 
       recorderInterface.saveButton = saveButton;
-      var js_init_callback:String = this.root.loaderInfo.parameters["js_init_callback"];
-      recorderInterface.updateFormCallback = this.root.loaderInfo.parameters["update_form"];
-      if(js_init_callback) {
-        ExternalInterface.call(js_init_callback, saveButton.width, saveButton.height);
-      }
 
       saveButton.addEventListener(MouseEvent.MOUSE_UP, mouseReleased);
       saveButton.visible = false;
+
+      recorderInterface.ready(saveButton.width, saveButton.height);
     }
 
     public function save():void {
@@ -59,7 +60,7 @@ package {
 
     private function createSaveLink():Sprite {
       var format:ElementFormat = new ElementFormat();
-      var fontColor:Number = 0x183F66;
+      var fontColor:Number = 0x0000EE;
       if(this.root.loaderInfo.parameters["font_color"]) {
         fontColor = parseInt(this.root.loaderInfo.parameters["font_color"], 16);
       }

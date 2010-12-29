@@ -4,6 +4,18 @@ function microphone_recorder_events()
   $('#status').text("Microphone recorder event: " + arguments[0]);
 
   switch(arguments[0]) {
+  case "ready":
+    var width = parseInt(arguments[1]);
+    var height = parseInt(arguments[2]);
+    Recorder.uploadFormId = "#uploadForm";
+    Recorder.uploadFieldName = "upload_file[filename]";
+    Recorder.connect("recorderApp", 0);
+    Recorder.recorderOriginalWidth = width;
+    Recorder.recorderOriginalHeight = height;
+    $('#play_button').css({'margin-left': width + 8});
+    $('#save_button').css({'width': width, 'height': height});
+  break;
+
   case "no_microphone_found":
     break;
 
@@ -46,6 +58,10 @@ function microphone_recorder_events()
     $('#play_button img').attr('src', 'images/play.png');
     break;
 
+  case "save_pressed":
+    Recorder.updateForm();
+    break;
+
   case "saving":
     var name = arguments[1];
     break;
@@ -73,7 +89,6 @@ Recorder = {
   recorderOriginalHeight: 0,
   uploadFormId: null,
   uploadFieldName: null,
-  eventHandler: "microphone_recorder_events",
 
   connect: function(name, attempts) {
     if(navigator.appName.indexOf("Microsoft") != -1) {
@@ -92,9 +107,7 @@ Recorder = {
       Recorder.recorderOriginalHeight = Recorder.recorder.height;
       if(Recorder.uploadFormId && $) {
         var frm = $(Recorder.uploadFormId); 
-        Recorder.recorder.init(Recorder.eventHandler, frm.attr('action').toString(), Recorder.uploadFieldName, frm.serializeArray());
-      } else {
-        Recorder.recorder.init(Recorder.eventHandler);
+        Recorder.recorder.init(frm.attr('action').toString(), Recorder.uploadFieldName, frm.serializeArray());
       }
       return;
     }

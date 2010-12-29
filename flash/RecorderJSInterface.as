@@ -13,6 +13,8 @@ package {
 
   public class RecorderJSInterface {
 
+    public static var READY:String = "ready";
+
     public static var NO_MICROPHONE_FOUND:String = "no_microphone_found";
     public static var MICROPHONE_USER_REQUEST:String = "microphone_user_request";
     public static var MICROPHONE_CONNECTED:String = "microphone_connected";
@@ -31,12 +33,11 @@ package {
 
     public var recorder:MicrophoneRecorder;
     public var authenticityToken:String = "";
-    public var eventHandler:String = "recorderEventHandler";
+    public var eventHandler:String = "microphone_recorder_events";
     public var uploadUrl:String;
     public var uploadFormData:Array;
     public var uploadFieldName:String;
     public var saveButton:DisplayObject;
-    public var updateFormCallback:String;
 
     public function RecorderJSInterface() {
       this.recorder = new MicrophoneRecorder();
@@ -55,6 +56,10 @@ package {
       this.recorder.addEventListener(MicrophoneRecorder.RECORDING_STARTED, recordingStarted);
     }
 
+    public function ready(width:int, height:int):void {
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.READY, width, height);
+    }
+
     public function show():void {
       if(saveButton) {
         saveButton.visible = true;
@@ -67,15 +72,11 @@ package {
     }
 
     private function playbackStarted(event:Event):void {
-      if(this.eventHandler) {
-        ExternalInterface.call(this.eventHandler, MicrophoneRecorder.PLAYBACK_STARTED, this.recorder.currentSoundName);
-      }
+      ExternalInterface.call(this.eventHandler, MicrophoneRecorder.PLAYBACK_STARTED, this.recorder.currentSoundName);
     }
 
     private function recordingStarted(event:Event):void {
-      if(this.eventHandler) {
-        ExternalInterface.call(this.eventHandler, MicrophoneRecorder.RECORDING_STARTED, this.recorder.currentSoundName);
-      }
+      ExternalInterface.call(this.eventHandler, MicrophoneRecorder.RECORDING_STARTED, this.recorder.currentSoundName);
     }
 
     private function playComplete(event:Event):void {
@@ -84,8 +85,7 @@ package {
       }
     }
 
-    public function init(handler:String, url:String=null, fieldName:String=null, formData:Array=null):void {
-      this.eventHandler = handler;
+    public function init(url:String=null, fieldName:String=null, formData:Array=null):void {
       this.uploadUrl = url;
       this.uploadFieldName = fieldName;
       this.update(formData);
@@ -141,7 +141,7 @@ package {
 
       if(this.recorder.recording) {
         this.recorder.stop();
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration);
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
       } else {
         this.recorder.record(name, filename);
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.RECORDING, this.recorder.currentSoundName);
@@ -164,7 +164,7 @@ package {
 
     public function stop():void {
       if(this.recorder.recording) {
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration);
+	  ExternalInterface.call(this.eventHandler, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
       } else {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
       }
@@ -178,9 +178,6 @@ package {
     public function save():Boolean {
       ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVE_PRESSED, this.recorder.currentSoundName);
       try {
-        if(this.updateFormCallback) {
-	  ExternalInterface.call(this.updateFormCallback);
-        }
         _save(this.recorder.currentSoundName, this.recorder.currentSoundFilename);
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVING, this.recorder.currentSoundName);
       } catch(e:Error) {
