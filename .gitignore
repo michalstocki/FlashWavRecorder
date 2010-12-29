@@ -1,0 +1,6 @@
+!.gitignore
+*~
+\#*\#
+.\#*
+html/audio
+flash/recorder.swf
