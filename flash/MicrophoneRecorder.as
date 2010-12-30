@@ -16,7 +16,6 @@ package {
   public class MicrophoneRecorder extends EventDispatcher {
     public static var SOUND_COMPLETE:String = "sound_complete";
     public static var PLAYBACK_STARTED:String = "playback_started";
-    public static var RECORDING_STARTED:String = "recording_started";
 
     public var mic:Microphone;
     public var sound:Sound = new Sound();
@@ -28,7 +27,8 @@ package {
     public var recording:Boolean = false;
     public var playing:Boolean = false;
     public var samplingStarted:Boolean = false;
-    private var playTimer:Timer;
+    public var samplingStartTime:Date;
+    public var latency:Number = 0;
 
     public function MicrophoneRecorder() {
       this.mic = Microphone.getMicrophone();
@@ -52,6 +52,7 @@ package {
       data.position = 0;
       this.rates[name] = mic.rate;
       this.samplingStarted = true;
+      this.samplingStartTime = new Date();
       this.mic.addEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
       this.recording = true;
     }
@@ -62,24 +63,19 @@ package {
       var data:ByteArray = this.getSoundBytes();
       data.position = 0;
       this.samplingStarted = true;
+      this.samplingStartTime = new Date();
       this.sound.addEventListener(SampleDataEvent.SAMPLE_DATA, playbackSampleHandler);
       this.playing = true;
       this.soundChannel = this.sound.play();
-      playTimer = new Timer(this.duration()*1000+400, 1);
-      playTimer.addEventListener(TimerEvent.TIMER_COMPLETE, playTimerCompleteHandler);
-      playTimer.start();
+      this.soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
+
     }
 
     public function stop():void {
       if(this.soundChannel) {
         this.soundChannel.stop();
+	this.soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
         this.soundChannel = null;
-      }
-
-      if(this.playTimer) {
-        this.playTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, playTimerCompleteHandler);
-        this.playTimer.stop();
-        this.playTimer = null;
       }
 
       if(this.playing) {
@@ -93,9 +89,13 @@ package {
       }
     }
 
-    private function playTimerCompleteHandler(event:Event):void {
+    private function onSoundComplete(event:Event):void {
       this.playing = false;
       dispatchEvent(new Event(MicrophoneRecorder.SOUND_COMPLETE));
+      if(this.soundChannel) {
+	this.soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
+      }
+      this.soundChannel = null;
     }
 
     public function getSoundBytes(name:String=null, create:Boolean=false):ByteArray {
@@ -116,11 +116,6 @@ package {
     }
 
     private function micSampleDataHandler(event:SampleDataEvent):void {
-      if(this.samplingStarted) {
-        this.samplingStarted = false;
-        dispatchEvent(new Event(MicrophoneRecorder.RECORDING_STARTED));
-      }
-
       var data:ByteArray = this.getSoundBytes();
       while(event.data.bytesAvailable) {
         data.writeFloat(event.data.readFloat());
@@ -128,11 +123,6 @@ package {
     }
 
     private function playbackSampleHandler(event:SampleDataEvent):void {
-      if(this.samplingStarted) {
-        this.samplingStarted = false;
-        dispatchEvent(new Event(MicrophoneRecorder.PLAYBACK_STARTED));
-      }
-
       var data:ByteArray = this.getSoundBytes();
       var maxPlayback:int = 8192;
       var rate:int = this.rate();
@@ -147,6 +137,12 @@ package {
           event.data.writeFloat(sample);
           event.data.writeFloat(sample);
         }
+      }
+
+      if(this.samplingStarted && this.soundChannel) {
+        this.samplingStarted = false;
+	this.latency = (event.position / 44.1) - this.soundChannel.position;
+        dispatchEvent(new Event(MicrophoneRecorder.PLAYBACK_STARTED));
       }
     }
 

@@ -57,7 +57,6 @@ package {
       ExternalInterface.addCallback("update", update);
       this.recorder.addEventListener(MicrophoneRecorder.SOUND_COMPLETE, playComplete);
       this.recorder.addEventListener(MicrophoneRecorder.PLAYBACK_STARTED, playbackStarted);
-      this.recorder.addEventListener(MicrophoneRecorder.RECORDING_STARTED, recordingStarted);
     }
 
     public function ready(width:int, height:int):void {
@@ -76,17 +75,11 @@ package {
     }
 
     private function playbackStarted(event:Event):void {
-      ExternalInterface.call(this.eventHandler, MicrophoneRecorder.PLAYBACK_STARTED, this.recorder.currentSoundName);
-    }
-
-    private function recordingStarted(event:Event):void {
-      ExternalInterface.call(this.eventHandler, MicrophoneRecorder.RECORDING_STARTED, this.recorder.currentSoundName);
+      ExternalInterface.call(this.eventHandler, MicrophoneRecorder.PLAYBACK_STARTED, this.recorder.currentSoundName, this.recorder.latency);
     }
 
     private function playComplete(event:Event):void {
-      if(this.eventHandler) {
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
-      }
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
     }
 
     public function init(url:String=null, fieldName:String=null, formData:Array=null):void {
