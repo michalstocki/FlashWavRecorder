@@ -48,10 +48,6 @@ function microphone_recorder_events()
     $('#play_button').show();
     break;
 
-  case "recording_started":
-    var name = arguments[1];
-    break;
-
   case "playing":
     var name = arguments[1];
     $('#record_button img').attr('src', 'images/record.png');

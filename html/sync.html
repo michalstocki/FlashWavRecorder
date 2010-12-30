@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>My Recorder</title>
+<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js'></script>
+<script type="text/javascript" src="js/swfobject.js"></script>
+<script type="text/javascript" src="js/recorder.js"></script>
+
+<script>
+var startNumber = 30;
+
+function countDown(number) {
+  $('#count').text(number);
+
+  number--;
+  if(number > 0) {
+    setTimeout(function() { countDown(number); }, 1000);
+  }
+}
+
+function microphone_recorder_sync_events() {
+
+  microphone_recorder_events.apply(this, arguments);
+
+  switch(arguments[0])
+  {
+    case "recording":
+      countDown(startNumber);
+      break;
+
+    case "playback_started":
+      var latency = parseInt(arguments[2], 10);
+      setTimeout(function() {countDown(startNumber);}, latency);
+      break;
+  }
+}
+</script>
+
+<script type="text/javascript">
+var appWidth = 24;
+var appHeight = 24;
+var flashvars = {'event_handler': 'microphone_recorder_sync_events', 'upload_image': 'images/upload.png'};
+var params = {};
+var attributes = {'id': "recorderApp", 'name':  "recorderApp"};
+swfobject.embedSWF("recorder.swf", "flashcontent", appWidth, appHeight, "10.1.0", "", flashvars, params, attributes);
+</script>
+
+<style>
+#control_panel { white-space: nowrap; }
+#control_panel a { outline: none; display: inline-block; width: 24px; height: 24px; }
+#control_panel a img { border: 0; }
+#save_button { position: absolute; padding: 0; margin: 0; }
+#play_button { display: inline-block; }
+#numbers { font-size: 20px; font-wi
+</style>
+</head>
+
+<body>
+  <div id="status">
+   Recorder Status...
+  </div>
+
+  <div id="control_panel">
+  <a id="record_button" onclick="Recorder.record('audio', 'audio.wav');" href="javascript:void(0);" title="Record"><img src="images/record.png" width="24" height="24" alt="Record"/></a>
+  <span id="save_button">
+    <span id="flashcontent">
+      <p>Your browser must have JavaScript enabled and the Adobe Flash Player installed.</p>
+    </span>
+  </span>
+  <a id="play_button" style="display:none;" onclick="Recorder.play('audio');" href="javascript:void(0);" title="Play"><img src="images/play.png" width="24" height="24" alt="Play"/></a>
+  </div>
+
+  <div id="upload_status">
+  </div>
+
+  <div id="count">
+  </div>
+
+  <form id="uploadForm" name="uploadForm" action="upload.php">
+    <input name="authenticity_token" value="xxxxx" type="hidden">
+    <input name="upload_file[parent_id]" value="1" type="hidden">
+    <input name="format" value="json" type="hidden">
+  </form>
+
+</body>
+</html>

@@ -68,6 +68,11 @@ Flash Events
 
 * name - of the recording that was specified when play was called
 
+**playback_started**: useful for synchronizing playback with animation
+
+* name - of the recording that was specified when play was called
+* latency - number of milliseconds before playback starts
+
 **stopped**: stopped playing back the recorded audio data
 
 * name - of the recording that was specified when play was called
