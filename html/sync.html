@@ -8,13 +8,14 @@
 
 <script>
 var startNumber = 30;
+var timeoutHandler = null;
 
 function countDown(number) {
   $('#count').text(number);
 
   number--;
   if(number > 0) {
-    setTimeout(function() { countDown(number); }, 1000);
+    timeoutHandler = setTimeout(function() { countDown(number); }, 1000);
   }
 }
 
@@ -24,13 +25,21 @@ function microphone_recorder_sync_events() {
 
   switch(arguments[0])
   {
+    case "stopped":
+    case "recording_stopped":
+      var name = arguments[1];
+      clearTimeout( timeoutHandler );
+      timeoutHandler = null;
+      break;
+
     case "recording":
       countDown(startNumber);
       break;
 
     case "playback_started":
       var latency = parseInt(arguments[2], 10);
-      setTimeout(function() {countDown(startNumber);}, latency);
+      $('#playback').text( "latency is " + latency + "." );
+      timeoutHandler = setTimeout(function() {countDown(startNumber);}, latency);
       break;
   }
 }
@@ -51,7 +60,7 @@ swfobject.embedSWF("recorder.swf", "flashcontent", appWidth, appHeight, "10.1.0"
 #control_panel a img { border: 0; }
 #save_button { position: absolute; padding: 0; margin: 0; }
 #play_button { display: inline-block; }
-#numbers { font-size: 20px; font-wi
+#count { font-size: 20px; font-weight: bold; }
 </style>
 </head>
 
