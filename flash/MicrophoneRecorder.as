@@ -27,16 +27,15 @@ package {
     public var recording:Boolean = false;
     public var playing:Boolean = false;
     public var samplingStarted:Boolean = false;
-    public var samplingStartTime:Date;
     public var latency:Number = 0;
 
     public function MicrophoneRecorder() {
       this.mic = Microphone.getMicrophone();
+      this.sound.addEventListener(SampleDataEvent.SAMPLE_DATA, playbackSampleHandler);
     }
 
     public function reset():void {
       this.stop();
-      this.sound = new Sound();
       this.sounds = new Dictionary();
       this.rates = new Dictionary();
       this.currentSoundName = "";
@@ -52,7 +51,6 @@ package {
       data.position = 0;
       this.rates[name] = mic.rate;
       this.samplingStarted = true;
-      this.samplingStartTime = new Date();
       this.mic.addEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
       this.recording = true;
     }
@@ -63,12 +61,9 @@ package {
       var data:ByteArray = this.getSoundBytes();
       data.position = 0;
       this.samplingStarted = true;
-      this.samplingStartTime = new Date();
-      this.sound.addEventListener(SampleDataEvent.SAMPLE_DATA, playbackSampleHandler);
       this.playing = true;
       this.soundChannel = this.sound.play();
       this.soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
-
     }
 
     public function stop():void {
@@ -79,7 +74,6 @@ package {
       }
 
       if(this.playing) {
-        this.sound.removeEventListener(SampleDataEvent.SAMPLE_DATA, playbackSampleHandler);
         this.playing = false;
       }
 
@@ -90,12 +84,8 @@ package {
     }
 
     private function onSoundComplete(event:Event):void {
-      this.playing = false;
+      this.stop();
       dispatchEvent(new Event(MicrophoneRecorder.SOUND_COMPLETE));
-      if(this.soundChannel) {
-	this.soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
-      }
-      this.soundChannel = null;
     }
 
     public function getSoundBytes(name:String=null, create:Boolean=false):ByteArray {
@@ -123,26 +113,37 @@ package {
     }
 
     private function playbackSampleHandler(event:SampleDataEvent):void {
-      var data:ByteArray = this.getSoundBytes();
-      var maxPlayback:int = 8192;
+      var maxPlayback:int = 3072;
+      var i:int = 0;
+      var sample:Number = 0.0;
+      if(!this.soundChannel) {
+	for (; i<maxPlayback; i++) {
+	  event.data.writeFloat(sample);
+	  event.data.writeFloat(sample);
+	}
+	return;
+      }
+
+      if(this.samplingStarted && this.soundChannel) {
+        this.samplingStarted = false;
+	this.latency = (event.position * 2.267573696145e-02) - this.soundChannel.position;
+        dispatchEvent(new Event(MicrophoneRecorder.PLAYBACK_STARTED));
+      }
+
       var rate:int = this.rate();
       if(rate == 22) {
-        maxPlayback = 4096;
+	maxPlayback = 1536;
       }
-      for (var i:int = 0; i<maxPlayback && data.bytesAvailable && this.playing; i++) {
-        var sample:Number = data.readFloat();
+
+      var data:ByteArray = this.getSoundBytes();
+      for (; i<maxPlayback && data.bytesAvailable && this.playing; i++) {
+        sample = data.readFloat();
         event.data.writeFloat(sample);
         event.data.writeFloat(sample);
         if(rate == 22) {
           event.data.writeFloat(sample);
           event.data.writeFloat(sample);
         }
-      }
-
-      if(this.samplingStarted && this.soundChannel) {
-        this.samplingStarted = false;
-	this.latency = (event.position / 44.1) - this.soundChannel.position;
-        dispatchEvent(new Event(MicrophoneRecorder.PLAYBACK_STARTED));
       }
     }
 

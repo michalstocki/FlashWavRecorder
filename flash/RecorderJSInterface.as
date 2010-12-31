@@ -55,6 +55,9 @@ package {
       ExternalInterface.addCallback("show", show);
       ExternalInterface.addCallback("hide", hide);
       ExternalInterface.addCallback("update", update);
+      ExternalInterface.addCallback("setUseEchoSuppression", setUseEchoSuppression);
+      ExternalInterface.addCallback("setLoopBack", setLoopBack);
+      ExternalInterface.addCallback("getMicrophone", getMicrophone);
       this.recorder.addEventListener(MicrophoneRecorder.SOUND_COMPLETE, playComplete);
       this.recorder.addEventListener(MicrophoneRecorder.PLAYBACK_STARTED, playbackStarted);
     }
@@ -129,6 +132,18 @@ package {
       this.recorder.mic.rate = rate;
       this.recorder.mic.gain = gain;
       this.recorder.mic.setSilenceLevel(silenceLevel, silenceTimeout);
+    }
+
+    public function setUseEchoSuppression(useEchoSuppression:Boolean):void {
+      this.recorder.mic.setUseEchoSuppression(useEchoSuppression);
+    }
+
+    public function setLoopBack(state:Boolean):void {
+      this.recorder.mic.setLoopBack(state);
+    }
+
+    public function getMicrophone():Microphone {
+      return this.recorder.mic;
     }
 
     public function record(name:String, filename:String=null):Boolean {
