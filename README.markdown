@@ -145,3 +145,13 @@ Recorder JS Interface
 * gain - the amount by which the microphone should multiply the signal before transmitting it. default is 100
 * silence_level - amount of sound required to activate the microphone and dispatch the activity event. default is 0
 * silence_timeout - number of milliseconds between the time the microphone stops detecting sound and the time the activity event is dispatched. default is 4000
+
+**setUseEchoSuppression**: use echo suppression
+
+* yes_no
+
+**setLoopBack**: routes audio captured by a microphone to the local speakers
+
+* yes_no
+
+**getMicrophone**: returns the microphone object
