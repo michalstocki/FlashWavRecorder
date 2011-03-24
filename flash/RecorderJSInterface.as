@@ -47,8 +47,8 @@ package {
       this.recorder = new MicrophoneRecorder();
       if(ExternalInterface.available && ExternalInterface.objectID) {
         ExternalInterface.addCallback("record", record);
-        ExternalInterface.addCallback("play", play);
-        ExternalInterface.addCallback("stop", stop);
+        ExternalInterface.addCallback("playBack", play);
+        ExternalInterface.addCallback("stopPlayBack", stop);
         ExternalInterface.addCallback("duration", duration);
         ExternalInterface.addCallback("init", init);
         ExternalInterface.addCallback("permit", requestMicrophoneAccess);
