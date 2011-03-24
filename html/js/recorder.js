@@ -131,7 +131,7 @@ Recorder = {
   },
 
   playBack: function(name) {
-    Recorder.recorder.myPlayBack(name);
+    Recorder.recorder.playBack(name);
   },
 
   record: function(name, filename) {

@@ -111,13 +111,13 @@ Recorder JS Interface
 
 *will also stop recording if currently recording*
 
-**play**: tells the recorder to playback the recorded audio
+**playBack**: tells the recorder to playback the recorded audio
 
 * name - of the recording
 
 *will stop playback if called before playback ends*
 
-**stop**: tells the recorder to stop recording or playback
+**stopPlayBack**: tells the recorder to stop recording or playback
 
 **duration**: returns the duration of the recording
 
