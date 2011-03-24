@@ -130,7 +130,7 @@ Recorder = {
     setTimeout(function() {Recorder.connect(name, attempts+1);}, 100);
   },
 
-  play: function(name) {
+  playBack: function(name) {
     Recorder.recorder.playBack(name);
   },
 
