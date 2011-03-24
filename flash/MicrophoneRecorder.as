@@ -55,7 +55,7 @@ package {
       this.recording = true;
     }
 
-    public function play(name:String):void {
+    public function playBack(name:String):void {
       this.stop();
       this.currentSoundName = name;
       var data:ByteArray = this.getSoundBytes();
