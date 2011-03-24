@@ -47,8 +47,8 @@ package {
       this.recorder = new MicrophoneRecorder();
       if(ExternalInterface.available && ExternalInterface.objectID) {
         ExternalInterface.addCallback("record", record);
-        ExternalInterface.addCallback("playBack", play);
-        ExternalInterface.addCallback("stopPlayBack", stop);
+        ExternalInterface.addCallback("playBack", playBack);
+        ExternalInterface.addCallback("stopPlayBack", stopPlayBack);
         ExternalInterface.addCallback("duration", duration);
         ExternalInterface.addCallback("init", init);
         ExternalInterface.addCallback("permit", requestMicrophoneAccess);
@@ -164,7 +164,7 @@ package {
       return this.recorder.recording;
     }
 
-    public function play(name:String):Boolean {
+    public function playBack(name:String):Boolean {
       if(this.recorder.playing) {
         this.recorder.stop();
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
@@ -176,7 +176,7 @@ package {
       return this.recorder.playing;
     }
 
-    public function stop():void {
+    public function stopPlayBack():void {
       if(this.recorder.recording) {
 	  ExternalInterface.call(this.eventHandler, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
       } else {
