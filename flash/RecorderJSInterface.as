@@ -166,14 +166,18 @@ package {
     }
 
     public function myPlayBack(name:String):Boolean {
+      ExternalInterface.call(this.eventHandler, "myPlayBack called");
       if(this.recorder.playing) {
+        ExternalInterface.call(this.eventHandler, "myPlayBack before stop");
         this.recorder.stop();
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
       } else {
+        ExternalInterface.call(this.eventHandler, "myPlayBack before playBack");
         this.recorder.playBack(name);
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.PLAYING, this.recorder.currentSoundName);
       }
 
+      ExternalInterface.call(this.eventHandler, "myPlayBack before returning playing");
       return this.recorder.playing;
     }
 
