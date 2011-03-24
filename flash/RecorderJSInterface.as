@@ -48,6 +48,7 @@ package {
       if(ExternalInterface.available && ExternalInterface.objectID) {
         ExternalInterface.addCallback("record", record);
         ExternalInterface.addCallback("myPlayBack", myPlayBack);
+        ExternalInterface.addCallback("listenToRecording", myPlayBack);
         ExternalInterface.addCallback("stopPlayBack", stopPlayBack);
         ExternalInterface.addCallback("duration", duration);
         ExternalInterface.addCallback("init", init);
