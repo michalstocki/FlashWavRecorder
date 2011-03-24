@@ -45,19 +45,21 @@ package {
 
     public function RecorderJSInterface() {
       this.recorder = new MicrophoneRecorder();
-      ExternalInterface.addCallback("record", record);
-      ExternalInterface.addCallback("play", play);
-      ExternalInterface.addCallback("stop", stop);
-      ExternalInterface.addCallback("duration", duration);
-      ExternalInterface.addCallback("init", init);
-      ExternalInterface.addCallback("permit", requestMicrophoneAccess);
-      ExternalInterface.addCallback("configure", configureMicrophone);
-      ExternalInterface.addCallback("show", show);
-      ExternalInterface.addCallback("hide", hide);
-      ExternalInterface.addCallback("update", update);
-      ExternalInterface.addCallback("setUseEchoSuppression", setUseEchoSuppression);
-      ExternalInterface.addCallback("setLoopBack", setLoopBack);
-      ExternalInterface.addCallback("getMicrophone", getMicrophone);
+      if(ExternalInterface.available && ExternalInterface.objectID) {
+        ExternalInterface.addCallback("record", record);
+        ExternalInterface.addCallback("play", play);
+        ExternalInterface.addCallback("stop", stop);
+        ExternalInterface.addCallback("duration", duration);
+        ExternalInterface.addCallback("init", init);
+        ExternalInterface.addCallback("permit", requestMicrophoneAccess);
+        ExternalInterface.addCallback("configure", configureMicrophone);
+        ExternalInterface.addCallback("show", show);
+        ExternalInterface.addCallback("hide", hide);
+        ExternalInterface.addCallback("update", update);
+        ExternalInterface.addCallback("setUseEchoSuppression", setUseEchoSuppression);
+        ExternalInterface.addCallback("setLoopBack", setLoopBack);
+        ExternalInterface.addCallback("getMicrophone", getMicrophone);
+      }
       this.recorder.addEventListener(MicrophoneRecorder.SOUND_COMPLETE, playComplete);
       this.recorder.addEventListener(MicrophoneRecorder.PLAYBACK_STARTED, playbackStarted);
     }
