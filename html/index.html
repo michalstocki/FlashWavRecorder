@@ -7,12 +7,14 @@
 <script type="text/javascript" src="js/recorder.js"></script>
 
 <script type="text/javascript">
-var appWidth = 24;
-var appHeight = 24;
-var flashvars = {'event_handler': 'microphone_recorder_events', 'upload_image': 'images/upload.png'};
-var params = {};
-var attributes = {'id': "recorderApp", 'name':  "recorderApp"};
-swfobject.embedSWF("recorder.swf", "flashcontent", appWidth, appHeight, "10.1.0", "", flashvars, params, attributes);
+$(function() {
+  var appWidth = 24;
+  var appHeight = 24;
+  var flashvars = {'event_handler': 'microphone_recorder_events', 'upload_image': 'images/upload.png'};
+  var params = {};
+  var attributes = {'id': "recorderApp", 'name':  "recorderApp"};
+  swfobject.embedSWF("recorder.swf", "flashcontent", appWidth, appHeight, "10.1.0", "", flashvars, params, attributes);
+});
 </script>
 
 <style>
