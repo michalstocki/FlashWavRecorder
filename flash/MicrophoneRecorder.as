@@ -131,16 +131,29 @@ package {
       }
 
       var rate:int = this.rate();
-      if(rate == 22) {
-	maxPlayback = 1536;
+
+      var repeat:int = 1;
+      switch(rate) {
+      case 22:
+        repeat = 2;
+	break;
+      case 11:
+        repeat = 4;
+	break;
+      case 8:
+        repeat = 5;
+	break;
+      case 5:
+        repeat = 8;
+	break;
       }
+
+      maxPlayback = maxPlayback * (rate / 44.0);
 
       var data:ByteArray = this.getSoundBytes();
       for (; i<maxPlayback && data.bytesAvailable && this.playing; i++) {
         sample = data.readFloat();
-        event.data.writeFloat(sample);
-        event.data.writeFloat(sample);
-        if(rate == 22) {
+	for (var r:int=0; r<repeat; r++) {
           event.data.writeFloat(sample);
           event.data.writeFloat(sample);
         }
