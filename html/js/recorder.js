@@ -33,6 +33,10 @@ function microphone_recorder_events()
     Recorder.defaultSize();
     break;
 
+  case "microphone_activity":
+    $('#activity_level').text(arguments[1]);
+    break;
+
   case "recording":
     var name = arguments[1];
     Recorder.hide();

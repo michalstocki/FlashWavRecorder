@@ -22,6 +22,7 @@ package {
     public static var MICROPHONE_USER_REQUEST:String = "microphone_user_request";
     public static var MICROPHONE_CONNECTED:String = "microphone_connected";
     public static var MICROPHONE_NOT_CONNECTED:String = "microphone_not_connected";
+    public static var MICROPHONE_ACTIVITY:String = "microphone_activity";
 
     public static var RECORDING:String = "recording";
     public static var RECORDING_STOPPED:String = "recording_stopped";
@@ -62,6 +63,7 @@ package {
       }
       this.recorder.addEventListener(MicrophoneRecorder.SOUND_COMPLETE, playComplete);
       this.recorder.addEventListener(MicrophoneRecorder.PLAYBACK_STARTED, playbackStarted);
+      this.recorder.addEventListener(MicrophoneRecorder.ACTIVITY, microphoneActivity);
     }
 
     public function ready(width:int, height:int):void {
@@ -85,6 +87,10 @@ package {
 
     private function playComplete(event:Event):void {
       ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
+    }
+
+    private function microphoneActivity(event:Event):void {
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_ACTIVITY, this.recorder.mic.activityLevel);
     }
 
     public function init(url:String=null, fieldName:String=null, formData:Array=null):void {

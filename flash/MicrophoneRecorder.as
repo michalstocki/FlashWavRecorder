@@ -1,5 +1,6 @@
 package {
   import flash.events.Event;
+  import flash.events.ActivityEvent;
   import flash.events.EventDispatcher;
   import flash.events.SampleDataEvent;
   import flash.events.TimerEvent;
@@ -16,6 +17,7 @@ package {
   public class MicrophoneRecorder extends EventDispatcher {
     public static var SOUND_COMPLETE:String = "sound_complete";
     public static var PLAYBACK_STARTED:String = "playback_started";
+    public static var ACTIVITY:String = "activity";
 
     public var mic:Microphone;
     public var sound:Sound = new Sound();
@@ -52,6 +54,7 @@ package {
       this.rates[name] = mic.rate;
       this.samplingStarted = true;
       this.mic.addEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
+      this.mic.addEventListener(ActivityEvent.ACTIVITY, onMicrophoneActivity);
       this.recording = true;
     }
 
@@ -79,6 +82,7 @@ package {
 
       if(this.recording) {
         this.mic.removeEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
+        this.mic.removeEventListener(ActivityEvent.ACTIVITY, onMicrophoneActivity);
         this.recording = false;
       }
     }
@@ -103,6 +107,10 @@ package {
       }
 
       return data;
+    }
+
+    private function onMicrophoneActivity(event:Event):void {
+      dispatchEvent(new Event(MicrophoneRecorder.ACTIVITY));
     }
 
     private function micSampleDataHandler(event:SampleDataEvent):void {
