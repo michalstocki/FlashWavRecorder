@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Requirements for building
-# Download "Open Source Flex SDK" from http://opensource.adobe.com/wiki/display/flexsdk/Download+Flex+4
+# Download "Open Source Flex SDK" from http://www.adobe.com/devnet/flex/flex-sdk-download-all.html
 #
 # mkdir flex4.open.source.sdk
 # cd flex4.open.source.sdk
