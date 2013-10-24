@@ -145,7 +145,7 @@ package {
       resampledBytes = new ByteArray();
 
       var multiplier:Number = targetRate / sourceRate;
-			
+
       // convert the data
       var measure:int = targetRate;
       var currentSample:Number = data.readFloat();
@@ -189,16 +189,16 @@ package {
       var i:int = 0;
       var sample:Number = 0.0;
       if(!this.soundChannel) {
-	for (; i<3072; i++) {
-	  event.data.writeFloat(sample);
-	  event.data.writeFloat(sample);
-	}
-	return;
+        for (; i<3072; i++) {
+          event.data.writeFloat(sample);
+          event.data.writeFloat(sample);
+        }
+	    return;
       }
 
       if(this.samplingStarted && this.soundChannel) {
         this.samplingStarted = false;
-	this.latency = (event.position * 2.267573696145e-02) - this.soundChannel.position;
+	    this.latency = (event.position * 2.267573696145e-02) - this.soundChannel.position;
         dispatchEvent(new Event(MicrophoneRecorder.PLAYBACK_STARTED));
       }
 
