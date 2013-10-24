@@ -145,6 +145,10 @@ function microphone_recorder_events()
       Recorder.recorder.playBack(name);
     },
 
+    pausePlayBack: function(name) {
+      Recorder.recorder.pausePlayback(name);
+    },
+
     record: function(name, filename) {
       Recorder.recorder.record(name, filename);
     },
