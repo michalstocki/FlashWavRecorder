@@ -206,7 +206,7 @@ package {
       for (; i<8192 && data.bytesAvailable && this.playing; i++) {
         sample = data.readFloat();
         event.data.writeFloat(sample);
-        event.data.writeFloat(0.0);
+        event.data.writeFloat(sample);
       }
     }
 
