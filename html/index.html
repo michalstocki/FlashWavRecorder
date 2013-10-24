@@ -36,10 +36,11 @@ function configureMicrophone() {
 
 <style>
 #control_panel { white-space: nowrap; }
-#control_panel a { outline: none; display: inline-block; width: 24px; height: 24px; }
+#control_panel a { outline: none; display: inline-block; width: 24px; height: 24px; text-decoration: none; }
 #control_panel a img { border: 0; }
 #save_button { position: absolute; padding: 0; margin: 0; }
 #play_button { display: inline-block; }
+#pause_button { display: inline-block; }
 </style>
 </head>
 
@@ -51,13 +52,20 @@ function configureMicrophone() {
   </div>
 
   <div id="control_panel">
-  <a id="record_button" onclick="Recorder.record('audio', 'audio.wav');" href="javascript:void(0);" title="Record"><img src="images/record.png" width="24" height="24" alt="Record"/></a>
+  <a id="record_button" onclick="Recorder.record('audio', 'audio.wav');" href="javascript:void(0);" title="Record">
+      <img src="images/record.png" width="24" height="24" alt="Record"/>
+  </a>
   <span id="save_button">
     <span id="flashcontent">
       <p>Your browser must have JavaScript enabled and the Adobe Flash Player installed.</p>
     </span>
   </span>
-  <a id="play_button" style="display:none;" onclick="Recorder.playBack('audio');" href="javascript:void(0);" title="Play"><img src="images/play.png" width="24" height="24" alt="Play"/></a>
+  <a id="play_button" style="display:none;" onclick="Recorder.playBack('audio');" href="javascript:void(0);" title="Play">
+      <img src="images/play.png" width="24" height="24" alt="Play"/>
+  </a>
+  <a id="pause_button" style="display:none;" onclick="Recorder.pausePlayBack('audio');" href="javascript:void(0);" title="Pause">
+      <img src="images/pause.png" width="24" height="24" alt="Pause"/>
+  </a>
   </div>
 
   <div>Duration: <span id="duration"></span></div>
