@@ -28,7 +28,7 @@ package {
     public var currentSoundFilename:String = "";
     public var recording:Boolean = false;
     public var playing:Boolean = false;
-    public var pausedAt:Number = 0;
+    public var pauses:Dictionary = new Dictionary();
     public var samplingStarted:Boolean = false;
     public var latency:Number = 0;
     private var resampledBytes:ByteArray = new ByteArray();
@@ -45,7 +45,7 @@ package {
       this.currentSoundName = "";
       this.recording = false;
       this.playing = false;
-      this.pausedAt = 0;
+      this.pauses = new Dictionary();
     }
 
     public function record(name:String, filename:String=""):void {
@@ -54,6 +54,7 @@ package {
       this.currentSoundFilename = filename;
       var data:ByteArray = this.getSoundBytes(name, true);
       data.position = 0;
+      this.pauses[name] = 0;
       this.rates[name] = mic.rate;
       this.samplingStarted = true;
       this.mic.addEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
@@ -62,12 +63,10 @@ package {
     }
 
     public function playBack(name:String):void {
-      var pausedAt:Number = this.pausedAt;
-      this.stop();
+      this.stop(false);
       this.currentSoundName = name;
-      this.pausedAt = pausedAt;             // preventing cleaning 'pausedAt' by 'stop' function
       var data:ByteArray = this.getSoundBytesResampled(true);
-      data.position = this.getSamplePosition(this.pausedAt);
+      data.position = this.getSamplePosition(this.pauses[name]);
       this.samplingStarted = true;
       this.playing = true;
       this.soundChannel = this.sound.play();
@@ -85,8 +84,9 @@ package {
         this.playing = false;
       }
 
-      if(this.pausedAt > 0) {
-        this.pausedAt = 0;
+      var name:String = this.currentSoundName;
+      if(this.pauses[name] > 0 && resetPause) {
+        this.pauses[name] = 0;
       }
 
       if(this.recording) {
@@ -96,11 +96,11 @@ package {
       }
     }
 
-    public function pause():void {
+    public function pause(name:String):void {
       var progress:Number = this.soundChannel.position;
-      var startedFrom:Number = this.pausedAt;
+      var startedFrom:Number = this.pauses[name];
       this.stop();
-      this.pausedAt = startedFrom + progress;
+      this.pauses[name] = startedFrom + progress;
     }
 
     private function onSoundComplete(event:Event):void {
