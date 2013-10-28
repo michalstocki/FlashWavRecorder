@@ -185,7 +185,7 @@ package {
 
     public function pausePlayBack(name:String):void {
       if(this.recorder.playing) {
-        this.recorder.pause();
+        this.recorder.pause(name);
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
       }
     }
