@@ -1,8 +1,10 @@
 
+
+
 function microphone_recorder_events()
 {
   $('#status').text("Microphone recorder event: " + arguments[0]);
-
+  var name, $controls;
   switch(arguments[0]) {
   case "ready":
     var width = parseInt(arguments[1]);
@@ -12,8 +14,7 @@ function microphone_recorder_events()
     Recorder.connect("recorderApp", 0);
     Recorder.recorderOriginalWidth = width;
     Recorder.recorderOriginalHeight = height;
-    $('#play_button').css({'margin-left': width + 8});
-    $('#save_button').css({'width': width, 'height': height});
+    $('.save_button').css({'width': width, 'height': height});
   break;
 
   case "no_microphone_found":
@@ -42,38 +43,42 @@ function microphone_recorder_events()
     break;
 
   case "recording":
-    var name = arguments[1];
+    name = arguments[1];
+    $controls = controlsEl(name);
     Recorder.hide();
-    $('#record_button img').attr('src', 'images/stop.png');
-    $('#play_button').hide();
+    $controls.find('.record_button img').attr('src', 'images/stop.png');
+    $controls.find('.play_button').hide();
     break;
 
   case "recording_stopped":
-    var name = arguments[1];
+    name = arguments[1];
+    $controls = controlsEl(name);
     var duration = arguments[2];
     Recorder.show();
-    $('#record_button img').attr('src', 'images/record.png');
+    $controls.find('.record_button img').attr('src', 'images/record.png');
     $('#duration').text(duration.toFixed(4) + " seconds");
-    $('#play_button').show();
+    $controls.find('.play_button').show();
     break;
 
   case "playing":
-    var name = arguments[1];
-    $('#record_button img').attr('src', 'images/record.png');
-    $('#play_button img').attr('src', 'images/stop.png');
-    $('#pause_button').show();
+    name = arguments[1];
+    $controls = controlsEl(name);
+    $controls.find('.record_button img').attr('src', 'images/record.png');
+    $controls.find('.play_button img').attr('src', 'images/stop.png');
+    $controls.find('.pause_button').show();
     break;
 
   case "playback_started":
-    var name = arguments[1];
+    name = arguments[1];
     var latency = arguments[2];
     break;
 
   case "stopped":
-    var name = arguments[1];
-    $('#record_button img').attr('src', 'images/record.png');
-    $('#play_button img').attr('src', 'images/play.png');
-    $('#pause_button').hide();
+    name = arguments[1];
+    $controls = controlsEl(name);
+    $controls.find('.record_button img').attr('src', 'images/record.png');
+    $controls.find('.play_button img').attr('src', 'images/play.png');
+    $controls.find('.pause_button').hide();
     break;
 
   case "save_pressed":
@@ -81,11 +86,11 @@ function microphone_recorder_events()
     break;
 
   case "saving":
-    var name = arguments[1];
+    name = arguments[1];
     break;
 
   case "saved":
-    var name = arguments[1];
+    name = arguments[1];
     var data = $.parseJSON(arguments[2]);
     if(data.saved) {
       $('#upload_status').css({'color': '#0F0'}).text(name + " was saved");
@@ -95,18 +100,22 @@ function microphone_recorder_events()
     break;
 
   case "save_failed":
-    var name = arguments[1];
+    name = arguments[1];
     var errorMessage = arguments[2];
     $('#upload_status').css({'color': '#F00'}).text(name + " failed: " + errorMessage);
     break;
 
   case "save_progress":
-    var name = arguments[1];
+    name = arguments[1];
     var bytesLoaded = arguments[2];
     var bytesTotal = arguments[3];
     $('#upload_status').css({'color': '#000'}).text(name + " progress: " + bytesLoaded + " / " + bytesTotal);
     break;
   }
+}
+
+function controlsEl(name) {
+  return $('.control_panel.'+name);
 }
 
 (function() {

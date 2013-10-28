@@ -35,12 +35,12 @@ function configureMicrophone() {
 </script>
 
 <style>
-#control_panel { white-space: nowrap; }
-#control_panel a { outline: none; display: inline-block; width: 24px; height: 24px; text-decoration: none; }
-#control_panel a img { border: 0; }
-#save_button { position: absolute; padding: 0; margin: 0; }
-#play_button { display: inline-block; }
-#pause_button { display: inline-block; }
+.control_panel { white-space: nowrap; }
+.control_panel a { outline: none; display: inline-block; width: 24px; height: 24px; text-decoration: none; }
+.control_panel a img { border: 0; }
+#save_button { padding: 0; margin: 0; }
+.play_button { display: inline-block; }
+.pause_button { display: inline-block; }
 </style>
 </head>
 
@@ -51,23 +51,35 @@ function configureMicrophone() {
    Recorder Status...
   </div>
 
-  <div id="control_panel">
-  <a id="record_button" onclick="Recorder.record('audio', 'audio.wav');" href="javascript:void(0);" title="Record">
+  <div class="control_panel audio">
+  <a class="record_button" onclick="Recorder.record('audio', 'audio.wav');" href="javascript:void(0);" title="Record">
       <img src="images/record.png" width="24" height="24" alt="Record"/>
   </a>
+  <a class="play_button" style="display:none;" onclick="Recorder.playBack('audio');" href="javascript:void(0);" title="Play">
+      <img src="images/play.png" width="24" height="24" alt="Play"/>
+  </a>
+  <a class="pause_button" style="display:none;" onclick="Recorder.pausePlayBack('audio');" href="javascript:void(0);" title="Pause">
+      <img src="images/pause.png" width="24" height="24" alt="Pause"/>
+  </a>
+  </div>
+
+  <div class="control_panel audio2">
+  <a class="record_button" onclick="Recorder.record('audio2', 'audio2.wav');" href="javascript:void(0);" title="Record">
+      <img src="images/record.png" width="24" height="24" alt="Record"/>
+  </a>
+  <a class="play_button" style="display:none;" onclick="Recorder.playBack('audio2');" href="javascript:void(0);" title="Play">
+      <img src="images/play.png" width="24" height="24" alt="Play"/>
+  </a>
+  <a class="pause_button" style="display:none;" onclick="Recorder.pausePlayBack('audio2');" href="javascript:void(0);" title="Pause">
+      <img src="images/pause.png" width="24" height="24" alt="Pause"/>
+  </a>
+  </div>
+
   <span id="save_button">
     <span id="flashcontent">
       <p>Your browser must have JavaScript enabled and the Adobe Flash Player installed.</p>
     </span>
   </span>
-  <a id="play_button" style="display:none;" onclick="Recorder.playBack('audio');" href="javascript:void(0);" title="Play">
-      <img src="images/play.png" width="24" height="24" alt="Play"/>
-  </a>
-  <a id="pause_button" style="display:none;" onclick="Recorder.pausePlayBack('audio');" href="javascript:void(0);" title="Pause">
-      <img src="images/pause.png" width="24" height="24" alt="Pause"/>
-  </a>
-  </div>
-
   <div>Duration: <span id="duration"></span></div>
   <div>Activity Level: <span id="activity_level"></span></div>
   <div>Upload status: <span id="upload_status"></span></div>
@@ -79,51 +91,51 @@ function configureMicrophone() {
   </form>
 
   <h4>Configure Microphone</h4>
-  <ul>
-    <form onsubmit="return false;">
+  <form onsubmit="return false;">
+    <ul>
       <li>
-	<label for="rate">Rate</label>
-	<select id="rate" name="rate">
-	  <option value="44">44,100 Hz</option>
-	  <option value="22" selected>22,050 Hz</option>
-	  <option value="11">11,025 Hz</option>
-	  <option value="8">8,000 Hz</option>
-	  <option value="5">5,512 Hz</option>
-	</select>
+        <label for="rate">Rate</label>
+        <select id="rate" name="rate">
+          <option value="44" selected>44,100 Hz</option>
+          <option value="22">22,050 Hz</option>
+          <option value="11">11,025 Hz</option>
+          <option value="8">8,000 Hz</option>
+          <option value="5">5,512 Hz</option>
+        </select>
       </li>
 
       <li>
-	<label for="gain">Gain</label>
-	<select id="gain" name="gain">
-	</select>
+        <label for="gain">Gain</label>
+        <select id="gain" name="gain">
+        </select>
       </li>
 
       <li>
-	<label for="silenceLevel">Silence Level</label>
-	<select id="silenceLevel" name="silenceLevel">
-	</select>
+        <label for="silenceLevel">Silence Level</label>
+        <select id="silenceLevel" name="silenceLevel">
+        </select>
       </li>
 
       <li>
-	<label for="silenceTimeout">Silence Timeout</label>
-	<input id="silenceTimeout" name="silenceTimeout" value="2000"/>
+        <label for="silenceTimeout">Silence Timeout</label>
+        <input id="silenceTimeout" name="silenceTimeout" value="2000"/>
       </li>
 
       <li>
-	<input id="useEchoSuppression" name="useEchoSuppression" type="checkbox"/>
-	<label for="useEchoSuppression">Use Echo Suppression</label>
+        <input id="useEchoSuppression" name="useEchoSuppression" type="checkbox"/>
+        <label for="useEchoSuppression">Use Echo Suppression</label>
       </li>
 
       <li>
-	<input id="loopBack" name="loopBack" type="checkbox"/>
-	<label for="loopBack">Loop Back</label>
+        <input id="loopBack" name="loopBack" type="checkbox"/>
+        <label for="loopBack">Loop Back</label>
       </li>
 
       <li>
-	<button onclick="configureMicrophone();">Configure</button>
+        <button onclick="configureMicrophone();">Configure</button>
       </li>
-    </form>
-  </ul>
+    </ul>
+  </form>
 
 </body>
 </html>
