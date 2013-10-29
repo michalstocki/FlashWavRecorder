@@ -159,6 +159,10 @@ function controlsEl(name) {
     pausePlayBack: function(name) {
       Recorder.recorder.pausePlayBack(name);
     },
+    
+    playBackFrom: function(name, time) {
+    	Recorder.recorder.playBackFrom(name, time);
+    },
 
     record: function(name, filename) {
       Recorder.recorder.record(name, filename);

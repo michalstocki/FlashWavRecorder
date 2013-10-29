@@ -49,6 +49,7 @@ package {
       if(ExternalInterface.available && ExternalInterface.objectID) {
         ExternalInterface.addCallback("record", record);
         ExternalInterface.addCallback("playBack", playBack);
+        ExternalInterface.addCallback("playBackFrom", playBackFrom);
         ExternalInterface.addCallback("stopPlayBack", stopPlayBack);
         ExternalInterface.addCallback("pausePlayBack", pausePlayBack);
         ExternalInterface.addCallback("duration", duration);
@@ -180,6 +181,18 @@ package {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.PLAYING, this.recorder.currentSoundName);
       }
 
+      return this.recorder.playing;
+    }
+
+    public function playBackFrom(name:String, time:Number):Boolean {
+      if(this.recorder.playing) {
+        this.recorder.stop();
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
+      }
+      this.recorder.playBackFrom(name, time);
+      if (this.recorder.playing) {
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.PLAYING, this.recorder.currentSoundName);
+      }
       return this.recorder.playing;
     }
 
