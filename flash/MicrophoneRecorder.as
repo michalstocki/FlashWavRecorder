@@ -73,10 +73,10 @@ package {
       this.soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
     }
 
-    public function stop():void {
+    public function stop(resetPause:Boolean=true):void {
       if(this.soundChannel) {
         this.soundChannel.stop();
-	this.soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
+        this.soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
         this.soundChannel = null;
       }
 
