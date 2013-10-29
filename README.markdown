@@ -117,6 +117,8 @@ Recorder JS Interface
 
 *will stop playback if called before playback ends*
 
+**pausePlayBack**: tells the recorder to pause playback of recorded audio
+
 **stopPlayBack**: tells the recorder to stop recording or playback
 
 **duration**: returns the duration of the recording

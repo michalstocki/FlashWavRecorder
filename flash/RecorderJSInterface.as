@@ -50,6 +50,7 @@ package {
         ExternalInterface.addCallback("record", record);
         ExternalInterface.addCallback("playBack", playBack);
         ExternalInterface.addCallback("stopPlayBack", stopPlayBack);
+        ExternalInterface.addCallback("pausePlayBack", pausePlayBack);
         ExternalInterface.addCallback("duration", duration);
         ExternalInterface.addCallback("init", init);
         ExternalInterface.addCallback("permit", requestMicrophoneAccess);
@@ -182,9 +183,16 @@ package {
       return this.recorder.playing;
     }
 
+    public function pausePlayBack(name:String):void {
+      if(this.recorder.playing) {
+        this.recorder.pause(name);
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
+      }
+    }
+
     public function stopPlayBack():void {
       if(this.recorder.recording) {
-	  ExternalInterface.call(this.eventHandler, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
       } else {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
       }
