@@ -1,47 +1,48 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<title>My Recorder</title>
-<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js'></script>
-<script type="text/javascript" src="js/swfobject.js"></script>
-<script type="text/javascript" src="js/recorder.js"></script>
+  <title>My Recorder</title>
+  <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js'></script>
+  <script type="text/javascript" src="js/swfobject.js"></script>
+  <script type="text/javascript" src="js/recorder.js"></script>
+  <script type="text/javascript" src="js/main.js"></script>
 
-<script type="text/javascript">
-$(function() {
-  var gain = $('#gain')[0];
-  var silenceLevel = $('#silenceLevel')[0];
-  for(var i=0; i<=100; i++) {
-    gain.options[gain.options.length] = new Option(100-i);
-    silenceLevel.options[silenceLevel.options.length] = new Option(i);
-  }
+  <script type="text/javascript">
+    $(function() {
+      var gain = $('#gain')[0];
+      var silenceLevel = $('#silenceLevel')[0];
+      for(var i=0; i<=100; i++) {
+        gain.options[gain.options.length] = new Option(100-i);
+        silenceLevel.options[silenceLevel.options.length] = new Option(i);
+      }
+    
+      var appWidth = 24;
+      var appHeight = 24;
+      var flashvars = {'event_handler': 'microphone_recorder_events', 'upload_image': 'images/upload.png'};
+      var params = {};
+      var attributes = {'id': "recorderApp", 'name':  "recorderApp"};
+      swfobject.embedSWF("recorder.swf", "flashcontent", appWidth, appHeight, "11.0.0", "", flashvars, params, attributes);
+    });
 
-  var appWidth = 24;
-  var appHeight = 24;
-  var flashvars = {'event_handler': 'microphone_recorder_events', 'upload_image': 'images/upload.png'};
-  var params = {};
-  var attributes = {'id': "recorderApp", 'name':  "recorderApp"};
-  swfobject.embedSWF("recorder.swf", "flashcontent", appWidth, appHeight, "11.0.0", "", flashvars, params, attributes);
-});
+    function configureMicrophone() {
+      if(! FWRecorder.isReady) {
+        return;
+      }
 
-function configureMicrophone() {
-  if(! Recorder.isReady) {
-    return;
-  }
+      FWRecorder.configure($('#rate').val(), $('#gain').val(), $('#silenceLevel').val(), $('#silenceTimeout').val());
+      FWRecorder.setUseEchoSuppression($('#useEchoSuppression').is(":checked"));
+      FWRecorder.setLoopBack($('#loopBack').is(":checked"));
+    }
+  </script>
 
-  Recorder.configure($('#rate').val(), $('#gain').val(), $('#silenceLevel').val(), $('#silenceTimeout').val());
-  Recorder.setUseEchoSuppression($('#useEchoSuppression').is(":checked"));
-  Recorder.setLoopBack($('#loopBack').is(":checked"));
-}
-</script>
-
-<style>
-.control_panel { white-space: nowrap; }
-.control_panel a { outline: none; display: inline-block; width: 24px; height: 24px; text-decoration: none; }
-.control_panel a img { border: 0; }
-#save_button { padding: 0; margin: 0; }
-.play_button { display: inline-block; }
-.pause_button { display: inline-block; }
-</style>
+  <style>
+    .control_panel { white-space: nowrap; }
+    .control_panel a { outline: none; display: inline-block; width: 24px; height: 24px; text-decoration: none; }
+    .control_panel a img { border: 0; }
+    #save_button { padding: 0; margin: 0; }
+    .play_button { display: inline-block; }
+    .pause_button { display: inline-block; }
+  </style>
 </head>
 
 <body>
@@ -52,27 +53,27 @@ function configureMicrophone() {
   </div>
 
   <div class="control_panel audio">
-  <a class="record_button" onclick="Recorder.record('audio', 'audio.wav');" href="javascript:void(0);" title="Record">
-      <img src="images/record.png" width="24" height="24" alt="Record"/>
-  </a>
-  <a class="play_button" style="display:none;" onclick="Recorder.playBack('audio');" href="javascript:void(0);" title="Play">
-      <img src="images/play.png" width="24" height="24" alt="Play"/>
-  </a>
-  <a class="pause_button" style="display:none;" onclick="Recorder.pausePlayBack('audio');" href="javascript:void(0);" title="Pause">
-      <img src="images/pause.png" width="24" height="24" alt="Pause"/>
-  </a>
+    <a class="record_button" onclick="FWRecorder.record('audio', 'audio.wav');" href="javascript:void(0);" title="Record">
+        <img src="images/record.png" width="24" height="24" alt="Record"/>
+    </a>
+    <a class="play_button" style="display:none;" onclick="FWRecorder.playBack('audio');" href="javascript:void(0);" title="Play">
+        <img src="images/play.png" width="24" height="24" alt="Play"/>
+    </a>
+    <a class="pause_button" style="display:none;" onclick="FWRecorder.pausePlayBack('audio');" href="javascript:void(0);" title="Pause">
+        <img src="images/pause.png" width="24" height="24" alt="Pause"/>
+    </a>
   </div>
 
   <div class="control_panel audio2">
-  <a class="record_button" onclick="Recorder.record('audio2', 'audio2.wav');" href="javascript:void(0);" title="Record">
-      <img src="images/record.png" width="24" height="24" alt="Record"/>
-  </a>
-  <a class="play_button" style="display:none;" onclick="Recorder.playBack('audio2');" href="javascript:void(0);" title="Play">
-      <img src="images/play.png" width="24" height="24" alt="Play"/>
-  </a>
-  <a class="pause_button" style="display:none;" onclick="Recorder.pausePlayBack('audio2');" href="javascript:void(0);" title="Pause">
-      <img src="images/pause.png" width="24" height="24" alt="Pause"/>
-  </a>
+    <a class="record_button" onclick="FWRecorder.record('audio2', 'audio2.wav');" href="javascript:void(0);" title="Record">
+        <img src="images/record.png" width="24" height="24" alt="Record"/>
+    </a>
+    <a class="play_button" style="display:none;" onclick="FWRecorder.playBack('audio2');" href="javascript:void(0);" title="Play">
+        <img src="images/play.png" width="24" height="24" alt="Play"/>
+    </a>
+    <a class="pause_button" style="display:none;" onclick="FWRecorder.pausePlayBack('audio2');" href="javascript:void(0);" title="Pause">
+        <img src="images/pause.png" width="24" height="24" alt="Pause"/>
+    </a>
   </div>
 
   <span id="save_button">
