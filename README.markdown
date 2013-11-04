@@ -117,6 +117,11 @@ Recorder JS Interface
 
 *will stop playback if called before playback ends*
 
+**playBackFrom**: tells the recorder to playback from given second in recorded audio
+
+* name - of the recording
+* time - point in recording to start playback (Float of seconds).
+
 **pausePlayBack**: tells the recorder to pause playback of recorded audio
 
 **stopPlayBack**: tells the recorder to stop recording or playback

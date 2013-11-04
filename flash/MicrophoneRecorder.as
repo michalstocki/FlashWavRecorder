@@ -73,6 +73,15 @@ package {
       this.soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
     }
 
+    public function playBackFrom(name:String, time:Number=0):void {
+      // Time is given as Number of seconds
+      if (time > this.duration(name)) {
+        return;
+      }
+      this.pauses[name] = time * 1000;
+      this.playBack(name);
+    }
+
     public function stop(resetPause:Boolean=true):void {
       if(this.soundChannel) {
         this.soundChannel.stop();
