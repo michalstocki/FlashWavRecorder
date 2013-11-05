@@ -46,6 +46,9 @@ package {
 
     public function RecorderJSInterface() {
       this.recorder = new MicrophoneRecorder();
+      if (!this.recorder.mic.muted) {
+        onMicrophoneStatus(new StatusEvent(StatusEvent.STATUS, false, false, "Microphone.Unmuted", "status"));
+      }
       if(ExternalInterface.available && ExternalInterface.objectID) {
         ExternalInterface.addCallback("record", record);
         ExternalInterface.addCallback("playBack", playBack);
@@ -125,8 +128,7 @@ package {
       this.recorder.mic.setLoopBack();
     }
 
-    private function onMicrophoneStatus(event:StatusEvent):void 
-    {
+    private function onMicrophoneStatus(event:StatusEvent):void {
       this.recorder.mic.setLoopBack(false);
       if(event.code == "Microphone.Unmuted") {
         this.configureMicrophone();
