@@ -72,6 +72,10 @@
       return Recorder.recorder.duration(name || Recorder.uploadFieldName);
     },
 
+    getCurrentTime: function(name) {
+    	return Recorder.recorder.getCurrentTime(name);
+    },
+
     updateForm: function() {
       var frm = $(Recorder.uploadFormId); 
       Recorder.recorder.update(frm.serializeArray());
