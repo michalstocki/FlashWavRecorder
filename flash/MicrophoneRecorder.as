@@ -112,6 +112,15 @@ package {
       this.pauses[name] = startedFrom + progress;
     }
 
+    public function getCurrentTime(name:String):Number {
+      var time:Number = this.pauses[name];
+      if (this.playing && this.currentSoundName == name) {
+        time += this.soundChannel.position;
+      }
+      // Returns number of seconds
+      return time/1000;
+    }
+
     private function onSoundComplete(event:Event):void {
       this.stop();
       dispatchEvent(new Event(MicrophoneRecorder.SOUND_COMPLETE));

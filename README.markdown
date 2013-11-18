@@ -130,6 +130,12 @@ Recorder JS Interface
 
 * name - of the recording
 
+**getCurrentTime**: returns current time in recording playback
+
+* name - of the recording
+
+*Returns number of seconds as float. For paused recording returns pause position, for stopped recording returns 0.*
+
 **init**: setup the recorder for saving recordings
 
 * url - upload url
