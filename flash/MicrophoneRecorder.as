@@ -228,15 +228,14 @@ package {
       }
     }
 
-    private function getSamplePosition(time:Number=0):uint {
-      // time is a number of miliseconds
+    private function getSamplePosition(time:Number):uint {
+      // time is a number of milliseconds
+      var position:uint = 0;
+      if (time == 0) return position;
       var data:ByteArray = this.getSoundBytesResampled();
-      var samplesLength:int = data.length;
-      var position:uint = data.position;
-      if (time > 0) {
+      var bytesLength:int = data.length;
         position = time * 44.1 * 4;
-        position = Math.min(position, samplesLength); // prevents from returning position from out of range
-      }
+      position = Math.min(position, bytesLength); // prevents from returning position from out of range
       return position;               // returns position of sample in ByteArray
     }
 
