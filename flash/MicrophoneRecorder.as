@@ -31,6 +31,8 @@ package {
     public var pauses:Dictionary = new Dictionary();
     public var samplingStarted:Boolean = false;
     public var latency:Number = 0;
+    public var playBackStartedAt:Number;
+    public var playBackLatency:Number;
     private var resampledBytes:ByteArray = new ByteArray();
 
     public function MicrophoneRecorder() {
@@ -68,6 +70,8 @@ package {
       var data:ByteArray = this.getSoundBytesResampled(true);
       data.position = this.getSamplePosition(this.pauses[name]);
       this.samplingStarted = true;
+      this.playBackLatency = 0;
+      this.playBackStartedAt = 0;
       this.playing = true;
       this.soundChannel = this.sound.play();
       this.soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
@@ -116,9 +120,9 @@ package {
       var time:Number = this.pauses[name];
       if (this.playing && this.currentSoundName == name) {
         time += this.soundChannel.position;
+        time -= this.playBackLatency;
       }
-      // Returns number of seconds
-      return time/1000;
+      return time/1000; // Returns number of seconds
     }
 
     private function onSoundComplete(event:Event):void {
@@ -204,6 +208,9 @@ package {
     }
 
     private function playbackSampleHandler(event:SampleDataEvent):void {
+      if (this.playBackStartedAt == 0) {
+        this.playBackStartedAt = new Date().getTime();
+      }
       var i:int = 0;
       var sample:Number = 0.0;
       if(!this.soundChannel) {
@@ -216,7 +223,8 @@ package {
 
       if(this.samplingStarted && this.soundChannel) {
         this.samplingStarted = false;
-	    this.latency = (event.position * 2.267573696145e-02) - this.soundChannel.position;
+        this.latency = (event.position * 2.267573696145e-02) - this.soundChannel.position;
+        this.playBackLatency = new Date().getTime() - this.playBackStartedAt;
         dispatchEvent(new Event(MicrophoneRecorder.PLAYBACK_STARTED));
       }
 
@@ -234,9 +242,9 @@ package {
       if (time == 0) return position;
       var data:ByteArray = this.getSoundBytesResampled();
       var bytesLength:int = data.length;
-        position = time * 44.1 * 4;
+      position = time * 44.1 * 4;
       position = Math.min(position, bytesLength); // prevents from returning position from out of range
-      return position;               // returns position of sample in ByteArray
+      return position;                            // returns position of sample in ByteArray
     }
 
     public function duration(name:String=null):Number {
