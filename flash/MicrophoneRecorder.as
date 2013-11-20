@@ -1,5 +1,6 @@
 package {
   import flash.events.Event;
+  import flash.events.ActivityEvent;
   import flash.events.EventDispatcher;
   import flash.events.SampleDataEvent;
   import flash.events.TimerEvent;
@@ -16,6 +17,7 @@ package {
   public class MicrophoneRecorder extends EventDispatcher {
     public static var SOUND_COMPLETE:String = "sound_complete";
     public static var PLAYBACK_STARTED:String = "playback_started";
+    public static var ACTIVITY:String = "activity";
 
     public var mic:Microphone;
     public var sound:Sound = new Sound();
@@ -26,8 +28,10 @@ package {
     public var currentSoundFilename:String = "";
     public var recording:Boolean = false;
     public var playing:Boolean = false;
+    public var pauses:Dictionary = new Dictionary();
     public var samplingStarted:Boolean = false;
     public var latency:Number = 0;
+    private var resampledBytes:ByteArray = new ByteArray();
 
     public function MicrophoneRecorder() {
       this.mic = Microphone.getMicrophone();
@@ -41,6 +45,7 @@ package {
       this.currentSoundName = "";
       this.recording = false;
       this.playing = false;
+      this.pauses = new Dictionary();
     }
 
     public function record(name:String, filename:String=""):void {
@@ -49,27 +54,38 @@ package {
       this.currentSoundFilename = filename;
       var data:ByteArray = this.getSoundBytes(name, true);
       data.position = 0;
+      this.pauses[name] = 0;
       this.rates[name] = mic.rate;
       this.samplingStarted = true;
       this.mic.addEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
+      this.mic.addEventListener(ActivityEvent.ACTIVITY, onMicrophoneActivity);
       this.recording = true;
     }
 
     public function playBack(name:String):void {
-      this.stop();
+      this.stop(false);
       this.currentSoundName = name;
-      var data:ByteArray = this.getSoundBytes();
-      data.position = 0;
+      var data:ByteArray = this.getSoundBytesResampled(true);
+      data.position = this.getSamplePosition(this.pauses[name]);
       this.samplingStarted = true;
       this.playing = true;
       this.soundChannel = this.sound.play();
       this.soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
     }
 
-    public function stop():void {
+    public function playBackFrom(name:String, time:Number=0):void {
+      // Time is given as Number of seconds
+      if (time > this.duration(name)) {
+        return;
+      }
+      this.pauses[name] = time * 1000;
+      this.playBack(name);
+    }
+
+    public function stop(resetPause:Boolean=true):void {
       if(this.soundChannel) {
         this.soundChannel.stop();
-	this.soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
+        this.soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
         this.soundChannel = null;
       }
 
@@ -77,10 +93,23 @@ package {
         this.playing = false;
       }
 
+      var name:String = this.currentSoundName;
+      if(this.pauses[name] > 0 && resetPause) {
+        this.pauses[name] = 0;
+      }
+
       if(this.recording) {
         this.mic.removeEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
+        this.mic.removeEventListener(ActivityEvent.ACTIVITY, onMicrophoneActivity);
         this.recording = false;
       }
+    }
+
+    public function pause(name:String):void {
+      var progress:Number = this.soundChannel.position;
+      var startedFrom:Number = this.pauses[name];
+      this.stop();
+      this.pauses[name] = startedFrom + progress;
     }
 
     private function onSoundComplete(event:Event):void {
@@ -105,6 +134,59 @@ package {
       return data;
     }
 
+    public function getSoundBytesResampled(resampling:Boolean=false):ByteArray {
+      if(! resampling) {
+        return resampledBytes;
+      }
+
+      var targetRate:int = 44100;
+      var sourceRate:int = this.frequency();
+      var data:ByteArray = this.getSoundBytes();
+      data.position = 0;
+
+      // nothing todo here
+      if(sourceRate == 44100) {
+        resampledBytes = data;
+        resampledBytes.position = 0;
+        return resampledBytes;
+      }
+
+      resampledBytes = new ByteArray();
+
+      var multiplier:Number = targetRate / sourceRate;
+
+      // convert the data
+      var measure:int = targetRate;
+      var currentSample:Number = data.readFloat();
+      var nextSample:Number = data.readFloat();
+
+      resampledBytes.writeFloat(currentSample);
+
+      // taken from http://code.google.com/p/as3wavsound/ in Wav.as from resampleSamples()
+      while(data.bytesAvailable) {
+        var increment:Number = (nextSample - currentSample) / multiplier;
+        var times:int = 0;
+        while(measure >= sourceRate) {
+          times += 1;
+          resampledBytes.writeFloat(currentSample + (increment * times));
+          measure -= sourceRate;
+        }
+
+        currentSample = nextSample;
+        nextSample = data.readFloat();
+        measure += targetRate;
+      }
+
+      resampledBytes.writeFloat(nextSample);
+      resampledBytes.position = 0;
+
+      return resampledBytes;
+    }
+
+    private function onMicrophoneActivity(event:Event):void {
+      dispatchEvent(new Event(MicrophoneRecorder.ACTIVITY));
+    }
+
     private function micSampleDataHandler(event:SampleDataEvent):void {
       var data:ByteArray = this.getSoundBytes();
       while(event.data.bytesAvailable) {
@@ -113,38 +195,40 @@ package {
     }
 
     private function playbackSampleHandler(event:SampleDataEvent):void {
-      var maxPlayback:int = 3072;
       var i:int = 0;
       var sample:Number = 0.0;
       if(!this.soundChannel) {
-	for (; i<maxPlayback; i++) {
-	  event.data.writeFloat(sample);
-	  event.data.writeFloat(sample);
-	}
-	return;
+        for (; i<3072; i++) {
+          event.data.writeFloat(sample);
+          event.data.writeFloat(sample);
+        }
+	    return;
       }
 
       if(this.samplingStarted && this.soundChannel) {
         this.samplingStarted = false;
-	this.latency = (event.position * 2.267573696145e-02) - this.soundChannel.position;
+	    this.latency = (event.position * 2.267573696145e-02) - this.soundChannel.position;
         dispatchEvent(new Event(MicrophoneRecorder.PLAYBACK_STARTED));
       }
 
-      var rate:int = this.rate();
-      if(rate == 22) {
-	maxPlayback = 1536;
-      }
-
-      var data:ByteArray = this.getSoundBytes();
-      for (; i<maxPlayback && data.bytesAvailable && this.playing; i++) {
+      var data:ByteArray = this.getSoundBytesResampled();
+      for (; i<8192 && data.bytesAvailable && this.playing; i++) {
         sample = data.readFloat();
         event.data.writeFloat(sample);
         event.data.writeFloat(sample);
-        if(rate == 22) {
-          event.data.writeFloat(sample);
-          event.data.writeFloat(sample);
-        }
       }
+    }
+
+    private function getSamplePosition(time:Number=0):uint {
+      // time is a number of miliseconds
+      var data:ByteArray = this.getSoundBytesResampled();
+      var samplesLength:int = data.length;
+      var position:uint = data.position;
+      if (time > 0) {
+        position = time * 44.1 * 4;
+        position = Math.min(position, samplesLength); // prevents from returning position from out of range
+      }
+      return position;               // returns position of sample in ByteArray
     }
 
     public function duration(name:String=null):Number {

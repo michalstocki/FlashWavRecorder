@@ -22,6 +22,7 @@ package {
     public static var MICROPHONE_USER_REQUEST:String = "microphone_user_request";
     public static var MICROPHONE_CONNECTED:String = "microphone_connected";
     public static var MICROPHONE_NOT_CONNECTED:String = "microphone_not_connected";
+    public static var MICROPHONE_ACTIVITY:String = "microphone_activity";
 
     public static var RECORDING:String = "recording";
     public static var RECORDING_STOPPED:String = "recording_stopped";
@@ -48,7 +49,9 @@ package {
       if(ExternalInterface.available && ExternalInterface.objectID) {
         ExternalInterface.addCallback("record", record);
         ExternalInterface.addCallback("playBack", playBack);
+        ExternalInterface.addCallback("playBackFrom", playBackFrom);
         ExternalInterface.addCallback("stopPlayBack", stopPlayBack);
+        ExternalInterface.addCallback("pausePlayBack", pausePlayBack);
         ExternalInterface.addCallback("duration", duration);
         ExternalInterface.addCallback("init", init);
         ExternalInterface.addCallback("permit", requestMicrophoneAccess);
@@ -62,10 +65,14 @@ package {
       }
       this.recorder.addEventListener(MicrophoneRecorder.SOUND_COMPLETE, playComplete);
       this.recorder.addEventListener(MicrophoneRecorder.PLAYBACK_STARTED, playbackStarted);
+      this.recorder.addEventListener(MicrophoneRecorder.ACTIVITY, microphoneActivity);
     }
 
     public function ready(width:int, height:int):void {
       ExternalInterface.call(this.eventHandler, RecorderJSInterface.READY, width, height);
+      if (!this.recorder.mic.muted) {
+        onMicrophoneStatus(new StatusEvent(StatusEvent.STATUS, false, false, "Microphone.Unmuted", "status"));
+      }
     }
 
     public function show():void {
@@ -85,6 +92,10 @@ package {
 
     private function playComplete(event:Event):void {
       ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
+    }
+
+    private function microphoneActivity(event:Event):void {
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_ACTIVITY, this.recorder.mic.activityLevel);
     }
 
     public function init(url:String=null, fieldName:String=null, formData:Array=null):void {
@@ -119,8 +130,7 @@ package {
       this.recorder.mic.setLoopBack();
     }
 
-    private function onMicrophoneStatus(event:StatusEvent):void 
-    {
+    private function onMicrophoneStatus(event:StatusEvent):void {
       this.recorder.mic.setLoopBack(false);
       if(event.code == "Microphone.Unmuted") {
         this.configureMicrophone();
@@ -176,9 +186,28 @@ package {
       return this.recorder.playing;
     }
 
+    public function playBackFrom(name:String, time:Number):Boolean {
+      if(this.recorder.playing) {
+        this.recorder.stop();
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
+      }
+      this.recorder.playBackFrom(name, time);
+      if (this.recorder.playing) {
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.PLAYING, this.recorder.currentSoundName);
+      }
+      return this.recorder.playing;
+    }
+
+    public function pausePlayBack(name:String):void {
+      if(this.recorder.playing) {
+        this.recorder.pause(name);
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
+      }
+    }
+
     public function stopPlayBack():void {
       if(this.recorder.recording) {
-	  ExternalInterface.call(this.eventHandler, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
       } else {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
       }
