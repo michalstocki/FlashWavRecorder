@@ -157,7 +157,7 @@ package {
       var data:ByteArray = this.getSoundBytes();
       data.position = 0;
 
-      // nothing todo here
+      // nothing to do here
       if(sourceRate == 44100) {
         resampledBytes = data;
         resampledBytes.position = 0;
@@ -209,7 +209,7 @@ package {
 
     private function playbackSampleHandler(event:SampleDataEvent):void {
       if (this.playBackStartedAt == 0) {
-        this.playBackStartedAt = new Date().getTime();
+        this.playBackStartedAt = this.getTimestamp();
       }
       var i:int = 0;
       var sample:Number = 0.0;
@@ -224,7 +224,7 @@ package {
       if(this.samplingStarted && this.soundChannel) {
         this.samplingStarted = false;
         this.latency = (event.position * 2.267573696145e-02) - this.soundChannel.position;
-        this.playBackLatency = new Date().getTime() - this.playBackStartedAt;
+        this.playBackLatency = this.getTimestamp() - this.playBackStartedAt;
         dispatchEvent(new Event(MicrophoneRecorder.PLAYBACK_STARTED));
       }
 
@@ -234,6 +234,10 @@ package {
         event.data.writeFloat(sample);
         event.data.writeFloat(sample);
       }
+    }
+
+    private function getTimestamp():Number {
+      return new Date().getTime();
     }
 
     private function getSamplePosition(time:Number):uint {
