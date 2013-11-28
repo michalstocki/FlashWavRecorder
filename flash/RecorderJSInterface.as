@@ -53,6 +53,7 @@ package {
         ExternalInterface.addCallback("stopPlayBack", stopPlayBack);
         ExternalInterface.addCallback("pausePlayBack", pausePlayBack);
         ExternalInterface.addCallback("duration", duration);
+        ExternalInterface.addCallback("getCurrentTime", getCurrentTime);
         ExternalInterface.addCallback("init", init);
         ExternalInterface.addCallback("permit", requestMicrophoneAccess);
         ExternalInterface.addCallback("configure", configureMicrophone);
@@ -216,6 +217,10 @@ package {
 
     public function duration(name:String):Number {
       return this.recorder.duration(name);
+    }
+
+    public function getCurrentTime(name:String):Number {
+      return this.recorder.getCurrentTime(name);
     }
 
     public function save():Boolean {

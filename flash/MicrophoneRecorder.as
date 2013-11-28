@@ -31,6 +31,8 @@ package {
     public var pauses:Dictionary = new Dictionary();
     public var samplingStarted:Boolean = false;
     public var latency:Number = 0;
+    public var playBackStartedAt:Number;
+    public var playBackLatency:Number;
     private var resampledBytes:ByteArray = new ByteArray();
 
     public function MicrophoneRecorder() {
@@ -68,6 +70,8 @@ package {
       var data:ByteArray = this.getSoundBytesResampled(true);
       data.position = this.getSamplePosition(this.pauses[name]);
       this.samplingStarted = true;
+      this.playBackLatency = 0;
+      this.playBackStartedAt = 0;
       this.playing = true;
       this.soundChannel = this.sound.play();
       this.soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
@@ -112,6 +116,15 @@ package {
       this.pauses[name] = startedFrom + progress;
     }
 
+    public function getCurrentTime(name:String):Number {
+      var time:Number = this.pauses[name];
+      if (this.playing && this.currentSoundName == name) {
+        time += this.soundChannel.position;
+        time -= this.playBackLatency;
+      }
+      return time/1000; // Returns number of seconds
+    }
+
     private function onSoundComplete(event:Event):void {
       this.stop();
       dispatchEvent(new Event(MicrophoneRecorder.SOUND_COMPLETE));
@@ -144,7 +157,7 @@ package {
       var data:ByteArray = this.getSoundBytes();
       data.position = 0;
 
-      // nothing todo here
+      // nothing to do here
       if(sourceRate == 44100) {
         resampledBytes = data;
         resampledBytes.position = 0;
@@ -195,6 +208,9 @@ package {
     }
 
     private function playbackSampleHandler(event:SampleDataEvent):void {
+      if (this.playBackStartedAt == 0) {
+        this.playBackStartedAt = this.getNowAsNumber();
+      }
       var i:int = 0;
       var sample:Number = 0.0;
       if(!this.soundChannel) {
@@ -207,7 +223,8 @@ package {
 
       if(this.samplingStarted && this.soundChannel) {
         this.samplingStarted = false;
-	    this.latency = (event.position * 2.267573696145e-02) - this.soundChannel.position;
+        this.latency = (event.position * 2.267573696145e-02) - this.soundChannel.position;
+        this.playBackLatency = this.getNowAsNumber() - this.playBackStartedAt;
         dispatchEvent(new Event(MicrophoneRecorder.PLAYBACK_STARTED));
       }
 
@@ -219,16 +236,19 @@ package {
       }
     }
 
-    private function getSamplePosition(time:Number=0):uint {
-      // time is a number of miliseconds
+    private function getNowAsNumber():Number {
+      return new Date().getTime();
+    }
+
+    private function getSamplePosition(time:Number):uint {
+      // time is a number of milliseconds
+      var position:uint = 0;
+      if (time == 0) return position;
       var data:ByteArray = this.getSoundBytesResampled();
-      var samplesLength:int = data.length;
-      var position:uint = data.position;
-      if (time > 0) {
-        position = time * 44.1 * 4;
-        position = Math.min(position, samplesLength); // prevents from returning position from out of range
-      }
-      return position;               // returns position of sample in ByteArray
+      var bytesLength:int = data.length;
+      position = time * 44.1 * 4;
+      position = Math.min(position, bytesLength); // prevents from returning position from out of range
+      return position;                            // returns position of sample in ByteArray
     }
 
     public function duration(name:String=null):Number {
