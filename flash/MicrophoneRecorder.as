@@ -209,7 +209,7 @@ package {
 
     private function playbackSampleHandler(event:SampleDataEvent):void {
       if (this.playBackStartedAt == 0) {
-        this.playBackStartedAt = this.getTimestamp();
+        this.playBackStartedAt = this.getNowAsNumber();
       }
       var i:int = 0;
       var sample:Number = 0.0;
@@ -224,7 +224,7 @@ package {
       if(this.samplingStarted && this.soundChannel) {
         this.samplingStarted = false;
         this.latency = (event.position * 2.267573696145e-02) - this.soundChannel.position;
-        this.playBackLatency = this.getTimestamp() - this.playBackStartedAt;
+        this.playBackLatency = this.getNowAsNumber() - this.playBackStartedAt;
         dispatchEvent(new Event(MicrophoneRecorder.PLAYBACK_STARTED));
       }
 
@@ -236,7 +236,7 @@ package {
       }
     }
 
-    private function getTimestamp():Number {
+    private function getNowAsNumber():Number {
       return new Date().getTime();
     }
 
