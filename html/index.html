@@ -36,107 +36,132 @@
   </script>
 
   <style>
-    .control_panel { white-space: nowrap; }
+    h1 a { color: red; text-decoration: none; }
+    .container {
+      width: 400px;
+      margin: 50px auto;
+      background-color: #f4f4f4;
+      padding: 30px;
+      font-family: sans-serif;
+      font-size: 14px;
+      border-radius: 22px;
+    }
+    .control_panel {
+      white-space: nowrap;
+      padding: 0;
+      margin: 2px;
+      vertical-align: middle;
+      height: 24px;
+      background-color: #e7e7e7;
+    }
     .control_panel a { outline: none; display: inline-block; width: 24px; height: 24px; text-decoration: none; }
-    .control_panel a img { border: 0; }
+    .control_panel a img { border: 0; padding: 0; margin: 0;}
+    .details { font-size: 12px; }
     #save_button { padding: 0; margin: 0; }
     .play_button { display: inline-block; }
     .pause_button { display: inline-block; }
+    .mic_config ul, .mic_config li { list-style: none; margin: 0; padding: 0; font-size: 12px}
   </style>
 </head>
 
 <body>
-  <p><strong>Upload requires php, i.e. example will not work on github.com</strong></p>
+  <div class="container">
 
-  <div id="status">
-   Recorder Status...
+    <h1><a href="https://github.com/cykod/FlashWavRecorder">FlashWavRecorder</a></h1>
+    <p><strong>Upload requires php, i.e. example will not work on github.com</strong></p>
+
+
+    <div class="control_panel audio">
+      <a class="record_button" onclick="FWRecorder.record('audio', 'audio.wav');" href="javascript:void(0);" title="Record">
+          <img src="images/record.png" width="24" height="24" alt="Record"/>
+      </a>
+      <a class="play_button" style="display:none;" onclick="FWRecorder.playBack('audio');" href="javascript:void(0);" title="Play">
+          <img src="images/play.png" width="24" height="24" alt="Play"/>
+      </a>
+      <a class="pause_button" style="display:none;" onclick="FWRecorder.pausePlayBack('audio');" href="javascript:void(0);" title="Pause">
+          <img src="images/pause.png" width="24" height="24" alt="Pause"/>
+      </a>
+    </div>
+
+    <div class="control_panel audio2">
+      <a class="record_button" onclick="FWRecorder.record('audio2', 'audio2.wav');" href="javascript:void(0);" title="Record">
+          <img src="images/record.png" width="24" height="24" alt="Record"/>
+      </a>
+      <a class="play_button" style="display:none;" onclick="FWRecorder.playBack('audio2');" href="javascript:void(0);" title="Play">
+          <img src="images/play.png" width="24" height="24" alt="Play"/>
+      </a>
+      <a class="pause_button" style="display:none;" onclick="FWRecorder.pausePlayBack('audio2');" href="javascript:void(0);" title="Pause">
+          <img src="images/pause.png" width="24" height="24" alt="Pause"/>
+      </a>
+    </div>
+
+    <div class="details">
+      <span id="save_button">
+        <span id="flashcontent">
+          <p>Your browser must have JavaScript enabled and the Adobe Flash Player installed.</p>
+        </span>
+      </span>
+      <div id="status">
+       Recorder Status...
+      </div>
+      <div>Duration: <span id="duration"></span></div>
+      <div>Activity Level: <span id="activity_level"></span></div>
+      <div>Upload status: <span id="upload_status"></span></div>
+    </div>
+
+    <form id="uploadForm" name="uploadForm" action="upload.php">
+      <input name="authenticity_token" value="xxxxx" type="hidden">
+      <input name="upload_file[parent_id]" value="1" type="hidden">
+      <input name="format" value="json" type="hidden">
+    </form>
+
+    <h4>Configure Microphone</h4>
+    <form class="mic_config" onsubmit="return false;">
+      <ul>
+        <li>
+          <label for="rate">Rate</label>
+          <select id="rate" name="rate">
+            <option value="44" selected>44,100 Hz</option>
+            <option value="22">22,050 Hz</option>
+            <option value="11">11,025 Hz</option>
+            <option value="8">8,000 Hz</option>
+            <option value="5">5,512 Hz</option>
+          </select>
+        </li>
+
+        <li>
+          <label for="gain">Gain</label>
+          <select id="gain" name="gain">
+          </select>
+        </li>
+
+        <li>
+          <label for="silenceLevel">Silence Level</label>
+          <select id="silenceLevel" name="silenceLevel">
+          </select>
+        </li>
+
+        <li>
+          <label for="silenceTimeout">Silence Timeout</label>
+          <input id="silenceTimeout" name="silenceTimeout" value="2000"/>
+        </li>
+
+        <li>
+          <input id="useEchoSuppression" name="useEchoSuppression" type="checkbox"/>
+          <label for="useEchoSuppression">Use Echo Suppression</label>
+        </li>
+
+        <li>
+          <input id="loopBack" name="loopBack" type="checkbox"/>
+          <label for="loopBack">Loop Back</label>
+        </li>
+
+        <li>
+          <button onclick="configureMicrophone();">Configure</button>
+        </li>
+      </ul>
+    </form>
   </div>
-
-  <div class="control_panel audio">
-    <a class="record_button" onclick="FWRecorder.record('audio', 'audio.wav');" href="javascript:void(0);" title="Record">
-        <img src="images/record.png" width="24" height="24" alt="Record"/>
-    </a>
-    <a class="play_button" style="display:none;" onclick="FWRecorder.playBack('audio');" href="javascript:void(0);" title="Play">
-        <img src="images/play.png" width="24" height="24" alt="Play"/>
-    </a>
-    <a class="pause_button" style="display:none;" onclick="FWRecorder.pausePlayBack('audio');" href="javascript:void(0);" title="Pause">
-        <img src="images/pause.png" width="24" height="24" alt="Pause"/>
-    </a>
-  </div>
-
-  <div class="control_panel audio2">
-    <a class="record_button" onclick="FWRecorder.record('audio2', 'audio2.wav');" href="javascript:void(0);" title="Record">
-        <img src="images/record.png" width="24" height="24" alt="Record"/>
-    </a>
-    <a class="play_button" style="display:none;" onclick="FWRecorder.playBack('audio2');" href="javascript:void(0);" title="Play">
-        <img src="images/play.png" width="24" height="24" alt="Play"/>
-    </a>
-    <a class="pause_button" style="display:none;" onclick="FWRecorder.pausePlayBack('audio2');" href="javascript:void(0);" title="Pause">
-        <img src="images/pause.png" width="24" height="24" alt="Pause"/>
-    </a>
-  </div>
-
-  <span id="save_button">
-    <span id="flashcontent">
-      <p>Your browser must have JavaScript enabled and the Adobe Flash Player installed.</p>
-    </span>
-  </span>
-  <div>Duration: <span id="duration"></span></div>
-  <div>Activity Level: <span id="activity_level"></span></div>
-  <div>Upload status: <span id="upload_status"></span></div>
-
-  <form id="uploadForm" name="uploadForm" action="upload.php">
-    <input name="authenticity_token" value="xxxxx" type="hidden">
-    <input name="upload_file[parent_id]" value="1" type="hidden">
-    <input name="format" value="json" type="hidden">
-  </form>
-
-  <h4>Configure Microphone</h4>
-  <form onsubmit="return false;">
-    <ul>
-      <li>
-        <label for="rate">Rate</label>
-        <select id="rate" name="rate">
-          <option value="44" selected>44,100 Hz</option>
-          <option value="22">22,050 Hz</option>
-          <option value="11">11,025 Hz</option>
-          <option value="8">8,000 Hz</option>
-          <option value="5">5,512 Hz</option>
-        </select>
-      </li>
-
-      <li>
-        <label for="gain">Gain</label>
-        <select id="gain" name="gain">
-        </select>
-      </li>
-
-      <li>
-        <label for="silenceLevel">Silence Level</label>
-        <select id="silenceLevel" name="silenceLevel">
-        </select>
-      </li>
-
-      <li>
-        <label for="silenceTimeout">Silence Timeout</label>
-        <input id="silenceTimeout" name="silenceTimeout" value="2000"/>
-      </li>
-
-      <li>
-        <input id="useEchoSuppression" name="useEchoSuppression" type="checkbox"/>
-        <label for="useEchoSuppression">Use Echo Suppression</label>
-      </li>
-
-      <li>
-        <input id="loopBack" name="loopBack" type="checkbox"/>
-        <label for="loopBack">Loop Back</label>
-      </li>
-
-      <li>
-        <button onclick="configureMicrophone();">Configure</button>
-      </li>
-    </ul>
-  </form>
 
 </body>
 </html>
