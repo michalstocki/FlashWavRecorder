@@ -12,6 +12,7 @@ package {
   import flash.utils.ByteArray;
 
   import MicrophoneRecorder;
+  import MicrophoneLevel;
   import MultiPartFormUtil;
 
   public class RecorderJSInterface {
@@ -23,9 +24,13 @@ package {
     public static var MICROPHONE_CONNECTED:String = "microphone_connected";
     public static var MICROPHONE_NOT_CONNECTED:String = "microphone_not_connected";
     public static var MICROPHONE_ACTIVITY:String = "microphone_activity";
+    public static var MICROPHONE_LEVEL:String = "microphone_level";
 
     public static var RECORDING:String = "recording";
     public static var RECORDING_STOPPED:String = "recording_stopped";
+
+    public static var OBSERVING_LEVEL:String = "observing_level";
+    public static var OBSERVING_LEVEL_STOPPED:String = "observing_level_stopped";
 
     public static var PLAYING:String = "playing";
     public static var STOPPED:String = "stopped";
@@ -48,6 +53,8 @@ package {
       this.recorder = new MicrophoneRecorder();
       if(ExternalInterface.available && ExternalInterface.objectID) {
         ExternalInterface.addCallback("record", record);
+        ExternalInterface.addCallback("observeLevel", observeLevel);
+        ExternalInterface.addCallback("stopObservingLevel", stopObservingLevel);
         ExternalInterface.addCallback("playBack", playBack);
         ExternalInterface.addCallback("playBackFrom", playBackFrom);
         ExternalInterface.addCallback("stopPlayBack", stopPlayBack);
@@ -67,6 +74,7 @@ package {
       this.recorder.addEventListener(MicrophoneRecorder.SOUND_COMPLETE, playComplete);
       this.recorder.addEventListener(MicrophoneRecorder.PLAYBACK_STARTED, playbackStarted);
       this.recorder.addEventListener(MicrophoneRecorder.ACTIVITY, microphoneActivity);
+      this.recorder.level.addEventListener(MicrophoneLevel.LEVEL, microphoneLevel);
     }
 
     public function ready(width:int, height:int):void {
@@ -97,6 +105,10 @@ package {
 
     private function microphoneActivity(event:Event):void {
       ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_ACTIVITY, this.recorder.mic.activityLevel);
+    }
+
+    private function microphoneLevel(event:Event):void {
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_LEVEL, this.recorder.level.currentValue);
     }
 
     public function init(url:String=null, fieldName:String=null, formData:Array=null):void {
@@ -173,6 +185,22 @@ package {
       }
 
       return this.recorder.recording;
+    }
+
+    public function observeLevel():Boolean {
+      if (!this.recorder.level.isObserving) {
+        this.recorder.level.startObserving();
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL);
+      }
+      return this.recorder.level.isObserving;
+    }
+
+    public function stopObservingLevel():Boolean {
+      if (this.recorder.level.isObserving) {
+        this.recorder.level.stopObserving();
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL_STOPPED);
+      }
+      return this.recorder.level.isObserving;
     }
 
     public function playBack(name:String):Boolean {
