@@ -1,0 +1,57 @@
+package {
+  import flash.events.Event;
+  import flash.events.EventDispatcher;
+  import flash.events.SampleDataEvent;
+  import flash.media.Microphone;
+  import flash.utils.ByteArray;
+
+  import mx.controls.Label;
+
+  public class MicrophoneLevel extends EventDispatcher {
+    public static var LEVEL:String = "microphone_level";
+
+    public var currentValue:Number = 0;
+    public var isObserving:Boolean = false;
+    private var mic:Microphone;
+
+    public function MicrophoneLevel(microphone:Microphone) {
+      this.mic = microphone;
+    }
+
+    public function startObserving():void {
+      this.mic.addEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
+      this.isObserving = true;
+    }
+
+    public function stopObserving():void {
+      this.mic.removeEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
+      this.isObserving = false;
+    }
+
+    private function micSampleDataHandler(event:SampleDataEvent):void {
+      var data:ByteArray = new ByteArray();
+      while(event.data.bytesAvailable) {
+        data.writeFloat(event.data.readFloat());
+      }
+      this.dispatchLevelEvent(this.calculateLevel(data));
+    }
+
+    private function calculateLevel(data:ByteArray):Number {
+      var level:Number = 0;
+      var currentSample:Number;
+      while (data.bytesAvailable) {
+        currentSample = data.readFloat();
+        if (currentSample > level) {
+          level = currentSample;
+        }
+      }
+      return level;
+    }
+
+    private function dispatchLevelEvent(level:Number):void {
+      this.currentValue = level;
+      dispatchEvent(new Event(MicrophoneLevel.LEVEL));
+    }
+
+  }
+}
