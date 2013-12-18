@@ -53,9 +53,17 @@
       vertical-align: middle;
       height: 24px;
       background-color: #e7e7e7;
+      position: relative;
     }
     .control_panel a { outline: none; display: inline-block; width: 24px; height: 24px; text-decoration: none; }
     .control_panel a img { border: 0; padding: 0; margin: 0;}
+    .control_panel .level {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: linear-gradient(to right, #8bb300 0%, #3b9d00 100%);
+    }
     .details { font-size: 12px; }
     #save_button { padding: 0; margin: 0; }
     .play_button { display: inline-block; }
@@ -81,6 +89,7 @@
       <a class="pause_button" style="display:none;" onclick="FWRecorder.pausePlayBack('audio');" href="javascript:void(0);" title="Pause">
           <img src="images/pause.png" width="24" height="24" alt="Pause"/>
       </a>
+      <div class="level"></div>
     </div>
 
     <div class="control_panel audio2">
@@ -93,9 +102,12 @@
       <a class="pause_button" style="display:none;" onclick="FWRecorder.pausePlayBack('audio2');" href="javascript:void(0);" title="Pause">
           <img src="images/pause.png" width="24" height="24" alt="Pause"/>
       </a>
+      <div class="level"></div>
     </div>
 
     <div class="details">
+      <button class="show_level" onclick="FWRecorder.observeLevel();">Show Level</button>
+      <button class="hide_level" onclick="FWRecorder.stopObservingLevel();" style="display: none;">Hide Level</button>
       <span id="save_button">
         <span id="flashcontent">
           <p>Your browser must have JavaScript enabled and the Adobe Flash Player installed.</p>

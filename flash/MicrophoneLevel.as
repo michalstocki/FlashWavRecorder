@@ -30,10 +30,7 @@ package {
 
     private function micSampleDataHandler(event:SampleDataEvent):void {
       var data:ByteArray = new ByteArray();
-      while(event.data.bytesAvailable) {
-        data.writeFloat(event.data.readFloat());
-      }
-      this.dispatchLevelEvent(this.calculateLevel(data));
+      this.dispatchLevelEvent(this.calculateLevel(event.data));
     }
 
     private function calculateLevel(data:ByteArray):Number {
@@ -45,6 +42,7 @@ package {
           level = currentSample;
         }
       }
+      data.position = 0;
       return level;
     }
 

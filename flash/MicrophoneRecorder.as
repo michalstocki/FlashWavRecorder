@@ -208,6 +208,7 @@ package {
       while(event.data.bytesAvailable) {
         data.writeFloat(event.data.readFloat());
       }
+      event.data.position = 0;
     }
 
     private function playbackSampleHandler(event:SampleDataEvent):void {

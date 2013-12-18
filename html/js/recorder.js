@@ -51,6 +51,14 @@
       Recorder.recorder.record(name, filename);
     },
 
+    observeLevel: function() {
+      Recorder.recorder.observeLevel();
+    },
+
+    stopObservingLevel: function() {
+      Recorder.recorder.stopObservingLevel();
+    },
+
     resize: function(width, height) {
       Recorder.recorder.width = width + "px";
       Recorder.recorder.height = height + "px";
