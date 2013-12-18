@@ -101,6 +101,18 @@ Flash Events
 * bytes_loaded - number of bytes uploaded
 * bytes_total - number of bytes to upload
 
+**observing_level**: started dispatching "microphone_level" event
+
+*Is dispatched just after call of `observeLevel`*
+
+**microphone_level**: current Microphone level
+
+* level - value from 0 to 1 provides current volume of sound registered by microphone
+ 
+**observing_level_stopped**: stopped dispatching "microphone_level" event
+
+*Is dispatched just after call of `stopObservingLevel`*
+
 Recorder JS Interface
 ---------------------
 
@@ -135,6 +147,10 @@ Recorder JS Interface
 * name - of the recording
 
 *Returns number of seconds as float. For paused recording returns pause position, for stopped recording returns 0.*
+
+**observeLevel**: starts dispatching `microphone_level` events
+
+**stopObservingLevel**: stops dispatching `microphone_level` events
 
 **init**: setup the recorder for saving recordings
 
