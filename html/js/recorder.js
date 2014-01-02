@@ -92,7 +92,8 @@
     showPermissionWindow: function() {
       Recorder.resize(240, 160);
       // need to wait until app is resized before displaying permissions screen
-      setTimeout(function(){Recorder.recorder.permit();}, 1);
+      var recorder = Recorder.recorder;
+      setTimeout(function(){recorder.permit();}, 1);
     },
 
     configure: function(rate, gain, silenceLevel, silenceTimeout) {
