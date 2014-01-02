@@ -188,6 +188,9 @@ package {
     }
 
     public function observeLevel():Boolean {
+      if(! this.isMicrophoneAvailable()) {
+        return false;
+      }
       if (!this.recorder.level.isObserving) {
         this.recorder.level.startObserving();
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL);
