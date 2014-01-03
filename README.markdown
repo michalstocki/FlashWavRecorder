@@ -184,3 +184,9 @@ Recorder JS Interface
 * yes_no
 
 **getMicrophone**: returns the microphone object
+
+Gradle Build
+==========================
+Set environment variable **FLEX_HOME** (compiled with Flex SDK 4.6.0 on windows)
+
+Build with `gradlew dist`
