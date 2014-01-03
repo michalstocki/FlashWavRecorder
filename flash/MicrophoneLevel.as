@@ -36,11 +36,8 @@ package {
     }
 
     private function micSampleDataHandler(event:SampleDataEvent):void {
-      dispatchLevelEvent(calculateLevel(event.data));
-    }
-
-    private function calculateLevel(data:ByteArray):Number {
-      return sampleCalculator.getHighestSample(data);
+      var levelValue:Number = sampleCalculator.getHighestSample(ByteArray(event.data));
+      dispatchLevelEvent(levelValue);
     }
 
     private function dispatchLevelEvent(level:Number):void {
