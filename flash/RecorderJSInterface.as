@@ -192,19 +192,19 @@ package {
       if(! this.isMicrophoneAvailable()) {
         return false;
       }
-      if (!this.recorder.level.isObserving) {
+      if (!this.recorder.level.isObserving()) {
         this.recorder.level.startObserving();
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL);
       }
-      return this.recorder.level.isObserving;
+      return this.recorder.level.isObserving();
     }
 
     public function stopObservingLevel():Boolean {
-      if (this.recorder.level.isObserving) {
+      if (this.recorder.level.isObserving()) {
         this.recorder.level.stopObserving();
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL_STOPPED);
       }
-      return this.recorder.level.isObserving;
+      return this.recorder.level.isObserving();
     }
 
     public function playBack(name:String):Boolean {

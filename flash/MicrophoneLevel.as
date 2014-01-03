@@ -11,7 +11,7 @@ package {
 
   public class MicrophoneLevel extends EventDispatcher {
 
-    public var isObserving:Boolean = false;
+    private var observing:Boolean = false;
     private var mic:Microphone;
 
     public function MicrophoneLevel(microphone:Microphone) {
@@ -20,16 +20,19 @@ package {
 
     public function startObserving():void {
       this.mic.addEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
-      this.isObserving = true;
+      this.observing = true;
     }
 
     public function stopObserving():void {
       this.mic.removeEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
-      this.isObserving = false;
+      this.observing = false;
+    }
+
+    public function isObserving():Boolean {
+      return observing;
     }
 
     private function micSampleDataHandler(event:SampleDataEvent):void {
-      var data:ByteArray = new ByteArray();
       this.dispatchLevelEvent(this.calculateLevel(event.data));
     }
 
