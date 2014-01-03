@@ -75,7 +75,7 @@ package {
       this.recorder.addEventListener(MicrophoneRecorder.SOUND_COMPLETE, playComplete);
       this.recorder.addEventListener(MicrophoneRecorder.PLAYBACK_STARTED, playbackStarted);
       this.recorder.addEventListener(MicrophoneRecorder.ACTIVITY, microphoneActivity);
-      this.recorder.level.addEventListener(MicrophoneLevelEvent.NAME, microphoneLevel);
+      this.recorder.level.addEventListener(MicrophoneLevelEvent.LEVEL_VALUE, microphoneLevel);
     }
 
     public function ready(width:int, height:int):void {
