@@ -5,12 +5,12 @@ package {
   import flash.media.Microphone;
   import flash.utils.ByteArray;
 
+  import MicrophoneLevelEvent;
+
   import mx.controls.Label;
 
   public class MicrophoneLevel extends EventDispatcher {
-    public static var LEVEL:String = "microphone_level";
 
-    public var currentValue:Number = 0;
     public var isObserving:Boolean = false;
     private var mic:Microphone;
 
@@ -47,8 +47,7 @@ package {
     }
 
     private function dispatchLevelEvent(level:Number):void {
-      this.currentValue = level;
-      dispatchEvent(new Event(MicrophoneLevel.LEVEL));
+      dispatchEvent(new MicrophoneLevelEvent(level));
     }
 
   }

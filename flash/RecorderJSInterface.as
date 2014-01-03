@@ -13,6 +13,7 @@ package {
 
   import MicrophoneRecorder;
   import MicrophoneLevel;
+  import MicrophoneLevelEvent;
   import MultiPartFormUtil;
 
   public class RecorderJSInterface {
@@ -74,7 +75,7 @@ package {
       this.recorder.addEventListener(MicrophoneRecorder.SOUND_COMPLETE, playComplete);
       this.recorder.addEventListener(MicrophoneRecorder.PLAYBACK_STARTED, playbackStarted);
       this.recorder.addEventListener(MicrophoneRecorder.ACTIVITY, microphoneActivity);
-      this.recorder.level.addEventListener(MicrophoneLevel.LEVEL, microphoneLevel);
+      this.recorder.level.addEventListener(MicrophoneLevelEvent.NAME, microphoneLevel);
     }
 
     public function ready(width:int, height:int):void {
@@ -107,8 +108,8 @@ package {
       ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_ACTIVITY, this.recorder.mic.activityLevel);
     }
 
-    private function microphoneLevel(event:Event):void {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_LEVEL, this.recorder.level.currentValue);
+    private function microphoneLevel(event:MicrophoneLevelEvent):void {
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_LEVEL, event.getLevelValue());
     }
 
     public function init(url:String=null, fieldName:String=null, formData:Array=null):void {
