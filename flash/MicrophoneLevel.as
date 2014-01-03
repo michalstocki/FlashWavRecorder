@@ -6,6 +6,7 @@ package {
   import flash.utils.ByteArray;
 
   import MicrophoneLevelEvent;
+  import SampleCalculator;
 
   import mx.controls.Label;
 
@@ -13,9 +14,11 @@ package {
 
     private var observing:Boolean = false;
     private var microphone:Microphone;
+    private var sampleCalculator:SampleCalculator;
 
-    public function MicrophoneLevel(microphone:Microphone) {
+    public function MicrophoneLevel(microphone:Microphone, sampleCalculator:SampleCalculator) {
       this.microphone = microphone;
+      this.sampleCalculator = sampleCalculator;
     }
 
     public function startObserving():void {
@@ -33,20 +36,11 @@ package {
     }
 
     private function micSampleDataHandler(event:SampleDataEvent):void {
-      dispatchLevelEvent(this.calculateLevel(event.data));
+      dispatchLevelEvent(calculateLevel(event.data));
     }
 
     private function calculateLevel(data:ByteArray):Number {
-      var level:Number = 0;
-      var currentSample:Number;
-      while (data.bytesAvailable) {
-        currentSample = data.readFloat();
-        if (currentSample > level) {
-          level = currentSample;
-        }
-      }
-      data.position = 0;
-      return level;
+      return sampleCalculator.getHighestSample(data);
     }
 
     private function dispatchLevelEvent(level:Number):void {

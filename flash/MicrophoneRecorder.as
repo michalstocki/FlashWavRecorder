@@ -14,6 +14,7 @@ package {
 
   import mx.controls.Label;
   import MicrophoneLevel;
+  import SampleCalculator;
 
   public class MicrophoneRecorder extends EventDispatcher {
     public static var SOUND_COMPLETE:String = "sound_complete";
@@ -40,7 +41,8 @@ package {
     public function MicrophoneRecorder() {
       this.mic = Microphone.getMicrophone();
       this.sound.addEventListener(SampleDataEvent.SAMPLE_DATA, playbackSampleHandler);
-      this.level = new MicrophoneLevel(this.mic);
+      var sampleCalc:SampleCalculator = new SampleCalculator();
+      this.level = new MicrophoneLevel(this.mic, sampleCalc);
     }
 
     public function reset():void {
