@@ -1,0 +1,20 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'org.gradlefx', name: 'gradlefx', version: '0.8.1'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.10'
+}
+
+apply plugin: 'gradlefx'
+
+srcDirs = ['flash/']
+mainClass = 'Recorder.as'
+output='recroder'
+type = 'swf'
+frameworkLinkage = 'merged'
