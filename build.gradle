@@ -43,8 +43,3 @@ task dist( dependsOn: [test, build], type: Copy ) {
         into "html/"
     }
 }
-
-release {
-    failOnCommitNeeded = false
-    requireBranch = ''
-}
