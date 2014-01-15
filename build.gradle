@@ -1,0 +1,41 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'org.gradlefx', name: 'gradlefx', version: '0.8.1'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.10'
+}
+
+apply plugin: 'gradlefx'
+
+def libTestDir = "lib/test"
+dependencies {
+    test files(
+        "${libTestDir}/hamcrest-as3-only-1.1.3.swc", 
+        "${libTestDir}/flexunit-4.1.0-x-as3_4.6.0.swc",
+        "${libTestDir}/flexunit-cilistener-4.1.0-x-4.6.0.swc",
+        "${libTestDir}/flexUnitTasks-4.1.0-x.jar",
+        "${libTestDir}/flexunit-uilistener-4.1.0-x-4.6.0.swc")
+}
+
+flexUnit {
+    command = "${flexHome}/runtimes/player/11.1/win/FlashPlayerDebugger.exe"
+}
+
+mainClass = 'Recorder.as'
+output='recorder'
+type = 'swf'
+frameworkLinkage = 'merged'
+
+
+task dist( dependsOn: [test, build], type: Copy ) {
+    configure {
+        from file("${buildDir}/${output}.swf")
+        into "html/"
+    }
+}

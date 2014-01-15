@@ -4,3 +4,7 @@
 .\#*
 html/audio
 flash/recorder.swf
+
+.gradle/
+build/
+html/recorder.swf
