@@ -1,11 +1,15 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven { url "https://oss.sonatype.org/content/groups/public"}
     }
     dependencies {
         classpath group: 'org.gradlefx', name: 'gradlefx', version: '0.8.1'
+        classpath 'com.github.townsfolk:gradle-release:1.2'
     }
 }
+
+apply plugin: 'release'
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.10'
