@@ -12,11 +12,11 @@ package {
   import flash.utils.ByteArray;
 
   import MicrophoneRecorder;
-  import MicrophoneLevel;
+  import MicrophoneLevelListener;
   import MicrophoneLevelEvent;
   import MultiPartFormUtil;
 
-  public class RecorderJSInterface {
+public class RecorderJSInterface {
 
     public static var READY:String = "ready";
 
@@ -75,7 +75,7 @@ package {
       this.recorder.addEventListener(MicrophoneRecorder.SOUND_COMPLETE, playComplete);
       this.recorder.addEventListener(MicrophoneRecorder.PLAYBACK_STARTED, playbackStarted);
       this.recorder.addEventListener(MicrophoneRecorder.ACTIVITY, microphoneActivity);
-      this.recorder.level.addEventListener(MicrophoneLevelEvent.LEVEL_VALUE, microphoneLevel);
+      this.recorder.levelForwarder.addEventListener(MicrophoneLevelEvent.LEVEL_VALUE, microphoneLevel);
     }
 
     public function ready(width:int, height:int):void {
@@ -192,19 +192,19 @@ package {
       if(! this.isMicrophoneAvailable()) {
         return false;
       }
-      if (!this.recorder.level.isObserving()) {
-        this.recorder.level.startObserving();
+      if (!this.recorder.levelListener.isObserving()) {
+        this.recorder.levelListener.startObserving();
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL);
       }
-      return this.recorder.level.isObserving();
+      return this.recorder.levelListener.isObserving();
     }
 
     public function stopObservingLevel():Boolean {
-      if (this.recorder.level.isObserving()) {
-        this.recorder.level.stopObserving();
+      if (this.recorder.levelListener.isObserving()) {
+        this.recorder.levelListener.stopObserving();
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL_STOPPED);
       }
-      return this.recorder.level.isObserving();
+      return this.recorder.levelListener.isObserving();
     }
 
     public function playBack(name:String):Boolean {

@@ -13,7 +13,8 @@ package {
   import flash.utils.Timer;
 
   import mx.controls.Label;
-  import MicrophoneLevel;
+  import MicrophoneLevelListener;
+  import MicrophoneLevelForwarder;
   import SampleCalculator;
 
   public class MicrophoneRecorder extends EventDispatcher {
@@ -23,7 +24,8 @@ package {
 
     public var mic:MicrophoneWrapper;
     public var sound:Sound = new Sound();
-    public var level:MicrophoneLevel;
+    public var levelListener:MicrophoneLevelListener;
+    public var levelForwarder:MicrophoneLevelForwarder;
     public var soundChannel:SoundChannel;
     public var sounds:Dictionary = new Dictionary();
     public var rates:Dictionary = new Dictionary();
@@ -42,7 +44,8 @@ package {
       this.mic = new MicrophoneWrapper();
       this.sound.addEventListener(SampleDataEvent.SAMPLE_DATA, playbackSampleHandler);
       var sampleCalc:SampleCalculator = new SampleCalculator();
-      this.level = new MicrophoneLevel(this.mic, sampleCalc);
+      levelForwarder = new MicrophoneLevelForwarder(sampleCalc);
+      levelListener = new MicrophoneLevelListener(this.mic, levelForwarder);
     }
 
     public function reset():void {
