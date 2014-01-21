@@ -21,7 +21,7 @@ package {
     public static var PLAYBACK_STARTED:String = "playback_started";
     public static var ACTIVITY:String = "activity";
 
-    public var mic:Microphone;
+    public var mic:MicrophoneWrapper;
     public var sound:Sound = new Sound();
     public var level:MicrophoneLevel;
     public var soundChannel:SoundChannel;
@@ -39,7 +39,7 @@ package {
     private var resampledBytes:ByteArray = new ByteArray();
 
     public function MicrophoneRecorder() {
-      this.mic = Microphone.getMicrophone();
+      this.mic = new MicrophoneWrapper();
       this.sound.addEventListener(SampleDataEvent.SAMPLE_DATA, playbackSampleHandler);
       var sampleCalc:SampleCalculator = new SampleCalculator();
       this.level = new MicrophoneLevel(this.mic, sampleCalc);
@@ -62,7 +62,7 @@ package {
       var data:ByteArray = this.getSoundBytes(name, true);
       data.position = 0;
       this.pauses[name] = 0;
-      this.rates[name] = mic.rate;
+      this.rates[name] = mic.getRate();
       this.samplingStarted = true;
       this.mic.addEventListener(SampleDataEvent.SAMPLE_DATA, micSampleDataHandler);
       this.mic.addEventListener(ActivityEvent.ACTIVITY, onMicrophoneActivity);

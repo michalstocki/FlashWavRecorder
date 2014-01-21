@@ -80,7 +80,7 @@ package {
 
     public function ready(width:int, height:int):void {
       ExternalInterface.call(this.eventHandler, RecorderJSInterface.READY, width, height);
-      if (!this.recorder.mic.muted) {
+      if (!this.recorder.mic.isMuted()) {
         onMicrophoneStatus(new StatusEvent(StatusEvent.STATUS, false, false, "Microphone.Unmuted", "status"));
       }
     }
@@ -105,7 +105,7 @@ package {
     }
 
     private function microphoneActivity(event:Event):void {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_ACTIVITY, this.recorder.mic.activityLevel);
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_ACTIVITY, this.recorder.mic.getActivityLevel());
     }
 
     private function microphoneLevel(event:MicrophoneLevelEvent):void {
@@ -129,7 +129,7 @@ package {
     }
 
     public function isMicrophoneAvailable():Boolean {
-      if(! this.recorder.mic.muted) {
+      if(! this.recorder.mic.isMuted()) {
         return true;
       } else if(Microphone.names.length == 0) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.NO_MICROPHONE_FOUND);
@@ -141,7 +141,7 @@ package {
 
     public function requestMicrophoneAccess():void {
       this.recorder.mic.addEventListener(StatusEvent.STATUS, onMicrophoneStatus);
-      this.recorder.mic.setLoopBack();
+      this.recorder.mic.setLoopBack(true);
     }
 
     private function onMicrophoneStatus(event:StatusEvent):void {
@@ -155,8 +155,8 @@ package {
     }
 
     public function configureMicrophone(rate:int=22, gain:int=100, silenceLevel:Number=0, silenceTimeout:int=4000):void {
-      this.recorder.mic.rate = rate;
-      this.recorder.mic.gain = gain;
+      this.recorder.mic.setRate(rate);
+      this.recorder.mic.setGain(gain);
       this.recorder.mic.setSilenceLevel(silenceLevel, silenceTimeout);
     }
 
@@ -168,7 +168,7 @@ package {
       this.recorder.mic.setLoopBack(state);
     }
 
-    public function getMicrophone():Microphone {
+    public function getMicrophone():MicrophoneWrapper {
       return this.recorder.mic;
     }
 
