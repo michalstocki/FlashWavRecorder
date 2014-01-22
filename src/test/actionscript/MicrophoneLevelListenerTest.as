@@ -1,6 +1,5 @@
 package {
 
-  import flash.utils.ByteArray;
   import flash.events.SampleDataEvent;
 
   import org.hamcrest.assertThat;
