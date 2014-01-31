@@ -1,9 +1,9 @@
-package {
-  import flash.net.URLRequest;
-  import flash.net.URLRequestMethod;
-  import flash.utils.ByteArray;
+package flashwavrecorder {
+import flash.net.URLRequest;
+import flash.net.URLRequestMethod;
+import flash.utils.ByteArray;
 
-  public class MultiPartFormUtil {
+public class MultiPartFormUtil {
     public static function boundary():String {
       var str:String = "---------------------------";
       for(var i:int=0; i<25; i++) {

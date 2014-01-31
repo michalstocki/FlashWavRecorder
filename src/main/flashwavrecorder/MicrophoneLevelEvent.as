@@ -1,4 +1,4 @@
-package {
+package flashwavrecorder {
 import flash.events.Event;
 
 public class MicrophoneLevelEvent extends Event {

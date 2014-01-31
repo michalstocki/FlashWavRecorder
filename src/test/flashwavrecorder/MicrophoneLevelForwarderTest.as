@@ -1,19 +1,9 @@
-package {
-
-import org.hamcrest.assertThat;
-import org.hamcrest.object.equalTo;
-import org.hamcrest.object.isFalse;
-import org.hamcrest.object.isTrue;
-import org.hamcrest.object.notNullValue;
-import org.hamcrest.object.nullValue;
-import org.mockito.MockitoTestCase;
-import org.flexunit.async.Async;
+package flashwavrecorder {
 
 import flash.events.SampleDataEvent;
 import flash.utils.ByteArray;
 
-import MicrophoneLevelForwarder;
-import SampleCalculator;
+import org.mockito.MockitoTestCase;
 
 public class MicrophoneLevelForwarderTest extends MockitoTestCase {
 

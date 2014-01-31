@@ -1,23 +1,15 @@
-package {
-  import flash.events.Event;
-  import flash.events.ActivityEvent;
-  import flash.events.EventDispatcher;
-  import flash.events.SampleDataEvent;
-  import flash.events.TimerEvent;
-  import flash.media.Microphone;
-  import flash.media.Sound;
-  import flash.media.SoundChannel;
-  import flash.utils.ByteArray;
-  import flash.utils.Dictionary;
-  import flash.utils.Endian;
-  import flash.utils.Timer;
+package flashwavrecorder {
+import flash.events.ActivityEvent;
+import flash.events.Event;
+import flash.events.EventDispatcher;
+import flash.events.SampleDataEvent;
+import flash.media.Sound;
+import flash.media.SoundChannel;
+import flash.utils.ByteArray;
+import flash.utils.Dictionary;
+import flash.utils.Endian;
 
-  import mx.controls.Label;
-  import MicrophoneLevelListener;
-  import MicrophoneLevelForwarder;
-  import SampleCalculator;
-
-  public class MicrophoneRecorder extends EventDispatcher {
+public class MicrophoneRecorder extends EventDispatcher {
     public static var SOUND_COMPLETE:String = "sound_complete";
     public static var PLAYBACK_STARTED:String = "playback_started";
     public static var ACTIVITY:String = "activity";

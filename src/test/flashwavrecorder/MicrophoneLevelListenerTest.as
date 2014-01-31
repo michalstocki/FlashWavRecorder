@@ -1,20 +1,13 @@
-package {
+package flashwavrecorder {
 
-  import flash.events.SampleDataEvent;
+import flash.events.SampleDataEvent;
 
-  import org.hamcrest.assertThat;
-  import org.hamcrest.object.equalTo;
-  import org.hamcrest.object.isFalse;
-  import org.hamcrest.object.isTrue;
-  import org.hamcrest.object.notNullValue;
-  import org.hamcrest.object.nullValue;
-  import org.mockito.MockitoTestCase;
+import org.hamcrest.assertThat;
+import org.hamcrest.object.isFalse;
+import org.hamcrest.object.isTrue;
+import org.mockito.MockitoTestCase;
 
-  import MicrophoneWrapper;
-  import MicrophoneLevelListener;
-  import MicrophoneLevelForwarder;
-
-  public class MicrophoneLevelListenerTest extends MockitoTestCase {
+public class MicrophoneLevelListenerTest extends MockitoTestCase {
 
     private var microphone:MicrophoneWrapper;
     private var microphoneLevelListener:MicrophoneLevelListener;

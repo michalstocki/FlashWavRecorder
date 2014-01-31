@@ -1,20 +1,14 @@
-package {
-  import flash.display.DisplayObject;
-  import flash.events.Event;
-  import flash.events.IOErrorEvent;
-  import flash.events.ProgressEvent;
-  import flash.events.SecurityErrorEvent;
-  import flash.events.StatusEvent;
-  import flash.external.ExternalInterface;
-  import flash.media.Microphone;
-  import flash.net.URLRequest;
-  import flash.net.URLLoader;
-  import flash.utils.ByteArray;
-
-  import MicrophoneRecorder;
-  import MicrophoneLevelListener;
-  import MicrophoneLevelEvent;
-  import MultiPartFormUtil;
+package flashwavrecorder {
+import flash.display.DisplayObject;
+import flash.events.Event;
+import flash.events.IOErrorEvent;
+import flash.events.ProgressEvent;
+import flash.events.SecurityErrorEvent;
+import flash.events.StatusEvent;
+import flash.external.ExternalInterface;
+import flash.media.Microphone;
+import flash.net.URLLoader;
+import flash.net.URLRequest;
 
 public class RecorderJSInterface {
 

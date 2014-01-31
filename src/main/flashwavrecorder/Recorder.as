@@ -1,22 +1,19 @@
-package {
-  import flash.display.InteractiveObject;
-  import flash.display.Loader;
-  import flash.display.StageAlign;
-  import flash.display.StageScaleMode;
-  import flash.display.Sprite;
-  import flash.events.Event;
-  import flash.events.IOErrorEvent;
-  import flash.events.MouseEvent;
-  import flash.external.ExternalInterface;
-  import flash.net.URLRequest;
-  import flash.text.engine.ElementFormat;
-  import flash.text.engine.TextBlock;
-  import flash.text.engine.TextElement;
-  import flash.text.engine.TextLine;
+package flashwavrecorder {
+import flash.display.InteractiveObject;
+import flash.display.Loader;
+import flash.display.Sprite;
+import flash.display.StageAlign;
+import flash.display.StageScaleMode;
+import flash.events.Event;
+import flash.events.IOErrorEvent;
+import flash.events.MouseEvent;
+import flash.net.URLRequest;
+import flash.text.engine.ElementFormat;
+import flash.text.engine.TextBlock;
+import flash.text.engine.TextElement;
+import flash.text.engine.TextLine;
 
-  import RecorderJSInterface;
-
-  public class Recorder extends Sprite {
+public class Recorder extends Sprite {
 
     public var recorderInterface:RecorderJSInterface;
     public var saveButton:InteractiveObject;

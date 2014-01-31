@@ -1,15 +1,7 @@
-package {
-  import flash.events.Event;
-  import flash.events.EventDispatcher;
-  import flash.events.SampleDataEvent;
-  import flash.utils.ByteArray;
+package flashwavrecorder {
+import flash.events.SampleDataEvent;
 
-  import MicrophoneWrapper;
-  import MicrophoneLevelEvent;
-  import MicrophoneLevelForwarder;
-  import SampleCalculator;
-
-  public class MicrophoneLevelListener {
+public class MicrophoneLevelListener {
 
     private var observing:Boolean = false;
     private var microphone:MicrophoneWrapper;

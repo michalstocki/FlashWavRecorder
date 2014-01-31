@@ -1,18 +1,10 @@
-package
-{
+package flashwavrecorder {
 
 import org.hamcrest.assertThat;
 import org.hamcrest.core.isA;
 import org.hamcrest.object.equalTo;
-import org.hamcrest.object.isFalse;
-import org.hamcrest.object.isTrue;
-import org.hamcrest.object.notNullValue;
-import org.hamcrest.object.nullValue;
 
-import MicrophoneLevelEvent;
-
-public class MicrophoneLevelEventTest
-{
+public class MicrophoneLevelEventTest {
   private var microphoneLevelEvent:MicrophoneLevelEvent;
 
   [Test]
