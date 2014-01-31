@@ -33,7 +33,8 @@ flexUnit {
     command = "${flexHome}/runtimes/player/11.1/win/FlashPlayerDebugger.exe"
 }
 
-mainClass = 'Recorder.as'
+srcDirs = ['src/main']
+mainClass = 'flashwavrecorder/Recorder.as'
 output='recorder'
 type = 'swf'
 frameworkLinkage = 'merged'
