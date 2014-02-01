@@ -264,5 +264,21 @@ package {
     private function onProgress(event:Event):void {
       ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVE_PROGRESS, this.recorder.currentSoundName, ProgressEvent(event).bytesLoaded, ProgressEvent(event).bytesTotal);
     }
+    
+	//return wav as base64-encoded string
+	public function getwav():Object {
+	  
+      var data:ByteArray = new ByteArray();
+	  
+      try {
+
+		data = recorder.convertToWav(recorder.currentSoundName);
+		data.position = 0;
+      } catch(e:Error) {
+	  }
+
+	  return MultiPartFormUtil.base64_encdode(data);
+	}    
   }
+  
 }
