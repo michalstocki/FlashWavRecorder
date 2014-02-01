@@ -128,7 +128,18 @@
       }
 
       Recorder.recorder.setLoopBack(val);
+    },
+	
+	/**
+	 * @returns string data-url string contained recorded wav
+	 */
+    getwavasdataurl: function() {
+	  var data = Recorder.recorder.getwav();
+	  data = 'data:audio/wav;base64,' + data;
+
+      return data;
     }
+	
   };
 
   global.FWRecorder = Recorder;
