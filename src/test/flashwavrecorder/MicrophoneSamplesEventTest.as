@@ -22,7 +22,7 @@ public class MicrophoneSamplesEventTest {
   [Test]
   public function should_allow_getting_samples_array_provided_while_initialization():void {
     // given
-    var samples:Array = Array([0.1, 0.2, 0.3]);
+    var samples:Array = new Array(0.1, 0.2, 0.3);
     // when
     var microphoneSamplesEvent:MicrophoneSamplesEvent = new MicrophoneSamplesEvent(samples);
     // then

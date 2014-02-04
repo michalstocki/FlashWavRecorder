@@ -7,34 +7,34 @@ import org.hamcrest.object.isFalse;
 import org.hamcrest.object.isTrue;
 import org.mockito.MockitoTestCase;
 
-public class MicrophoneLevelListenerTest extends MockitoTestCase {
+public class MicrophoneEventListenerTest extends MockitoTestCase {
 
     private var microphone:MicrophoneWrapper;
-    private var microphoneLevelListener:MicrophoneLevelListener;
+    private var microphoneEventListener:MicrophoneEventListener;
     private var microphoneLevelForwarder:MicrophoneLevelForwarder;
 
-    public function MicrophoneLevelListenerTest() {
+    public function MicrophoneEventListenerTest() {
       super([MicrophoneWrapper, MicrophoneLevelForwarder])
     }
 
     private function setup():void {
       microphone = mock(MicrophoneWrapper, "microphone wrapper", [null]) as MicrophoneWrapper;
       microphoneLevelForwarder = mock(MicrophoneLevelForwarder, "level forwarder", [null]) as MicrophoneLevelForwarder;
-      microphoneLevelListener = new MicrophoneLevelListener(microphone, microphoneLevelForwarder);
+      microphoneEventListener = new MicrophoneEventListener(microphone, microphoneLevelForwarder);
     }
 
     public function test_observation_checker_before_any_action_returns_false():void {
       // given
       setup();
       // then
-      assertThat(microphoneLevelListener.isObserving(), isFalse());
+      assertThat(microphoneEventListener.isObserving(), isFalse());
     }
 
     public function test_observation_start_attaches_callback_on_microphone_sample():void {
       // given
       setup();
       // when
-      microphoneLevelListener.startObserving();
+      microphoneEventListener.startObserving();
       // then
       verify().that(microphone.addEventListener(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.micSampleDataHandler));
     }
@@ -43,17 +43,17 @@ public class MicrophoneLevelListenerTest extends MockitoTestCase {
       // given
       setup();
       // when
-      microphoneLevelListener.startObserving();
+      microphoneEventListener.startObserving();
       // then
-      assertThat(microphoneLevelListener.isObserving(), isTrue());
+      assertThat(microphoneEventListener.isObserving(), isTrue());
     }
 
     public function test_observation_stop_removes_callback_from_microphone_sample_event():void {
       // given
       setup();
-      microphoneLevelListener.startObserving();
+      microphoneEventListener.startObserving();
       // when
-      microphoneLevelListener.stopObserving();
+      microphoneEventListener.stopObserving();
       // then
       verify().that(microphone.removeEventListener(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.micSampleDataHandler));
     }
@@ -61,11 +61,11 @@ public class MicrophoneLevelListenerTest extends MockitoTestCase {
     public function test_observation_checker_returns_false_after_observation_has_stopped():void {
       // given
       setup();
-      microphoneLevelListener.startObserving();
+      microphoneEventListener.startObserving();
       // when
-      microphoneLevelListener.stopObserving();
+      microphoneEventListener.stopObserving();
       // then
-      assertThat(microphoneLevelListener.isObserving(), isFalse());
+      assertThat(microphoneEventListener.isObserving(), isFalse());
     }
 
   }
