@@ -16,8 +16,10 @@ public class MicrophoneRecorder extends EventDispatcher {
 
     public var mic:MicrophoneWrapper;
     public var sound:Sound = new Sound();
-    public var levelListener:MicrophoneLevelListener;
+    public var levelListener:MicrophoneEventListener;
     public var levelForwarder:MicrophoneLevelForwarder;
+    public var samplesListener:MicrophoneEventListener;
+    public var samplesForwarder:MicrophoneSamplesForwarder;
     public var soundChannel:SoundChannel;
     public var sounds:Dictionary = new Dictionary();
     public var rates:Dictionary = new Dictionary();
@@ -37,7 +39,9 @@ public class MicrophoneRecorder extends EventDispatcher {
       this.sound.addEventListener(SampleDataEvent.SAMPLE_DATA, playbackSampleHandler);
       var sampleCalc:SampleCalculator = new SampleCalculator();
       levelForwarder = new MicrophoneLevelForwarder(sampleCalc);
-      levelListener = new MicrophoneLevelListener(this.mic, levelForwarder);
+      levelListener = new MicrophoneEventListener(this.mic, levelForwarder);
+      samplesForwarder = new MicrophoneSamplesForwarder();
+      samplesListener = new MicrophoneEventListener(this.mic, samplesForwarder);
     }
 
     public function reset():void {

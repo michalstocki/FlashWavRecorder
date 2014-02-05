@@ -10,7 +10,7 @@ import flash.media.Microphone;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 
-public class RecorderJSInterface {
+  public class RecorderJSInterface {
 
     public static var READY:String = "ready";
 
@@ -20,12 +20,16 @@ public class RecorderJSInterface {
     public static var MICROPHONE_NOT_CONNECTED:String = "microphone_not_connected";
     public static var MICROPHONE_ACTIVITY:String = "microphone_activity";
     public static var MICROPHONE_LEVEL:String = "microphone_level";
+    public static var MICROPHONE_SAMPLES:String = "microphone_samples";
 
     public static var RECORDING:String = "recording";
     public static var RECORDING_STOPPED:String = "recording_stopped";
 
     public static var OBSERVING_LEVEL:String = "observing_level";
     public static var OBSERVING_LEVEL_STOPPED:String = "observing_level_stopped";
+
+    public static var OBSERVING_SAMPLES:String = "observing_level";
+    public static var OBSERVING_SAMPLES_STOPPED:String = "observing_level_stopped";
 
     public static var PLAYING:String = "playing";
     public static var STOPPED:String = "stopped";
@@ -37,7 +41,6 @@ public class RecorderJSInterface {
     public static var SAVE_PROGRESS:String = "save_progress";
 
     public var recorder:MicrophoneRecorder;
-    public var authenticityToken:String = "";
     public var eventHandler:String = "microphone_recorder_events";
     public var uploadUrl:String;
     public var uploadFormData:Array;
@@ -50,6 +53,8 @@ public class RecorderJSInterface {
         ExternalInterface.addCallback("record", record);
         ExternalInterface.addCallback("observeLevel", observeLevel);
         ExternalInterface.addCallback("stopObservingLevel", stopObservingLevel);
+        ExternalInterface.addCallback("observeSamples", observeSamples);
+        ExternalInterface.addCallback("stopObservingSamples", stopObservingSamples);
         ExternalInterface.addCallback("playBack", playBack);
         ExternalInterface.addCallback("playBackFrom", playBackFrom);
         ExternalInterface.addCallback("stopPlayBack", stopPlayBack);
@@ -70,6 +75,7 @@ public class RecorderJSInterface {
       this.recorder.addEventListener(MicrophoneRecorder.PLAYBACK_STARTED, playbackStarted);
       this.recorder.addEventListener(MicrophoneRecorder.ACTIVITY, microphoneActivity);
       this.recorder.levelForwarder.addEventListener(MicrophoneLevelEvent.LEVEL_VALUE, microphoneLevel);
+      this.recorder.samplesForwarder.addEventListener(MicrophoneSamplesEvent.RAW_SAMPLES_DATA, microphoneSamples);
     }
 
     public function ready(width:int, height:int):void {
@@ -106,6 +112,10 @@ public class RecorderJSInterface {
       ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_LEVEL, event.getLevelValue());
     }
 
+    private function microphoneSamples(event:MicrophoneSamplesEvent):void {
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_SAMPLES, event.getSamples());
+    }
+
     public function init(url:String=null, fieldName:String=null, formData:Array=null):void {
       this.uploadUrl = url;
       this.uploadFieldName = fieldName;
@@ -113,7 +123,7 @@ public class RecorderJSInterface {
     }
 
     public function update(formData:Array=null):void {
-      this.uploadFormData = new Array();
+      this.uploadFormData = [];
       if(formData) {
         for(var i:int=0; i<formData.length; i++) {
           var data:Object = formData[i];
@@ -183,22 +193,35 @@ public class RecorderJSInterface {
     }
 
     public function observeLevel():Boolean {
-      if(! this.isMicrophoneAvailable()) {
-        return false;
-      }
-      if (!this.recorder.levelListener.isObserving()) {
-        this.recorder.levelListener.startObserving();
+      var succeed:Boolean = startMicrophoneEventListener(this.recorder.levelListener);
+      if (succeed) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL);
       }
-      return this.recorder.levelListener.isObserving();
+      return succeed;
     }
 
     public function stopObservingLevel():Boolean {
-      if (this.recorder.levelListener.isObserving()) {
-        this.recorder.levelListener.stopObserving();
+      var succeed:Boolean = stopMicrophoneEventListener(this.recorder.levelListener);
+      if (succeed) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL_STOPPED);
       }
-      return this.recorder.levelListener.isObserving();
+      return succeed;
+    }
+
+    public function observeSamples():Boolean {
+      var succeed:Boolean = startMicrophoneEventListener(this.recorder.samplesListener);
+      if (succeed) {
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_SAMPLES);
+      }
+      return succeed;
+    }
+
+    public function stopObservingSamples():Boolean {
+      var succeed:Boolean = stopMicrophoneEventListener(this.recorder.samplesListener);
+      if (succeed) {
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_SAMPLES_STOPPED);
+      }
+      return succeed;
     }
 
     public function playBack(name:String):Boolean {
@@ -259,6 +282,21 @@ public class RecorderJSInterface {
         return false;
       }
       return true;
+    }
+
+    private function startMicrophoneEventListener(eventListener:MicrophoneEventListener):Boolean {
+      if (!this.isMicrophoneAvailable()) {
+        return false;
+      }
+      if (!eventListener.isObserving()) {
+        eventListener.startObserving();
+      }
+      return eventListener.isObserving();
+    }
+
+    private function stopMicrophoneEventListener(eventListener:MicrophoneEventListener):Boolean {
+      if (eventListener.isObserving()) eventListener.stopObserving();
+      return eventListener.isObserving();
     }
 
     private function _save(name:String, filename:String):void {
