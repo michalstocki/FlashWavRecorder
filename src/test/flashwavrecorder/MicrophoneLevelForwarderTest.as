@@ -3,35 +3,47 @@ package flashwavrecorder {
 import flash.events.SampleDataEvent;
 import flash.utils.ByteArray;
 
-import org.mockito.MockitoTestCase;
+import mockolate.mock;
+import mockolate.runner.MockolateRule;
 
-public class MicrophoneLevelForwarderTest extends MockitoTestCase {
+import org.flexunit.assertThat;
+import org.flexunit.async.Async;
+import org.hamcrest.object.equalTo;
 
-  private var microphoneLevelForwarder:MicrophoneLevelForwarder;
-  private var sampleCalculator:SampleCalculator;
-  private var sample:Number;
+public class MicrophoneLevelForwarderTest {
 
-  public function MicrophoneLevelForwarderTest() {
-    super([SampleCalculator]);
+  [Rule]
+  public var mockRule:MockolateRule = new MockolateRule();
+
+  [Mock]
+  public var sampleCalculator:SampleCalculator;
+
+  private var testObj:MicrophoneLevelForwarder;
+  private const LEVEL:Number = 1;
+
+  [Before]
+  public function setUp():void {
+    testObj = new MicrophoneLevelForwarder(sampleCalculator);
   }
 
-  private function setup():void {
-    sampleCalculator = mock(SampleCalculator) as SampleCalculator;
-    microphoneLevelForwarder = new MicrophoneLevelForwarder(sampleCalculator);
-  }
-
-  public function test_microphone_sample_handler_calls_sample_calculator_for_level_value():void {
+  [Test(async)]
+  public function shouldDispatchLevelEventWithHandle():void {
     // given
-    setup();
-    var sampleDataEvent:SampleDataEvent = new SampleDataEvent(SampleDataEvent.SAMPLE_DATA);
-    var sampleData:ByteArray = new ByteArray();
-    sampleDataEvent.data = sampleData;
+    var data:ByteArray = new ByteArray();
+    var sampleDataEvent:SampleDataEvent =  new SampleDataEvent(SampleDataEvent.SAMPLE_DATA);
+    sampleDataEvent.data = data;
+
+    mock(sampleCalculator).method('getHighestSample').args(data).returns(LEVEL);
+
+    // expect
+    Async.handleEvent(this, testObj, MicrophoneLevelEvent.LEVEL_VALUE, onLevelEvent);
+
     // when
-    microphoneLevelForwarder.micSampleDataHandler(sampleDataEvent);
-    // then
-    verify().that(sampleCalculator.getHighestSample(sampleData));
+    testObj.micSampleDataHandler(sampleDataEvent);
   }
 
-
+  private function onLevelEvent(event:MicrophoneLevelEvent, data:Object):void {
+    assertThat(event.getLevelValue(), equalTo(LEVEL));
+  }
 }
 }
