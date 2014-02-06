@@ -1,48 +1,47 @@
-package flashwavrecorder
-{
-import flash.utils.ByteArray;
+package flashwavrecorder {
 
-import org.hamcrest.assertThat;
-import org.hamcrest.object.equalTo;
+  import flash.utils.ByteArray;
 
-public class SampleCalculatorTest
-	{		
-		private var sampleCalculator:SampleCalculator;
-		
-		[Before]
-		public function setUp():void
-		{
-			sampleCalculator = new SampleCalculator();
-		}
+  import org.hamcrest.assertThat;
+  import org.hamcrest.object.equalTo;
 
-		[Test]
-		public function should_empty_buffer_give_zero_level():void {
-			// given
-			var emptyBuffer:ByteArray = new ByteArray();
+  public class SampleCalculatorTest {
 
-			// when
-			var level:Number = sampleCalculator.getHighestSample(emptyBuffer);
+    private var sampleCalculator:SampleCalculator;
 
-			// then
-			assertThat( level, equalTo(0) );
-		}
+    [Before]
+    public function setUp():void {
+      sampleCalculator = new SampleCalculator();
+    }
 
     [Test]
-  public function should_give_highest_value_from_buffer_of_floats():void {
-    // given
-    var highestFloat:Number = 0.8;
-    var floatBuffer:ByteArray = new ByteArray();
-    floatBuffer.writeFloat(0);
-    floatBuffer.writeFloat(0.1);
-    floatBuffer.writeFloat(highestFloat);
-    floatBuffer.writeFloat(0.6);
+    public function should_empty_buffer_give_zero_level():void {
+      // given
+      var emptyBuffer:ByteArray = new ByteArray();
 
-    // when
-    var level:Number = sampleCalculator.getHighestSample(floatBuffer);
+      // when
+      var level:Number = sampleCalculator.getHighestSample(emptyBuffer);
 
-    // then
-    assertThat( level.toFixed(3), equalTo(highestFloat));
-  }
+      // then
+      assertThat( level, equalTo(0) );
+    }
+
+    [Test]
+    public function should_give_highest_value_from_buffer_of_floats():void {
+      // given
+      var highestFloat:Number = 0.8;
+      var floatBuffer:ByteArray = new ByteArray();
+      floatBuffer.writeFloat(0);
+      floatBuffer.writeFloat(0.1);
+      floatBuffer.writeFloat(highestFloat);
+      floatBuffer.writeFloat(0.6);
+
+      // when
+      var level:Number = sampleCalculator.getHighestSample(floatBuffer);
+
+      // then
+      assertThat( level.toFixed(3), equalTo(highestFloat));
+    }
 
     [Test]
     public function should_give_highest_value_from_buffer_which_position_has_been_changed():void {
@@ -77,5 +76,5 @@ public class SampleCalculatorTest
       // then
       assertThat( floatBuffer.position, equalTo(0));
     }
-	}
+  }
 }

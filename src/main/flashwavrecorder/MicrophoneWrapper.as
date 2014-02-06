@@ -1,7 +1,8 @@
 package flashwavrecorder {
-import flash.media.Microphone;
 
-public class MicrophoneWrapper {
+  import flash.media.Microphone;
+
+  public class MicrophoneWrapper {
 
     private var microphone:Microphone;
 

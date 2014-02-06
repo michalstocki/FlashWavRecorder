@@ -1,7 +1,8 @@
 package flashwavrecorder {
-import flash.events.SampleDataEvent;
 
-public class MicrophoneLevelListener {
+  import flash.events.SampleDataEvent;
+
+  public class MicrophoneLevelListener {
 
     private var observing:Boolean = false;
     private var microphone:MicrophoneWrapper;

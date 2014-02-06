@@ -1,9 +1,10 @@
 package flashwavrecorder {
-import flash.events.EventDispatcher;
-import flash.events.SampleDataEvent;
-import flash.utils.ByteArray;
 
-public class MicrophoneLevelForwarder extends EventDispatcher {
+  import flash.events.EventDispatcher;
+  import flash.events.SampleDataEvent;
+  import flash.utils.ByteArray;
+
+  public class MicrophoneLevelForwarder extends EventDispatcher {
 
     private var sampleCalculator:SampleCalculator;
 
