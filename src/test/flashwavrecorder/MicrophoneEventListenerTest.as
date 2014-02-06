@@ -1,66 +1,68 @@
 package flashwavrecorder {
 
-import flash.events.SampleDataEvent;
+  import flash.events.SampleDataEvent;
 
-import org.hamcrest.assertThat;
-import org.hamcrest.object.isFalse;
-import org.hamcrest.object.isTrue;
-import org.mockito.MockitoTestCase;
+  import mockolate.received;
+  import mockolate.runner.MockolateRule;
 
-public class MicrophoneEventListenerTest extends MockitoTestCase {
+  import org.hamcrest.assertThat;
+  import org.hamcrest.object.isFalse;
+  import org.hamcrest.object.isTrue;
 
-    private var microphone:MicrophoneWrapper;
+  public class MicrophoneEventListenerTest {
+
+    [Rule]
+    public var mockRule:MockolateRule = new MockolateRule();
+
+    [Mock]
+    public var microphone:MicrophoneWrapper;
+
+    [Mock]
+    public var microphoneLevelForwarder:MicrophoneLevelForwarder;
+
     private var microphoneEventListener:MicrophoneEventListener;
-    private var microphoneLevelForwarder:MicrophoneLevelForwarder;
 
-    public function MicrophoneEventListenerTest() {
-      super([MicrophoneWrapper, MicrophoneLevelForwarder])
-    }
-
-    private function setup():void {
-      microphone = mock(MicrophoneWrapper, "microphone wrapper", [null]) as MicrophoneWrapper;
-      microphoneLevelForwarder = mock(MicrophoneLevelForwarder, "level forwarder", [null]) as MicrophoneLevelForwarder;
+    [Before]
+    public function setup():void {
       microphoneEventListener = new MicrophoneEventListener(microphone, microphoneLevelForwarder);
     }
 
-    public function test_observation_checker_before_any_action_returns_false():void {
-      // given
-      setup();
+    [Test]
+    public function observation_checker_before_any_action_returns_false():void {
       // then
       assertThat(microphoneEventListener.isObserving(), isFalse());
     }
 
-    public function test_observation_start_attaches_callback_on_microphone_sample():void {
-      // given
-      setup();
+    [Test]
+    public function observation_start_attaches_callback_on_microphone_sample():void {
       // when
       microphoneEventListener.startObserving();
       // then
-      verify().that(microphone.addEventListener(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.micSampleDataHandler));
+      assertThat(microphone, received().method('addEventListener')
+          .args(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.micSampleDataHandler));
     }
 
-    public function test_observation_checker_returns_true_after_observation_has_started():void {
-      // given
-      setup();
+    [Test]
+    public function observation_checker_returns_true_after_observation_has_started():void {
       // when
       microphoneEventListener.startObserving();
       // then
       assertThat(microphoneEventListener.isObserving(), isTrue());
     }
 
-    public function test_observation_stop_removes_callback_from_microphone_sample_event():void {
+    [Test]
+    public function observation_stop_removes_callback_from_microphone_sample_event():void {
       // given
-      setup();
       microphoneEventListener.startObserving();
       // when
       microphoneEventListener.stopObserving();
       // then
-      verify().that(microphone.removeEventListener(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.micSampleDataHandler));
+      assertThat(microphone, received().method('removeEventListener')
+          .args(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.micSampleDataHandler))
     }
 
-    public function test_observation_checker_returns_false_after_observation_has_stopped():void {
-      // given
-      setup();
+    [Test]
+    public function observation_checker_returns_false_after_observation_has_stopped():void {
       microphoneEventListener.startObserving();
       // when
       microphoneEventListener.stopObserving();

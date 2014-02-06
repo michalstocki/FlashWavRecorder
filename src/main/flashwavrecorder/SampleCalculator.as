@@ -1,8 +1,8 @@
 package flashwavrecorder {
 
-import flash.utils.ByteArray;
+  import flash.utils.ByteArray;
 
-public class SampleCalculator {
+  public class SampleCalculator {
 
     public function getHighestSample(data:ByteArray):Number {
       var level:Number = 0;
@@ -18,7 +18,5 @@ public class SampleCalculator {
       return level;
     }
 
-
   }
-
 }

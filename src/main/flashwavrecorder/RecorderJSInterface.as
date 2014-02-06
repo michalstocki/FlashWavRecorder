@@ -1,14 +1,15 @@
 package flashwavrecorder {
-import flash.display.DisplayObject;
-import flash.events.Event;
-import flash.events.IOErrorEvent;
-import flash.events.ProgressEvent;
-import flash.events.SecurityErrorEvent;
-import flash.events.StatusEvent;
-import flash.external.ExternalInterface;
-import flash.media.Microphone;
-import flash.net.URLLoader;
-import flash.net.URLRequest;
+
+  import flash.display.DisplayObject;
+  import flash.events.Event;
+  import flash.events.IOErrorEvent;
+  import flash.events.ProgressEvent;
+  import flash.events.SecurityErrorEvent;
+  import flash.events.StatusEvent;
+  import flash.external.ExternalInterface;
+  import flash.media.Microphone;
+  import flash.net.URLLoader;
+  import flash.net.URLRequest;
 
   public class RecorderJSInterface {
 
@@ -109,7 +110,7 @@ import flash.net.URLRequest;
     }
 
     private function microphoneLevel(event:MicrophoneLevelEvent):void {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_LEVEL, event.getLevelValue());
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_LEVEL, event.levelValue);
     }
 
     private function microphoneSamples(event:MicrophoneSamplesEvent):void {
