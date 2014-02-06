@@ -43,7 +43,7 @@ public class MicrophoneLevelForwarderTest {
   }
 
   private function onLevelEvent(event:MicrophoneLevelEvent, data:Object):void {
-    assertThat(event.getLevelValue(), equalTo(LEVEL));
+    assertThat(event.levelValue, equalTo(LEVEL));
   }
 }
 }

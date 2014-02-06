@@ -22,7 +22,7 @@ public class MicrophoneLevelEventTest {
     // when
     microphoneLevelEvent = new MicrophoneLevelEvent(levelValue);
     // then
-    assertThat( microphoneLevelEvent.getLevelValue(), equalTo(levelValue));
+    assertThat( microphoneLevelEvent.levelValue, equalTo(levelValue));
   }
 
 }

@@ -103,7 +103,7 @@ public class RecorderJSInterface {
     }
 
     private function microphoneLevel(event:MicrophoneLevelEvent):void {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_LEVEL, event.getLevelValue());
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_LEVEL, event.levelValue);
     }
 
     public function init(url:String=null, fieldName:String=null, formData:Array=null):void {
