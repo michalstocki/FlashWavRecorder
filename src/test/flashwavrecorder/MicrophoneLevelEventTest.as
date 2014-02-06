@@ -8,12 +8,6 @@ public class MicrophoneLevelEventTest {
   private var microphoneLevelEvent:MicrophoneLevelEvent;
 
   [Test]
-  public function should_have_static_constant_property_in_type_of_string():void {
-    // then
-    assertThat(MicrophoneLevelEvent.LEVEL_VALUE, isA(String));
-  }
-
-  [Test]
   public function should_have_type_property_equal_to_its_static_constant_property():void {
     // when
     microphoneLevelEvent = new MicrophoneLevelEvent(23);
