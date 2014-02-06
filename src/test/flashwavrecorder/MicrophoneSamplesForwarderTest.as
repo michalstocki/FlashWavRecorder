@@ -50,9 +50,9 @@ public class MicrophoneSamplesForwarderTest {
 
   private function expectEventToHaveProperData(event:MicrophoneSamplesEvent, object:Object):void {
     // then
-    assertThat(event.getSamples(), isA(Array));
-    assertThat(event.getSamples()[0].toFixed(1), equalTo(firstSample));
-    assertThat(event.getSamples()[1].toFixed(1), equalTo(secondSample));
+    assertThat(event.samples, isA(Array));
+    assertThat(event.samples[0].toFixed(1), equalTo(firstSample));
+    assertThat(event.samples[1].toFixed(1), equalTo(secondSample));
   }
 
 }

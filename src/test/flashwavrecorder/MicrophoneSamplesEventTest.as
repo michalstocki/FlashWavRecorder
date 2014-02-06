@@ -26,7 +26,7 @@ public class MicrophoneSamplesEventTest {
     // when
     var microphoneSamplesEvent:MicrophoneSamplesEvent = new MicrophoneSamplesEvent(samples);
     // then
-    assertThat(microphoneSamplesEvent.getSamples(), equalTo(samples));
+    assertThat(microphoneSamplesEvent.samples, equalTo(samples));
   }
 }
 }

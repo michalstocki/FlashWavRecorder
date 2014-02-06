@@ -113,7 +113,7 @@ import flash.net.URLRequest;
     }
 
     private function microphoneSamples(event:MicrophoneSamplesEvent):void {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_SAMPLES, event.getSamples());
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_SAMPLES, event.samples);
     }
 
     public function init(url:String=null, fieldName:String=null, formData:Array=null):void {
