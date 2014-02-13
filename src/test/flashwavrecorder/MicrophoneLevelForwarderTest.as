@@ -39,7 +39,7 @@ package flashwavrecorder {
       Async.handleEvent(this, testObj, MicrophoneLevelEvent.LEVEL_VALUE, onLevelEvent);
 
       // when
-      testObj.micSampleDataHandler(sampleDataEvent);
+      testObj.handleMicSampleData(sampleDataEvent);
     }
 
     private function onLevelEvent(event:MicrophoneLevelEvent, data:Object):void {

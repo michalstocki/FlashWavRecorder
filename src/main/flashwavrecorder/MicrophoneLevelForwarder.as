@@ -12,7 +12,7 @@ package flashwavrecorder {
       this.sampleCalculator = sampleCalculator;
     }
 
-    public function micSampleDataHandler(event:SampleDataEvent):void {
+    public function handleMicSampleData(event:SampleDataEvent):void {
       var levelValue:Number = sampleCalculator.getHighestSample(ByteArray(event.data));
       dispatchLevelEvent(levelValue);
     }

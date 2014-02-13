@@ -39,7 +39,7 @@ package flashwavrecorder {
       microphoneLevelListener.startObserving();
       // then
       assertThat(microphone, received().method('addEventListener')
-          .args(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.micSampleDataHandler));
+          .args(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.handleMicSampleData));
     }
 
     [Test]
@@ -58,7 +58,7 @@ package flashwavrecorder {
       microphoneLevelListener.stopObserving();
       // then
       assertThat(microphone, received().method('removeEventListener')
-          .args(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.micSampleDataHandler))
+          .args(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.handleMicSampleData))
     }
 
     [Test]

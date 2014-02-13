@@ -15,12 +15,12 @@ package flashwavrecorder {
     }
 
     public function startObserving():void {
-      microphone.addEventListener(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.micSampleDataHandler);
+      microphone.addEventListener(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.handleMicSampleData);
       observing = true;
     }
 
     public function stopObserving():void {
-      microphone.removeEventListener(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.micSampleDataHandler);
+      microphone.removeEventListener(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.handleMicSampleData);
       observing = false;
     }
 
