@@ -194,7 +194,7 @@ package flashwavrecorder {
     }
 
     public function observeLevel():Boolean {
-      var succeed:Boolean = startMicrophoneEventListener(this.recorder.levelObservingSwitcher);
+      var succeed:Boolean = enableEventObservation(this.recorder.levelObservingSwitcher);
       if (succeed) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL);
       }
@@ -202,7 +202,7 @@ package flashwavrecorder {
     }
 
     public function stopObservingLevel():Boolean {
-      var succeed:Boolean = stopMicrophoneEventListener(this.recorder.levelObservingSwitcher);
+      var succeed:Boolean = disableEventObservation(this.recorder.levelObservingSwitcher);
       if (succeed) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL_STOPPED);
       }
@@ -210,7 +210,7 @@ package flashwavrecorder {
     }
 
     public function observeSamples():Boolean {
-      var succeed:Boolean = startMicrophoneEventListener(this.recorder.samplesListener);
+      var succeed:Boolean = enableEventObservation(this.recorder.samplesObservingSwitcher);
       if (succeed) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_SAMPLES);
       }
@@ -218,7 +218,7 @@ package flashwavrecorder {
     }
 
     public function stopObservingSamples():Boolean {
-      var succeed:Boolean = stopMicrophoneEventListener(this.recorder.samplesListener);
+      var succeed:Boolean = disableEventObservation(this.recorder.samplesObservingSwitcher);
       if (succeed) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_SAMPLES_STOPPED);
       }
@@ -285,19 +285,19 @@ package flashwavrecorder {
       return true;
     }
 
-    private function startMicrophoneEventListener(eventListener:MicrophoneEventObservingSwitcher):Boolean {
+    private function enableEventObservation(observingSwitcher:MicrophoneEventObservingSwitcher):Boolean {
       if (!this.isMicrophoneAvailable()) {
         return false;
       }
-      if (!eventListener.observing) {
-        eventListener.startObserving();
+      if (!observingSwitcher.observing) {
+        observingSwitcher.startObserving();
       }
-      return eventListener.observing;
+      return observingSwitcher.observing;
     }
 
-    private function stopMicrophoneEventListener(eventListener:MicrophoneEventObservingSwitcher):Boolean {
-      if (eventListener.observing) eventListener.stopObserving();
-      return eventListener.observing;
+    private function disableEventObservation(observingSwitcher:MicrophoneEventObservingSwitcher):Boolean {
+      if (observingSwitcher.observing) observingSwitcher.stopObserving();
+      return observingSwitcher.observing;
     }
 
     private function _save(name:String, filename:String):void {
