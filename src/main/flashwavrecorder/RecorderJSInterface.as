@@ -194,7 +194,7 @@ package flashwavrecorder {
     }
 
     public function observeLevel():Boolean {
-      var succeed:Boolean = startMicrophoneEventListener(this.recorder.levelListener);
+      var succeed:Boolean = startMicrophoneEventListener(this.recorder.levelObservingSwitcher);
       if (succeed) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL);
       }
@@ -202,7 +202,7 @@ package flashwavrecorder {
     }
 
     public function stopObservingLevel():Boolean {
-      var succeed:Boolean = stopMicrophoneEventListener(this.recorder.levelListener);
+      var succeed:Boolean = stopMicrophoneEventListener(this.recorder.levelObservingSwitcher);
       if (succeed) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL_STOPPED);
       }
@@ -285,19 +285,19 @@ package flashwavrecorder {
       return true;
     }
 
-    private function startMicrophoneEventListener(eventListener:MicrophoneEventListener):Boolean {
+    private function startMicrophoneEventListener(eventListener:MicrophoneEventObservingSwitcher):Boolean {
       if (!this.isMicrophoneAvailable()) {
         return false;
       }
-      if (!eventListener.isObserving()) {
+      if (!eventListener.observing) {
         eventListener.startObserving();
       }
-      return eventListener.isObserving();
+      return eventListener.observing;
     }
 
-    private function stopMicrophoneEventListener(eventListener:MicrophoneEventListener):Boolean {
-      if (eventListener.isObserving()) eventListener.stopObserving();
-      return eventListener.isObserving();
+    private function stopMicrophoneEventListener(eventListener:MicrophoneEventObservingSwitcher):Boolean {
+      if (eventListener.observing) eventListener.stopObserving();
+      return eventListener.observing;
     }
 
     private function _save(name:String, filename:String):void {

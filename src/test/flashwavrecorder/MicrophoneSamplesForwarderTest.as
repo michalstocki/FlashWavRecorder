@@ -30,7 +30,7 @@ public class MicrophoneSamplesForwarderTest {
     var microphoneSamplesForwarder:MicrophoneSamplesForwarder = new MicrophoneSamplesForwarder();
     // when
     microphoneSamplesForwarder.addEventListener(MicrophoneSamplesEvent.RAW_SAMPLES_DATA, asyncHandler);
-    microphoneSamplesForwarder.micSampleDataHandler(sampleDataEvent);
+    microphoneSamplesForwarder.handleMicSampleData(sampleDataEvent);
   }
 
   private function expectEventToBeDispatched(event:MicrophoneSamplesEvent, object:Object):void {
@@ -45,7 +45,7 @@ public class MicrophoneSamplesForwarderTest {
     var microphoneSamplesForwarder:MicrophoneSamplesForwarder = new MicrophoneSamplesForwarder();
     // when
     microphoneSamplesForwarder.addEventListener(MicrophoneSamplesEvent.RAW_SAMPLES_DATA, asyncHandler);
-    microphoneSamplesForwarder.micSampleDataHandler(sampleDataEvent);
+    microphoneSamplesForwarder.handleMicSampleData(sampleDataEvent);
   }
 
   private function expectEventToHaveProperData(event:MicrophoneSamplesEvent, object:Object):void {

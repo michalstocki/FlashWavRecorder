@@ -7,7 +7,7 @@ public class MicrophoneSamplesForwarder extends EventDispatcher implements IMicr
   public function MicrophoneSamplesForwarder() {
   }
 
-  public function micSampleDataHandler(event:SampleDataEvent):void {
+  public function handleMicSampleData(event:SampleDataEvent):void {
     var inputSamples:ByteArray = event.data;
     inputSamples.position = 0;
     var outputSamples:Array = [];
