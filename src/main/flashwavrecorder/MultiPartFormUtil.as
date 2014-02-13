@@ -1,4 +1,5 @@
-package {
+package flashwavrecorder {
+
   import flash.net.URLRequest;
   import flash.net.URLRequestMethod;
   import flash.utils.ByteArray;

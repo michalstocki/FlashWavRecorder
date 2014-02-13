@@ -1,4 +1,4 @@
-package {
+package flashwavrecorder {
 
   import flash.utils.ByteArray;
 
@@ -6,9 +6,9 @@ package {
 
     public function getHighestSample(data:ByteArray):Number {
       var level:Number = 0;
-      var currentSample:Number;
       data.position = 0;
       while (data.bytesAvailable) {
+        var currentSample:Number;
         currentSample = data.readFloat();
         if (currentSample > level) {
           level = currentSample;
@@ -18,7 +18,5 @@ package {
       return level;
     }
 
-
   }
-
 }
