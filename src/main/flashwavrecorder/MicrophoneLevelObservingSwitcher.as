@@ -2,30 +2,30 @@ package flashwavrecorder {
 
   import flash.events.SampleDataEvent;
 
-  public class MicrophoneLevelListener {
+  public class MicrophoneLevelObservingSwitcher {
 
-    private var observing:Boolean = false;
+    private var _observing:Boolean = false;
     private var microphone:MicrophoneWrapper;
     private var microphoneLevelForwarder:MicrophoneLevelForwarder;
 
-    public function MicrophoneLevelListener(microphone:MicrophoneWrapper,
-                                            microphoneLevelForwarder:MicrophoneLevelForwarder) {
+    public function MicrophoneLevelObservingSwitcher(microphone:MicrophoneWrapper,
+                                                     microphoneLevelForwarder:MicrophoneLevelForwarder) {
       this.microphone = microphone;
       this.microphoneLevelForwarder = microphoneLevelForwarder;
     }
 
     public function startObserving():void {
       microphone.addEventListener(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.handleMicSampleData);
-      observing = true;
+      _observing = true;
     }
 
     public function stopObserving():void {
       microphone.removeEventListener(SampleDataEvent.SAMPLE_DATA, microphoneLevelForwarder.handleMicSampleData);
-      observing = false;
+      _observing = false;
     }
 
-    public function isObserving():Boolean {
-      return observing;
+    public function get observing():Boolean {
+      return _observing;
     }
 
   }

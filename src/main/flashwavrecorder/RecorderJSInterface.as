@@ -187,19 +187,19 @@ package flashwavrecorder {
       if(! this.isMicrophoneAvailable()) {
         return false;
       }
-      if (!this.recorder.levelListener.isObserving()) {
-        this.recorder.levelListener.startObserving();
+      if (!this.recorder.levelObservingSwitcher.observing) {
+        this.recorder.levelObservingSwitcher.startObserving();
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL);
       }
-      return this.recorder.levelListener.isObserving();
+      return this.recorder.levelObservingSwitcher.observing;
     }
 
     public function stopObservingLevel():Boolean {
-      if (this.recorder.levelListener.isObserving()) {
-        this.recorder.levelListener.stopObserving();
+      if (this.recorder.levelObservingSwitcher.observing) {
+        this.recorder.levelObservingSwitcher.stopObserving();
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL_STOPPED);
       }
-      return this.recorder.levelListener.isObserving();
+      return this.recorder.levelObservingSwitcher.observing;
     }
 
     public function playBack(name:String):Boolean {

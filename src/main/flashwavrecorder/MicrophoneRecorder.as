@@ -17,7 +17,7 @@ package flashwavrecorder {
 
     public var mic:MicrophoneWrapper;
     public var sound:Sound = new Sound();
-    public var levelListener:MicrophoneLevelListener;
+    public var levelObservingSwitcher:MicrophoneLevelObservingSwitcher;
     public var levelForwarder:MicrophoneLevelForwarder;
     public var soundChannel:SoundChannel;
     public var sounds:Dictionary = new Dictionary();
@@ -38,7 +38,7 @@ package flashwavrecorder {
       this.sound.addEventListener(SampleDataEvent.SAMPLE_DATA, playbackSampleHandler);
       var sampleCalc:SampleCalculator = new SampleCalculator();
       levelForwarder = new MicrophoneLevelForwarder(sampleCalc);
-      levelListener = new MicrophoneLevelListener(this.mic, levelForwarder);
+      levelObservingSwitcher = new MicrophoneLevelObservingSwitcher(this.mic, levelForwarder);
     }
 
     public function reset():void {
