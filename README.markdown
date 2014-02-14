@@ -212,7 +212,24 @@ Recorder JS Interface
 **getMicrophone**: returns the microphone object
 
 Gradle Build
-==========================
+---------------------
 Set environment variable **FLEX_HOME** (compiled with Flex SDK 4.6.0 on windows)
 
 Build with `gradlew dist`
+
+
+Change Log
+---------------------
+
+0.7.0
+
+- New demo page
+- Added ability to get **current level** of microphone
+- Added build using gradle
+- Added ability to obtain **sound samples** from microphone
+- Introducing unit tests
+
+0.6.0
+
+- Added ability to **pause** playback
+- Added ability to get **current time** while playback
