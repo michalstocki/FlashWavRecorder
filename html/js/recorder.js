@@ -51,6 +51,22 @@
       Recorder.recorder.record(name, filename);
     },
 
+    observeLevel: function() {
+      Recorder.recorder.observeLevel();
+    },
+
+    stopObservingLevel: function() {
+      Recorder.recorder.stopObservingLevel();
+    },
+
+    observeSamples: function() {
+      Recorder.recorder.observeSamples();
+    },
+
+    stopObservingSamples: function() {
+      Recorder.recorder.stopObservingSamples();
+    },
+
     resize: function(width, height) {
       Recorder.recorder.width = width + "px";
       Recorder.recorder.height = height + "px";
@@ -72,6 +88,10 @@
       return Recorder.recorder.duration(name || Recorder.uploadFieldName);
     },
 
+    getCurrentTime: function(name) {
+    	return Recorder.recorder.getCurrentTime(name);
+    },
+
     updateForm: function() {
       var frm = $(Recorder.uploadFormId); 
       Recorder.recorder.update(frm.serializeArray());
@@ -80,7 +100,8 @@
     showPermissionWindow: function() {
       Recorder.resize(240, 160);
       // need to wait until app is resized before displaying permissions screen
-      setTimeout(function(){Recorder.recorder.permit();}, 1);
+      var recorder = Recorder.recorder;
+      setTimeout(function(){recorder.permit();}, 1);
     },
 
     configure: function(rate, gain, silenceLevel, silenceTimeout) {

@@ -1,4 +1,5 @@
-package {
+package flashwavrecorder {
+
   import flash.display.DisplayObject;
   import flash.events.Event;
   import flash.events.IOErrorEvent;
@@ -7,12 +8,8 @@ package {
   import flash.events.StatusEvent;
   import flash.external.ExternalInterface;
   import flash.media.Microphone;
-  import flash.net.URLRequest;
   import flash.net.URLLoader;
-  import flash.utils.ByteArray;
-
-  import MicrophoneRecorder;
-  import MultiPartFormUtil;
+  import flash.net.URLRequest;
 
   public class RecorderJSInterface {
 
@@ -23,9 +20,17 @@ package {
     public static var MICROPHONE_CONNECTED:String = "microphone_connected";
     public static var MICROPHONE_NOT_CONNECTED:String = "microphone_not_connected";
     public static var MICROPHONE_ACTIVITY:String = "microphone_activity";
+    public static var MICROPHONE_LEVEL:String = "microphone_level";
+    public static var MICROPHONE_SAMPLES:String = "microphone_samples";
 
     public static var RECORDING:String = "recording";
     public static var RECORDING_STOPPED:String = "recording_stopped";
+
+    public static var OBSERVING_LEVEL:String = "observing_level";
+    public static var OBSERVING_LEVEL_STOPPED:String = "observing_level_stopped";
+
+    public static var OBSERVING_SAMPLES:String = "observing_level";
+    public static var OBSERVING_SAMPLES_STOPPED:String = "observing_level_stopped";
 
     public static var PLAYING:String = "playing";
     public static var STOPPED:String = "stopped";
@@ -37,7 +42,6 @@ package {
     public static var SAVE_PROGRESS:String = "save_progress";
 
     public var recorder:MicrophoneRecorder;
-    public var authenticityToken:String = "";
     public var eventHandler:String = "microphone_recorder_events";
     public var uploadUrl:String;
     public var uploadFormData:Array;
@@ -48,11 +52,16 @@ package {
       this.recorder = new MicrophoneRecorder();
       if(ExternalInterface.available && ExternalInterface.objectID) {
         ExternalInterface.addCallback("record", record);
+        ExternalInterface.addCallback("observeLevel", observeLevel);
+        ExternalInterface.addCallback("stopObservingLevel", stopObservingLevel);
+        ExternalInterface.addCallback("observeSamples", observeSamples);
+        ExternalInterface.addCallback("stopObservingSamples", stopObservingSamples);
         ExternalInterface.addCallback("playBack", playBack);
         ExternalInterface.addCallback("playBackFrom", playBackFrom);
         ExternalInterface.addCallback("stopPlayBack", stopPlayBack);
         ExternalInterface.addCallback("pausePlayBack", pausePlayBack);
         ExternalInterface.addCallback("duration", duration);
+        ExternalInterface.addCallback("getCurrentTime", getCurrentTime);
         ExternalInterface.addCallback("init", init);
         ExternalInterface.addCallback("permit", requestMicrophoneAccess);
         ExternalInterface.addCallback("configure", configureMicrophone);
@@ -66,11 +75,13 @@ package {
       this.recorder.addEventListener(MicrophoneRecorder.SOUND_COMPLETE, playComplete);
       this.recorder.addEventListener(MicrophoneRecorder.PLAYBACK_STARTED, playbackStarted);
       this.recorder.addEventListener(MicrophoneRecorder.ACTIVITY, microphoneActivity);
+      this.recorder.levelForwarder.addEventListener(MicrophoneLevelEvent.LEVEL_VALUE, microphoneLevel);
+      this.recorder.samplesForwarder.addEventListener(MicrophoneSamplesEvent.RAW_SAMPLES_DATA, microphoneSamples);
     }
 
     public function ready(width:int, height:int):void {
       ExternalInterface.call(this.eventHandler, RecorderJSInterface.READY, width, height);
-      if (!this.recorder.mic.muted) {
+      if (!this.recorder.mic.isMuted()) {
         onMicrophoneStatus(new StatusEvent(StatusEvent.STATUS, false, false, "Microphone.Unmuted", "status"));
       }
     }
@@ -95,7 +106,15 @@ package {
     }
 
     private function microphoneActivity(event:Event):void {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_ACTIVITY, this.recorder.mic.activityLevel);
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_ACTIVITY, this.recorder.mic.getActivityLevel());
+    }
+
+    private function microphoneLevel(event:MicrophoneLevelEvent):void {
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_LEVEL, event.levelValue);
+    }
+
+    private function microphoneSamples(event:MicrophoneSamplesEvent):void {
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_SAMPLES, event.samples);
     }
 
     public function init(url:String=null, fieldName:String=null, formData:Array=null):void {
@@ -105,7 +124,7 @@ package {
     }
 
     public function update(formData:Array=null):void {
-      this.uploadFormData = new Array();
+      this.uploadFormData = [];
       if(formData) {
         for(var i:int=0; i<formData.length; i++) {
           var data:Object = formData[i];
@@ -115,7 +134,7 @@ package {
     }
 
     public function isMicrophoneAvailable():Boolean {
-      if(! this.recorder.mic.muted) {
+      if(! this.recorder.mic.isMuted()) {
         return true;
       } else if(Microphone.names.length == 0) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.NO_MICROPHONE_FOUND);
@@ -127,7 +146,7 @@ package {
 
     public function requestMicrophoneAccess():void {
       this.recorder.mic.addEventListener(StatusEvent.STATUS, onMicrophoneStatus);
-      this.recorder.mic.setLoopBack();
+      this.recorder.mic.setLoopBack(true);
     }
 
     private function onMicrophoneStatus(event:StatusEvent):void {
@@ -141,8 +160,8 @@ package {
     }
 
     public function configureMicrophone(rate:int=22, gain:int=100, silenceLevel:Number=0, silenceTimeout:int=4000):void {
-      this.recorder.mic.rate = rate;
-      this.recorder.mic.gain = gain;
+      this.recorder.mic.setRate(rate);
+      this.recorder.mic.setGain(gain);
       this.recorder.mic.setSilenceLevel(silenceLevel, silenceTimeout);
     }
 
@@ -154,7 +173,7 @@ package {
       this.recorder.mic.setLoopBack(state);
     }
 
-    public function getMicrophone():Microphone {
+    public function getMicrophone():MicrophoneWrapper {
       return this.recorder.mic;
     }
 
@@ -172,6 +191,38 @@ package {
       }
 
       return this.recorder.recording;
+    }
+
+    public function observeLevel():Boolean {
+      var succeed:Boolean = enableEventObservation(this.recorder.levelObserverAttacher);
+      if (succeed) {
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL);
+      }
+      return succeed;
+    }
+
+    public function stopObservingLevel():Boolean {
+      var succeed:Boolean = disableEventObservation(this.recorder.levelObserverAttacher);
+      if (succeed) {
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL_STOPPED);
+      }
+      return succeed;
+    }
+
+    public function observeSamples():Boolean {
+      var succeed:Boolean = enableEventObservation(this.recorder.samplesObserverAttacher);
+      if (succeed) {
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_SAMPLES);
+      }
+      return succeed;
+    }
+
+    public function stopObservingSamples():Boolean {
+      var succeed:Boolean = disableEventObservation(this.recorder.samplesObserverAttacher);
+      if (succeed) {
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_SAMPLES_STOPPED);
+      }
+      return succeed;
     }
 
     public function playBack(name:String):Boolean {
@@ -218,6 +269,10 @@ package {
       return this.recorder.duration(name);
     }
 
+    public function getCurrentTime(name:String):Number {
+      return this.recorder.getCurrentTime(name);
+    }
+
     public function save():Boolean {
       ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVE_PRESSED, this.recorder.currentSoundName);
       try {
@@ -228,6 +283,23 @@ package {
         return false;
       }
       return true;
+    }
+
+    private function enableEventObservation(eventObserverAttacher:MicrophoneEventObserverAttacher):Boolean {
+      if (!this.isMicrophoneAvailable()) {
+        return false;
+      }
+      if (!eventObserverAttacher.observing) {
+        eventObserverAttacher.startObserving();
+      }
+      return eventObserverAttacher.observing;
+    }
+
+    private function disableEventObservation(eventObserverAttacher:MicrophoneEventObserverAttacher):Boolean {
+      if (eventObserverAttacher.observing) {
+        eventObserverAttacher.stopObserving();
+      }
+      return eventObserverAttacher.observing;
     }
 
     private function _save(name:String, filename:String):void {

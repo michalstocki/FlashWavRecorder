@@ -3,4 +3,7 @@
 \#*\#
 .\#*
 html/audio
-flash/recorder.swf
+
+.gradle/
+build/
+src/*.iml

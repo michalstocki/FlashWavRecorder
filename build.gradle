@@ -1,0 +1,48 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/groups/public"}
+    }
+    dependencies {
+        classpath group: 'org.gradlefx', name: 'gradlefx', version: '0.8.1'
+        classpath 'com.github.townsfolk:gradle-release:1.2'
+    }
+}
+
+apply plugin: 'release'
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.10'
+}
+
+apply plugin: 'gradlefx'
+
+def libTestDir = "lib/test"
+dependencies {
+    test files(
+        "${libTestDir}/hamcrest-as3-only-1.1.3.swc",
+        "${libTestDir}/mockolate-0.12.4-flex.swc",
+        "${libTestDir}/flexunit-4.1.0-x-as3_4.6.0.swc",
+        "${libTestDir}/flexunit-cilistener-4.1.0-x-4.6.0.swc",
+        "${libTestDir}/flexUnitTasks-4.1.0-x.jar",
+        "${libTestDir}/flexunit-uilistener-4.1.0-x-4.6.0.swc")
+}
+
+flexUnit {
+    command = "${flexHome}/runtimes/player/11.1/win/FlashPlayerDebugger.exe"
+}
+
+srcDirs = ['src/main']
+testDirs = ['src/test']
+mainClass = 'flashwavrecorder/Recorder.as'
+output='recorder'
+type = 'swf'
+frameworkLinkage = 'merged'
+
+
+task dist( dependsOn: [test, build], type: Copy ) {
+    configure {
+        from file("${buildDir}/${output}.swf")
+        into "html/"
+    }
+}
