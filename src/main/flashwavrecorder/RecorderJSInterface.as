@@ -296,7 +296,9 @@ package flashwavrecorder {
     }
 
     private function disableEventObservation(observingSwitcher:MicrophoneEventObservingSwitcher):Boolean {
-      if (observingSwitcher.observing) observingSwitcher.stopObserving();
+      if (observingSwitcher.observing) {
+        observingSwitcher.stopObserving();
+      }
       return observingSwitcher.observing;
     }
 
