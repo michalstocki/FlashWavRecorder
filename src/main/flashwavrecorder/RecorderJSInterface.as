@@ -21,12 +21,16 @@ package flashwavrecorder {
     public static var MICROPHONE_NOT_CONNECTED:String = "microphone_not_connected";
     public static var MICROPHONE_ACTIVITY:String = "microphone_activity";
     public static var MICROPHONE_LEVEL:String = "microphone_level";
+    public static var MICROPHONE_SAMPLES:String = "microphone_samples";
 
     public static var RECORDING:String = "recording";
     public static var RECORDING_STOPPED:String = "recording_stopped";
 
     public static var OBSERVING_LEVEL:String = "observing_level";
     public static var OBSERVING_LEVEL_STOPPED:String = "observing_level_stopped";
+
+    public static var OBSERVING_SAMPLES:String = "observing_level";
+    public static var OBSERVING_SAMPLES_STOPPED:String = "observing_level_stopped";
 
     public static var PLAYING:String = "playing";
     public static var STOPPED:String = "stopped";
@@ -38,7 +42,6 @@ package flashwavrecorder {
     public static var SAVE_PROGRESS:String = "save_progress";
 
     public var recorder:MicrophoneRecorder;
-    public var authenticityToken:String = "";
     public var eventHandler:String = "microphone_recorder_events";
     public var uploadUrl:String;
     public var uploadFormData:Array;
@@ -51,6 +54,8 @@ package flashwavrecorder {
         ExternalInterface.addCallback("record", record);
         ExternalInterface.addCallback("observeLevel", observeLevel);
         ExternalInterface.addCallback("stopObservingLevel", stopObservingLevel);
+        ExternalInterface.addCallback("observeSamples", observeSamples);
+        ExternalInterface.addCallback("stopObservingSamples", stopObservingSamples);
         ExternalInterface.addCallback("playBack", playBack);
         ExternalInterface.addCallback("playBackFrom", playBackFrom);
         ExternalInterface.addCallback("stopPlayBack", stopPlayBack);
@@ -71,6 +76,7 @@ package flashwavrecorder {
       this.recorder.addEventListener(MicrophoneRecorder.PLAYBACK_STARTED, playbackStarted);
       this.recorder.addEventListener(MicrophoneRecorder.ACTIVITY, microphoneActivity);
       this.recorder.levelForwarder.addEventListener(MicrophoneLevelEvent.LEVEL_VALUE, microphoneLevel);
+      this.recorder.samplesForwarder.addEventListener(MicrophoneSamplesEvent.RAW_SAMPLES_DATA, microphoneSamples);
     }
 
     public function ready(width:int, height:int):void {
@@ -107,6 +113,10 @@ package flashwavrecorder {
       ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_LEVEL, event.levelValue);
     }
 
+    private function microphoneSamples(event:MicrophoneSamplesEvent):void {
+      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_SAMPLES, event.samples);
+    }
+
     public function init(url:String=null, fieldName:String=null, formData:Array=null):void {
       this.uploadUrl = url;
       this.uploadFieldName = fieldName;
@@ -114,7 +124,7 @@ package flashwavrecorder {
     }
 
     public function update(formData:Array=null):void {
-      this.uploadFormData = new Array();
+      this.uploadFormData = [];
       if(formData) {
         for(var i:int=0; i<formData.length; i++) {
           var data:Object = formData[i];
@@ -184,22 +194,35 @@ package flashwavrecorder {
     }
 
     public function observeLevel():Boolean {
-      if(! this.isMicrophoneAvailable()) {
-        return false;
-      }
-      if (!this.recorder.levelObservingSwitcher.observing) {
-        this.recorder.levelObservingSwitcher.startObserving();
+      var succeed:Boolean = enableEventObservation(this.recorder.levelObserverAttacher);
+      if (succeed) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL);
       }
-      return this.recorder.levelObservingSwitcher.observing;
+      return succeed;
     }
 
     public function stopObservingLevel():Boolean {
-      if (this.recorder.levelObservingSwitcher.observing) {
-        this.recorder.levelObservingSwitcher.stopObserving();
+      var succeed:Boolean = disableEventObservation(this.recorder.levelObserverAttacher);
+      if (succeed) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL_STOPPED);
       }
-      return this.recorder.levelObservingSwitcher.observing;
+      return succeed;
+    }
+
+    public function observeSamples():Boolean {
+      var succeed:Boolean = enableEventObservation(this.recorder.samplesObserverAttacher);
+      if (succeed) {
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_SAMPLES);
+      }
+      return succeed;
+    }
+
+    public function stopObservingSamples():Boolean {
+      var succeed:Boolean = disableEventObservation(this.recorder.samplesObserverAttacher);
+      if (succeed) {
+        ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_SAMPLES_STOPPED);
+      }
+      return succeed;
     }
 
     public function playBack(name:String):Boolean {
@@ -260,6 +283,23 @@ package flashwavrecorder {
         return false;
       }
       return true;
+    }
+
+    private function enableEventObservation(eventObserverAttacher:MicrophoneEventObserverAttacher):Boolean {
+      if (!this.isMicrophoneAvailable()) {
+        return false;
+      }
+      if (!eventObserverAttacher.observing) {
+        eventObserverAttacher.startObserving();
+      }
+      return eventObserverAttacher.observing;
+    }
+
+    private function disableEventObservation(eventObserverAttacher:MicrophoneEventObserverAttacher):Boolean {
+      if (eventObserverAttacher.observing) {
+        eventObserverAttacher.stopObserving();
+      }
+      return eventObserverAttacher.observing;
     }
 
     private function _save(name:String, filename:String):void {

@@ -55,6 +55,8 @@ Flash Events
 
 **microphone_not_connected**: user denied access to the microphone, *at this point the recorder CAN NOT be used until the user reloads the page*
 
+### Recording ###
+
 **recording**: recording audio data from the microphone
 
 * name - of the recording that was specified when record was called
@@ -63,6 +65,8 @@ Flash Events
 
 * name - of the recording that was specified when record was called
 * duration - of the recording as a floating point value in seconds
+
+### Playback ###
 
 **playing**: playing back the recorded audio data
 
@@ -76,6 +80,8 @@ Flash Events
 **stopped**: stopped playing back the recorded audio data
 
 * name - of the recording that was specified when play was called
+
+### Uploading recorded audio ###
 
 **save_pressed**: save button was pressed in the recorder, good place to update the form data in the recorder
 
@@ -101,6 +107,8 @@ Flash Events
 * bytes_loaded - number of bytes uploaded
 * bytes_total - number of bytes to upload
 
+### Observing microphone level ###
+
 **observing_level**: started dispatching "microphone_level" event
 
 *Is dispatched just after call of `observeLevel`*
@@ -112,6 +120,20 @@ Flash Events
 **observing_level_stopped**: stopped dispatching "microphone_level" event
 
 *Is dispatched just after call of `stopObservingLevel`*
+
+### Obtaining raw microphone samples ###
+
+**observing_samples**: started dispatching "microphone_samples" event
+
+*Is dispatched just after call of `observeSamples`*
+
+**microphone_samples**: current buffer of microphone samples
+
+* samples - array of values from -1 to 1
+
+**observing_samples_stopped**: stopped dispatching "microphone_samples" event
+
+*Is dispatched just after call of `stopObservingSamples`*
 
 Recorder JS Interface
 ---------------------
@@ -151,6 +173,10 @@ Recorder JS Interface
 **observeLevel**: starts dispatching `microphone_level` events
 
 **stopObservingLevel**: stops dispatching `microphone_level` events
+
+**observeSamples**: starts dispatching `microphone_samples` events
+
+**stopObservingSamples**: stops dispatching `microphone_samples` events
 
 **init**: setup the recorder for saving recordings
 

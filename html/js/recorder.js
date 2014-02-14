@@ -59,6 +59,14 @@
       Recorder.recorder.stopObservingLevel();
     },
 
+    observeSamples: function() {
+      Recorder.recorder.observeSamples();
+    },
+
+    stopObservingSamples: function() {
+      Recorder.recorder.stopObservingSamples();
+    },
+
     resize: function(width, height) {
       Recorder.recorder.width = width + "px";
       Recorder.recorder.height = height + "px";
