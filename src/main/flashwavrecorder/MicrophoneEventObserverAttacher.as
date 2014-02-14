@@ -2,14 +2,14 @@ package flashwavrecorder {
 
   import flash.events.SampleDataEvent;
 
-  public class MicrophoneEventObservingSwitcher {
+  public class MicrophoneEventObserverAttacher {
 
     private var _observing:Boolean = false;
     private var microphone:MicrophoneWrapper;
     private var microphoneEventForwarder:IMicrophoneEventForwarder;
 
-    public function MicrophoneEventObservingSwitcher(microphone:MicrophoneWrapper,
-                                                     microphoneEventForwarder:IMicrophoneEventForwarder) {
+    public function MicrophoneEventObserverAttacher(microphone:MicrophoneWrapper,
+                                                    microphoneEventForwarder:IMicrophoneEventForwarder) {
       this.microphone = microphone;
       this.microphoneEventForwarder = microphoneEventForwarder;
     }

@@ -194,7 +194,7 @@ package flashwavrecorder {
     }
 
     public function observeLevel():Boolean {
-      var succeed:Boolean = enableEventObservation(this.recorder.levelObservingSwitcher);
+      var succeed:Boolean = enableEventObservation(this.recorder.levelObserverAttacher);
       if (succeed) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL);
       }
@@ -202,7 +202,7 @@ package flashwavrecorder {
     }
 
     public function stopObservingLevel():Boolean {
-      var succeed:Boolean = disableEventObservation(this.recorder.levelObservingSwitcher);
+      var succeed:Boolean = disableEventObservation(this.recorder.levelObserverAttacher);
       if (succeed) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL_STOPPED);
       }
@@ -210,7 +210,7 @@ package flashwavrecorder {
     }
 
     public function observeSamples():Boolean {
-      var succeed:Boolean = enableEventObservation(this.recorder.samplesObservingSwitcher);
+      var succeed:Boolean = enableEventObservation(this.recorder.samplesObserverAttacher);
       if (succeed) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_SAMPLES);
       }
@@ -218,7 +218,7 @@ package flashwavrecorder {
     }
 
     public function stopObservingSamples():Boolean {
-      var succeed:Boolean = disableEventObservation(this.recorder.samplesObservingSwitcher);
+      var succeed:Boolean = disableEventObservation(this.recorder.samplesObserverAttacher);
       if (succeed) {
         ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_SAMPLES_STOPPED);
       }
@@ -285,21 +285,21 @@ package flashwavrecorder {
       return true;
     }
 
-    private function enableEventObservation(observingSwitcher:MicrophoneEventObservingSwitcher):Boolean {
+    private function enableEventObservation(eventObserverAttacher:MicrophoneEventObserverAttacher):Boolean {
       if (!this.isMicrophoneAvailable()) {
         return false;
       }
-      if (!observingSwitcher.observing) {
-        observingSwitcher.startObserving();
+      if (!eventObserverAttacher.observing) {
+        eventObserverAttacher.startObserving();
       }
-      return observingSwitcher.observing;
+      return eventObserverAttacher.observing;
     }
 
-    private function disableEventObservation(observingSwitcher:MicrophoneEventObservingSwitcher):Boolean {
-      if (observingSwitcher.observing) {
-        observingSwitcher.stopObserving();
+    private function disableEventObservation(eventObserverAttacher:MicrophoneEventObserverAttacher):Boolean {
+      if (eventObserverAttacher.observing) {
+        eventObserverAttacher.stopObserving();
       }
-      return observingSwitcher.observing;
+      return eventObserverAttacher.observing;
     }
 
     private function _save(name:String, filename:String):void {
