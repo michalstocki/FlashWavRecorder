@@ -14,6 +14,8 @@ package flashwavrecorder {
   import flash.text.engine.TextElement;
   import flash.text.engine.TextLine;
 
+  import flashwavrecorder.helpers.EventHandlerValidator;
+
   public class Recorder extends Sprite {
 
     public var recorderInterface:RecorderJSInterface;
@@ -24,8 +26,9 @@ package flashwavrecorder {
       this.stage.scaleMode = StageScaleMode.NO_SCALE;
       recorderInterface = new RecorderJSInterface();
 
-      if(this.root.loaderInfo.parameters["event_handler"]) {
-	recorderInterface.eventHandler = this.root.loaderInfo.parameters["event_handler"];
+      var eventHandler:String = this.root.loaderInfo.parameters["event_handler"];
+      if (EventHandlerValidator.validate(eventHandler)) {
+	      recorderInterface.eventHandler = eventHandler;
       }
 
       var url:String = this.root.loaderInfo.parameters["upload_image"];
