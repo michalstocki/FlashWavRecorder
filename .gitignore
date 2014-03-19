@@ -6,4 +6,4 @@ html/audio
 
 .gradle/
 build/
-src/*.iml
+*.iml
