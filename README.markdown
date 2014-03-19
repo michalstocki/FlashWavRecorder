@@ -8,15 +8,18 @@ Embedding the Recorder
 ----------------------
 
     <script>
+      window.fwr_event_handler = function(eventName) {
+        // handling logic here
+      }
       var appWidth = 24;
       var appHeight = 24;
-      var flashvars = {'event_handler': 'microphone_recorder_events', 'upload_image': 'images/upload.png'};
+      var flashvars = {'upload_image': 'images/upload.png'};
       var params = {};
       var attributes = {'id': "recorderApp", 'name':  "recorderApp"};
       swfobject.embedSWF("recorder.swf", "flashcontent", appWidth, appHeight, "10.1.0", "", flashvars, params, attributes);
     </script>
 
-The event_handler is a javascript function that is called from the flash application. The first argument to the event_handler is always the name of the event as a string. The other arguments may vary depending on the event.
+The `fwr_event_handler` is a javascript function that is called from the flash application. The first argument to the function is always the name of the event as a string. The other arguments may vary depending on the event.
 
 
 Flash vars

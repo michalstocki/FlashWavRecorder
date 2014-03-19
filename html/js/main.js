@@ -5,7 +5,7 @@ $(function() {
     $level = $('.control_panel .level');
 
 
-  window.microphone_recorder_events = function microphone_recorder_events() {
+  window.fwr_event_handler = function fwr_event_handler() {
     $('#status').text("Microphone recorder event: " + arguments[0]);
     var name, $controls;
     switch(arguments[0]) {
