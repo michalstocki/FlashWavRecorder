@@ -41,8 +41,9 @@ package flashwavrecorder {
     public static var SAVE_FAILED:String = "save_failed";
     public static var SAVE_PROGRESS:String = "save_progress";
 
+    private const EVENT_HANDLER:String = "fwr_event_handler";
+
     public var recorder:MicrophoneRecorder;
-    public var eventHandler:String = "microphone_recorder_events";
     public var uploadUrl:String;
     public var uploadFormData:Array;
     public var uploadFieldName:String;
@@ -80,7 +81,7 @@ package flashwavrecorder {
     }
 
     public function ready(width:int, height:int):void {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.READY, width, height);
+      ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.READY, width, height);
       if (!this.recorder.mic.isMuted()) {
         onMicrophoneStatus(new StatusEvent(StatusEvent.STATUS, false, false, "Microphone.Unmuted", "status"));
       }
@@ -98,23 +99,23 @@ package flashwavrecorder {
     }
 
     private function playbackStarted(event:Event):void {
-      ExternalInterface.call(this.eventHandler, MicrophoneRecorder.PLAYBACK_STARTED, this.recorder.currentSoundName, this.recorder.latency);
+      ExternalInterface.call(this.EVENT_HANDLER, MicrophoneRecorder.PLAYBACK_STARTED, this.recorder.currentSoundName, this.recorder.latency);
     }
 
     private function playComplete(event:Event):void {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
+      ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
     }
 
     private function microphoneActivity(event:Event):void {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_ACTIVITY, this.recorder.mic.getActivityLevel());
+      ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.MICROPHONE_ACTIVITY, this.recorder.mic.getActivityLevel());
     }
 
     private function microphoneLevel(event:MicrophoneLevelEvent):void {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_LEVEL, event.levelValue);
+      ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.MICROPHONE_LEVEL, event.levelValue);
     }
 
     private function microphoneSamples(event:MicrophoneSamplesEvent):void {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_SAMPLES, event.samples);
+      ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.MICROPHONE_SAMPLES, event.samples);
     }
 
     public function init(url:String=null, fieldName:String=null, formData:Array=null):void {
@@ -137,9 +138,9 @@ package flashwavrecorder {
       if(! this.recorder.mic.isMuted()) {
         return true;
       } else if(Microphone.names.length == 0) {
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.NO_MICROPHONE_FOUND);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.NO_MICROPHONE_FOUND);
       } else {
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_USER_REQUEST);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.MICROPHONE_USER_REQUEST);
       }
       return false;
     }
@@ -153,9 +154,9 @@ package flashwavrecorder {
       this.recorder.mic.setLoopBack(false);
       if(event.code == "Microphone.Unmuted") {
         this.configureMicrophone();
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_CONNECTED, this.recorder.mic);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.MICROPHONE_CONNECTED, this.recorder.mic);
       } else {
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.MICROPHONE_NOT_CONNECTED);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.MICROPHONE_NOT_CONNECTED);
       } 
     }
 
@@ -184,10 +185,10 @@ package flashwavrecorder {
 
       if(this.recorder.recording) {
         this.recorder.stop();
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
       } else {
         this.recorder.record(name, filename);
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.RECORDING, this.recorder.currentSoundName);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.RECORDING, this.recorder.currentSoundName);
       }
 
       return this.recorder.recording;
@@ -196,7 +197,7 @@ package flashwavrecorder {
     public function observeLevel():Boolean {
       var succeed:Boolean = enableEventObservation(this.recorder.levelObserverAttacher);
       if (succeed) {
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.OBSERVING_LEVEL);
       }
       return succeed;
     }
@@ -204,7 +205,7 @@ package flashwavrecorder {
     public function stopObservingLevel():Boolean {
       var succeed:Boolean = disableEventObservation(this.recorder.levelObserverAttacher);
       if (succeed) {
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_LEVEL_STOPPED);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.OBSERVING_LEVEL_STOPPED);
       }
       return succeed;
     }
@@ -212,7 +213,7 @@ package flashwavrecorder {
     public function observeSamples():Boolean {
       var succeed:Boolean = enableEventObservation(this.recorder.samplesObserverAttacher);
       if (succeed) {
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_SAMPLES);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.OBSERVING_SAMPLES);
       }
       return succeed;
     }
@@ -220,7 +221,7 @@ package flashwavrecorder {
     public function stopObservingSamples():Boolean {
       var succeed:Boolean = disableEventObservation(this.recorder.samplesObserverAttacher);
       if (succeed) {
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.OBSERVING_SAMPLES_STOPPED);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.OBSERVING_SAMPLES_STOPPED);
       }
       return succeed;
     }
@@ -228,10 +229,10 @@ package flashwavrecorder {
     public function playBack(name:String):Boolean {
       if(this.recorder.playing) {
         this.recorder.stop();
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
       } else {
         this.recorder.playBack(name);
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.PLAYING, this.recorder.currentSoundName);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.PLAYING, this.recorder.currentSoundName);
       }
 
       return this.recorder.playing;
@@ -240,11 +241,11 @@ package flashwavrecorder {
     public function playBackFrom(name:String, time:Number):Boolean {
       if(this.recorder.playing) {
         this.recorder.stop();
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
       }
       this.recorder.playBackFrom(name, time);
       if (this.recorder.playing) {
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.PLAYING, this.recorder.currentSoundName);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.PLAYING, this.recorder.currentSoundName);
       }
       return this.recorder.playing;
     }
@@ -252,15 +253,15 @@ package flashwavrecorder {
     public function pausePlayBack(name:String):void {
       if(this.recorder.playing) {
         this.recorder.pause(name);
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
       }
     }
 
     public function stopPlayBack():void {
       if(this.recorder.recording) {
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
       } else {
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.STOPPED, this.recorder.currentSoundName);
       }
       this.recorder.stop();
     }
@@ -274,12 +275,12 @@ package flashwavrecorder {
     }
 
     public function save():Boolean {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVE_PRESSED, this.recorder.currentSoundName);
+      ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.SAVE_PRESSED, this.recorder.currentSoundName);
       try {
         _save(this.recorder.currentSoundName, this.recorder.currentSoundFilename);
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVING, this.recorder.currentSoundName);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.SAVING, this.recorder.currentSoundName);
       } catch(e:Error) {
-        ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVE_FAILED, this.recorder.currentSoundName, e.message);
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.SAVE_FAILED, this.recorder.currentSoundName, e.message);
         return false;
       }
       return true;
@@ -322,19 +323,19 @@ package flashwavrecorder {
 
     private function onSaveComplete(event:Event):void {
       var loader:URLLoader = URLLoader(event.target);
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVED, this.recorder.currentSoundName, loader.data);
+      ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.SAVED, this.recorder.currentSoundName, loader.data);
     }
 
     private function onIOError(event:Event):void {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVE_FAILED, this.recorder.currentSoundName, IOErrorEvent(event).text);
+      ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.SAVE_FAILED, this.recorder.currentSoundName, IOErrorEvent(event).text);
     }
 
     private function onSecurityError(event:Event):void {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVE_FAILED, this.recorder.currentSoundName, SecurityErrorEvent(event).text);
+      ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.SAVE_FAILED, this.recorder.currentSoundName, SecurityErrorEvent(event).text);
     }
 
     private function onProgress(event:Event):void {
-      ExternalInterface.call(this.eventHandler, RecorderJSInterface.SAVE_PROGRESS, this.recorder.currentSoundName, ProgressEvent(event).bytesLoaded, ProgressEvent(event).bytesTotal);
+      ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.SAVE_PROGRESS, this.recorder.currentSoundName, ProgressEvent(event).bytesLoaded, ProgressEvent(event).bytesTotal);
     }
   }
 }
