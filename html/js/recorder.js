@@ -44,7 +44,7 @@
     },
     
     playBackFrom: function(name, time) {
-    	Recorder.recorder.playBackFrom(name, time);
+      Recorder.recorder.playBackFrom(name, time);
     },
 
     record: function(name, filename) {
@@ -86,6 +86,11 @@
 
     duration: function(name) {
       return Recorder.recorder.duration(name || Recorder.uploadFieldName);
+    },
+
+    getBase64: function(name) {
+      var data = Recorder.recorder.getBase64(name);
+      return 'data:audio/wav;base64,' + data;
     },
 
     getCurrentTime: function(name) {
