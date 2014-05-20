@@ -171,6 +171,10 @@ Recorder JS Interface
 
 * name - of the recording
 
+**getBase64**: returns WAV data of recording in form of Base64 string
+
+* name - of the recording
+
 *Returns number of seconds as float. For paused recording returns pause position, for stopped recording returns 0.*
 
 **observeLevel**: starts dispatching `microphone_level` events

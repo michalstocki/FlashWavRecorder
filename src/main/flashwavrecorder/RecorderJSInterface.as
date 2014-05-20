@@ -10,6 +10,7 @@ package flashwavrecorder {
   import flash.media.Microphone;
   import flash.net.URLLoader;
   import flash.net.URLRequest;
+  import flash.utils.ByteArray;
 
   public class RecorderJSInterface {
 
@@ -63,6 +64,7 @@ package flashwavrecorder {
         ExternalInterface.addCallback("pausePlayBack", pausePlayBack);
         ExternalInterface.addCallback("duration", duration);
         ExternalInterface.addCallback("getCurrentTime", getCurrentTime);
+        ExternalInterface.addCallback("getBase64", getBase64);
         ExternalInterface.addCallback("init", init);
         ExternalInterface.addCallback("permit", requestMicrophoneAccess);
         ExternalInterface.addCallback("configure", configureMicrophone);
@@ -272,6 +274,16 @@ package flashwavrecorder {
 
     public function getCurrentTime(name:String):Number {
       return this.recorder.getCurrentTime(name);
+    }
+
+    public function getBase64(name:String):Object {
+      var data:ByteArray;
+      try {
+        data = recorder.convertToWav(name);
+      } catch (e:Error) {
+        data = new ByteArray();
+      }
+      return MultiPartFormUtil.base64_encdode(data);
     }
 
     public function save():Boolean {
