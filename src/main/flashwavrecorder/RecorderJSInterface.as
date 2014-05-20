@@ -307,7 +307,7 @@ package flashwavrecorder {
 
       var boundary:String = MultiPartFormUtil.boundary();
 
-      this.uploadFormData.push( MultiPartFormUtil.fileField(this.uploadFieldName, recorder.convertToWav(name), filename, "audio/x-wav") );
+      this.uploadFormData.push( MultiPartFormUtil.fileField(this.uploadFieldName, recorder.convertToWav(name), filename, "audio/wav") );
       var request:URLRequest = MultiPartFormUtil.request(this.uploadFormData);
       this.uploadFormData.pop();
 
