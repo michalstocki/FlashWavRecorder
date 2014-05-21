@@ -175,6 +175,11 @@ Recorder JS Interface
 
 * name - of the recording
 
+**getBlob**: returns WAV data of recording in form of [Blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob)
+object which can be used to send recorded audio to server (via JavaScript) or save on user's local drive
+
+* name - of the recording
+
 *Returns number of seconds as float. For paused recording returns pause position, for stopped recording returns 0.*
 
 **observeLevel**: starts dispatching `microphone_level` events
