@@ -8,21 +8,22 @@ Embedding the Recorder
 ----------------------
 
     <script>
+      window.fwr_event_handler = function(eventName) {
+        // handling logic here
+      }
       var appWidth = 24;
       var appHeight = 24;
-      var flashvars = {'event_handler': 'microphone_recorder_events', 'upload_image': 'images/upload.png'};
+      var flashvars = {'upload_image': 'images/upload.png'};
       var params = {};
       var attributes = {'id': "recorderApp", 'name':  "recorderApp"};
       swfobject.embedSWF("recorder.swf", "flashcontent", appWidth, appHeight, "10.1.0", "", flashvars, params, attributes);
     </script>
 
-The event_handler is a javascript function that is called from the flash application. The first argument to the event_handler is always the name of the event as a string. The other arguments may vary depending on the event.
+The `fwr_event_handler` is a javascript function that is called from the flash application. The first argument to the function is always the name of the event as a string. The other arguments may vary depending on the event.
 
 
 Flash vars
 ----------
-
-**event_handler**: javascript function called from the flash application
 
 **upload_image**: image used as the save button
 
@@ -168,6 +169,15 @@ Recorder JS Interface
 
 * name - of the recording
 
+**getBase64**: returns WAV data of recording in form of Base64 string
+
+* name - of the recording
+
+**getBlob**: returns WAV data of recording in form of [Blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob)
+object which can be used to send recorded audio to server (via JavaScript) or save on user's local drive
+
+* name - of the recording
+
 *Returns number of seconds as float. For paused recording returns pause position, for stopped recording returns 0.*
 
 **observeLevel**: starts dispatching `microphone_level` events
@@ -221,7 +231,18 @@ Build with `gradlew dist`
 Change Log
 ---------------------
 
-0.7.0
+**0.8.0** - _May 21, 2014_
+
+- Fixed [XSS vulnerability issue](https://github.com/cykod/FlashWavRecorder/issues/23)
+- Added ability to get **BLOB object** of recorded audio
+- Added ability to get **Base64** of recorded audio
+
+Updating to 0.8.0:
+
+- Callback used by Flash to communicate with JavaScript for now on, has to be defined as `fwr_event_handler`.
+Specifying name of custom function in "Flash vars" as `event_handler` is no longer supported.
+
+**0.7.0**
 
 - New demo page
 - Added ability to get **current level** of microphone
@@ -229,7 +250,7 @@ Change Log
 - Added ability to obtain **sound samples** from microphone
 - Introducing unit tests
 
-0.6.0
+**0.6.0**
 
 - Added ability to **pause** playback
 - Added ability to get **current time** while playback

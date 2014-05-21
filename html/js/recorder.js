@@ -2,6 +2,8 @@
 (function(global) {
   var Recorder;
 
+  var RECORDED_AUDIO_TYPE = "audio/wav";
+
   Recorder = {
     recorder: null,
     recorderOriginalWidth: 0,
@@ -44,7 +46,7 @@
     },
     
     playBackFrom: function(name, time) {
-    	Recorder.recorder.playBackFrom(name, time);
+      Recorder.recorder.playBackFrom(name, time);
     },
 
     record: function(name, filename) {
@@ -86,6 +88,16 @@
 
     duration: function(name) {
       return Recorder.recorder.duration(name || Recorder.uploadFieldName);
+    },
+
+    getBase64: function(name) {
+      var data = Recorder.recorder.getBase64(name);
+      return 'data:' + RECORDED_AUDIO_TYPE + ';base64,' + data;
+    },
+
+    getBlob: function(name) {
+      var base64Data = Recorder.getBase64(name).split(',')[1];
+      return base64toBlob(base64Data, RECORDED_AUDIO_TYPE);
     },
 
     getCurrentTime: function(name) {
@@ -151,6 +163,29 @@
       Recorder.recorder.setLoopBack(val);
     }
   };
+
+  function base64toBlob(b64Data, contentType, sliceSize) {
+    contentType = contentType || '';
+    sliceSize = sliceSize || 512;
+
+    var byteCharacters = atob(b64Data);
+    var byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      var byteNumbers = new Array(slice.length);
+      for (var i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      var byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    return new Blob(byteArrays, {type: contentType});
+  }
+
 
   global.FWRecorder = Recorder;
 

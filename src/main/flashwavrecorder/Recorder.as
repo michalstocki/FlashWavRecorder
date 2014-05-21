@@ -24,10 +24,6 @@ package flashwavrecorder {
       this.stage.scaleMode = StageScaleMode.NO_SCALE;
       recorderInterface = new RecorderJSInterface();
 
-      if(this.root.loaderInfo.parameters["event_handler"]) {
-	recorderInterface.eventHandler = this.root.loaderInfo.parameters["event_handler"];
-      }
-
       var url:String = this.root.loaderInfo.parameters["upload_image"];
       if(url) {
         saveButton = createSaveImage(url);
