@@ -25,8 +25,6 @@ The `fwr_event_handler` is a javascript function that is called from the flash a
 Flash vars
 ----------
 
-**event_handler**: javascript function called from the flash application
-
 **upload_image**: image used as the save button
 
 **font_color**: font color for the save text, default #0000EE
@@ -233,7 +231,18 @@ Build with `gradlew dist`
 Change Log
 ---------------------
 
-0.7.0
+**0.8.0** - _May 21, 2014_
+
+- Fixed [XSS vulnerability issue](https://github.com/cykod/FlashWavRecorder/issues/23)
+- Added ability to get **BLOB object** of recorded audio
+- Added ability to get **Base64** of recorded audio
+
+Updating to 0.8.0:
+
+- Callback used by Flash to communicate with JavaScript for now on, has to be defined as `fwr_event_handler`.
+Specifying name of custom function in "Flash vars" as `event_handler` is no longer supported.
+
+**0.7.0**
 
 - New demo page
 - Added ability to get **current level** of microphone
@@ -241,7 +250,7 @@ Change Log
 - Added ability to obtain **sound samples** from microphone
 - Introducing unit tests
 
-0.6.0
+**0.6.0**
 
 - Added ability to **pause** playback
 - Added ability to get **current time** while playback
