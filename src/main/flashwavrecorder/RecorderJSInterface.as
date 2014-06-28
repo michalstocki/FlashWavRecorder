@@ -136,15 +136,20 @@ package flashwavrecorder {
       }
     }
 
-    public function isMicrophoneAvailable():Boolean {
-      if(! this.recorder.mic.isMuted()) {
-        return true;
-      } else if(Microphone.names.length == 0) {
+    public function isMicrophoneAccessible():Boolean {
+      return isMicrophoneConnected() && !this.recorder.mic.isMuted();
+    }
+
+    public function isMicrophoneConnected():Boolean {
+      return Microphone.names.length > 0
+    }
+
+    private function announceMicrophoneInaccessibility():void {
+      if (isMicrophoneConnected()) {
         ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.NO_MICROPHONE_FOUND);
       } else {
         ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.MICROPHONE_USER_REQUEST);
       }
-      return false;
     }
 
     public function requestMicrophoneAccess():void {
@@ -181,19 +186,19 @@ package flashwavrecorder {
     }
 
     public function record(name:String, filename:String=null):Boolean {
-      if(! this.isMicrophoneAvailable()) {
+      if (!this.isMicrophoneAccessible()) {
+        if(this.recorder.recording) {
+          this.recorder.stop();
+          ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
+        } else {
+          this.recorder.record(name, filename);
+          ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.RECORDING, this.recorder.currentSoundName);
+        }
+        return this.recorder.recording;
+      } else {
+        announceMicrophoneInaccessibility();
         return false;
       }
-
-      if(this.recorder.recording) {
-        this.recorder.stop();
-        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
-      } else {
-        this.recorder.record(name, filename);
-        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.RECORDING, this.recorder.currentSoundName);
-      }
-
-      return this.recorder.recording;
     }
 
     public function observeLevel():Boolean {
@@ -299,13 +304,15 @@ package flashwavrecorder {
     }
 
     private function enableEventObservation(eventObserverAttacher:MicrophoneEventObserverAttacher):Boolean {
-      if (!this.isMicrophoneAvailable()) {
+      if (this.isMicrophoneAccessible()) {
+        if (!eventObserverAttacher.observing) {
+          eventObserverAttacher.startObserving();
+        }
+        return eventObserverAttacher.observing;
+      } else {
+        announceMicrophoneInaccessibility();
         return false;
       }
-      if (!eventObserverAttacher.observing) {
-        eventObserverAttacher.startObserving();
-      }
-      return eventObserverAttacher.observing;
     }
 
     private function disableEventObservation(eventObserverAttacher:MicrophoneEventObserverAttacher):Boolean {
