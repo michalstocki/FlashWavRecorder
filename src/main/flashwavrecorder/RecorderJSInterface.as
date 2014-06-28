@@ -73,7 +73,7 @@ package flashwavrecorder {
         ExternalInterface.addCallback("update", update);
         ExternalInterface.addCallback("setUseEchoSuppression", setUseEchoSuppression);
         ExternalInterface.addCallback("setLoopBack", setLoopBack);
-        ExternalInterface.addCallback("getMicrophone", getMicrophone);
+        ExternalInterface.addCallback("isMicrophoneAccessible", isMicrophoneAccessible);
       }
       this.recorder.addEventListener(MicrophoneRecorder.SOUND_COMPLETE, playComplete);
       this.recorder.addEventListener(MicrophoneRecorder.PLAYBACK_STARTED, playbackStarted);
@@ -140,15 +140,15 @@ package flashwavrecorder {
       return isMicrophoneConnected() && !this.recorder.mic.isMuted();
     }
 
-    public function isMicrophoneConnected():Boolean {
+    private function isMicrophoneConnected():Boolean {
       return Microphone.names.length > 0
     }
 
     private function announceMicrophoneInaccessibility():void {
       if (isMicrophoneConnected()) {
-        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.NO_MICROPHONE_FOUND);
-      } else {
         ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.MICROPHONE_USER_REQUEST);
+      } else {
+        ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.NO_MICROPHONE_FOUND);
       }
     }
 
@@ -181,12 +181,8 @@ package flashwavrecorder {
       this.recorder.mic.setLoopBack(state);
     }
 
-    public function getMicrophone():MicrophoneWrapper {
-      return this.recorder.mic;
-    }
-
     public function record(name:String, filename:String=null):Boolean {
-      if (!this.isMicrophoneAccessible()) {
+      if (this.isMicrophoneAccessible()) {
         if(this.recorder.recording) {
           this.recorder.stop();
           ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
