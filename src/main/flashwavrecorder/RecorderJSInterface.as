@@ -290,7 +290,7 @@ package flashwavrecorder {
       if (eventObserverAttacher.observing) {
         eventObserverAttacher.stopObserving();
       }
-      return eventObserverAttacher.observing;
+      return !eventObserverAttacher.observing;
     }
 
 
