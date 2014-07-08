@@ -74,7 +74,7 @@
       Recorder.recorder.height = height + "px";
     },
 
-    defaultSize: function(width, height) {
+    defaultSize: function() {
       Recorder.resize(Recorder.recorderOriginalWidth, Recorder.recorderOriginalHeight);
     },
 
@@ -109,11 +109,17 @@
       Recorder.recorder.update(frm.serializeArray());
     },
 
-    showPermissionWindow: function() {
+    showPermissionWindow: function(options) {
       Recorder.resize(240, 160);
       // need to wait until app is resized before displaying permissions screen
-      var recorder = Recorder.recorder;
-      setTimeout(function(){recorder.permit();}, 1);
+      var permissionCommand = function() {
+        if (options && options.permanent) {
+          Recorder.recorder.permitPermanently();
+        } else {
+          Recorder.recorder.permit();
+        }
+      };
+      setTimeout(permissionCommand, 1);
     },
 
     configure: function(rate, gain, silenceLevel, silenceTimeout) {

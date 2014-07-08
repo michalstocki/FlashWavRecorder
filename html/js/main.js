@@ -29,7 +29,6 @@ $(function() {
 
       case "microphone_connected":
         var mic = arguments[1];
-        FWRecorder.defaultSize();
         FWRecorder.isReady = true;
         if(configureMicrophone) {
           configureMicrophone();
@@ -37,7 +36,7 @@ $(function() {
         $uploadStatus.css({'color': '#000'}).text("Microphone: " + mic.name);
         break;
 
-      case "microphone_not_connected":
+      case "permission_panel_closed":
         FWRecorder.defaultSize();
         break;
 
