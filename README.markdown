@@ -52,9 +52,9 @@ Flash Events
 
 **microphone_connected**: user allowed access to the microphone
 
-* microphone - Microphone object from flash, can be used to get the name of the microphone, i.e. microphone.name
-
 **microphone_not_connected**: user denied access to the microphone, *at this point the recorder CAN NOT be used until the user reloads the page*
+
+**permission_panel_closed**: user closed permission dialog
 
 ### Recording ###
 
@@ -194,7 +194,9 @@ object which can be used to send recorded audio to server (via JavaScript) or sa
 * field_name - name of the form field for the WAV file
 * form_data - additional form data. Specified as an array of name/value pairs. ex: [{"name": 'authenticity_token', "value": "xxxx"}, {"name": "format", "value": "json"}]
 
-**permit**: show the permissions dialog for microphone access, make sure the flash application is large enough for the dialog box before calling this method. Must be at least 240x160.
+**showPermissionWindow**: show the permissions dialog for microphone access. The function also enlarges flash object to be 240x160 (the minimum size of flash application which allows displaying settings dialog).
+
+*The function called with `{permanent: true}` option, displays flash settings dialog with "Remember" option, which allow granting permanent microphone access for the site.*
 
 **show**: show the save button
 
