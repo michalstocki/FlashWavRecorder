@@ -20,9 +20,11 @@ package flashwavrecorder {
     public var saveButton:InteractiveObject;
 
     public function Recorder() {
-      this.stage.align = StageAlign.TOP_LEFT;
-      this.stage.scaleMode = StageScaleMode.NO_SCALE;
-      recorderInterface = new RecorderJSInterface();
+      stage.align = StageAlign.TOP_LEFT;
+      stage.scaleMode = StageScaleMode.NO_SCALE;
+      var microphoneRecorder:MicrophoneRecorder = new MicrophoneRecorder();
+      var permissionPanel:MicrophonePermissionPanel = new MicrophonePermissionPanel(microphoneRecorder.mic, stage);
+      recorderInterface = new RecorderJSInterface(microphoneRecorder, permissionPanel);
 
       var url:String = this.root.loaderInfo.parameters["upload_image"];
       if(url) {

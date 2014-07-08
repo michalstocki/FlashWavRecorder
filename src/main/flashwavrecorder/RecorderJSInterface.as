@@ -55,9 +55,9 @@ package flashwavrecorder {
     private var _uploadFormData:Array;
     private var _uploadFieldName:String;
 
-    public function RecorderJSInterface() {
-      _recorder = new MicrophoneRecorder();
-      _permissionPanel = new MicrophonePermissionPanel(_recorder.mic);
+    public function RecorderJSInterface(recorder:MicrophoneRecorder, permissionPanel:MicrophonePermissionPanel) {
+      _recorder = recorder;
+      _permissionPanel = permissionPanel;
       if(ExternalInterface.available && ExternalInterface.objectID) {
         ExternalInterface.addCallback("configure", configureMicrophone); // TODO: Rename to "configureMicrophone"
         ExternalInterface.addCallback("duration", getDuration); // TODO: Rename to "getDuration"
@@ -146,7 +146,7 @@ package flashwavrecorder {
       ExternalInterface.call(EVENT_HANDLER, MICROPHONE_CONNECTED);
     }
 
-    private function announceMicrophoneNotConnected():void {
+    private function announceMicrophoneNotConnected(event:Event):void {
       ExternalInterface.call(EVENT_HANDLER, MICROPHONE_NOT_CONNECTED);
     }
 
