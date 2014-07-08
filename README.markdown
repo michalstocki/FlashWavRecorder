@@ -219,7 +219,7 @@ object which can be used to send recorded audio to server (via JavaScript) or sa
 
 * yes_no
 
-**getMicrophone**: returns the microphone object
+**isMicrophoneAccessible**: returns true if microphone is connected and user has allowed use microphone.
 
 Gradle Build
 ---------------------
