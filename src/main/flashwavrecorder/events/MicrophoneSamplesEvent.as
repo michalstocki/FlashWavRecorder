@@ -1,5 +1,5 @@
 
-package flashwavrecorder {
+package flashwavrecorder.events {
 import flash.events.Event;
 
 public class MicrophoneSamplesEvent extends Event {

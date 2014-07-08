@@ -3,6 +3,8 @@ package flashwavrecorder {
   import flash.events.SampleDataEvent;
   import flash.utils.ByteArray;
 
+  import flashwavrecorder.events.MicrophoneLevelEvent;
+
   import mockolate.mock;
   import mockolate.runner.MockolateRule;
 

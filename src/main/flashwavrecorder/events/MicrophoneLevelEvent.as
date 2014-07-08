@@ -1,4 +1,4 @@
-package flashwavrecorder {
+package flashwavrecorder.events {
 
   import flash.events.Event;
 
