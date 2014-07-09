@@ -16,60 +16,56 @@ package flashwavrecorder {
 
   public class Recorder extends Sprite {
 
-    public var recorderInterface:RecorderJSInterface;
-    public var saveButton:InteractiveObject;
+    private var _recorderInterface:RecorderJSInterface;
+    private var _saveButton:InteractiveObject;
 
     public function Recorder() {
       stage.align = StageAlign.TOP_LEFT;
       stage.scaleMode = StageScaleMode.NO_SCALE;
       var microphoneRecorder:MicrophoneRecorder = new MicrophoneRecorder();
       var permissionPanel:MicrophonePermissionPanel = new MicrophonePermissionPanel(microphoneRecorder.mic, stage);
-      recorderInterface = new RecorderJSInterface(microphoneRecorder, permissionPanel);
+      _recorderInterface = new RecorderJSInterface(microphoneRecorder, permissionPanel);
 
-      var url:String = this.root.loaderInfo.parameters["upload_image"];
-      if(url) {
-        saveButton = createSaveImage(url);
+      var url:String = root.loaderInfo.parameters["upload_image"];
+      if (url) {
+        _saveButton = createSaveImage(url);
       } else {
-        saveButton = createSaveLink();
+        _saveButton = createSaveLink();
         ready();
       }
     }
 
-    public function ready():void {
-      addChild(saveButton);
+    private function ready():void {
+      addChild(_saveButton);
 
-      recorderInterface.saveButton = saveButton;
+      _recorderInterface.saveButton = _saveButton;
 
-      saveButton.addEventListener(MouseEvent.MOUSE_UP, mouseReleased);
-      saveButton.visible = false;
+      _saveButton.addEventListener(MouseEvent.MOUSE_UP, mouseReleased);
+      _saveButton.visible = false;
 
-      recorderInterface.ready(saveButton.width, saveButton.height);
-    }
-
-    public function save():void {
-      recorderInterface.save();
+      _recorderInterface.ready(_saveButton.width, _saveButton.height);
     }
 
     private function mouseReleased(event:MouseEvent):void {
-      save();
+      _recorderInterface.save();
     }
 
     private function createSaveLink():Sprite {
       var format:ElementFormat = new ElementFormat();
       var fontColor:Number = 0x0000EE;
-      if(this.root.loaderInfo.parameters["font_color"]) {
-        fontColor = parseInt(this.root.loaderInfo.parameters["font_color"], 16);
+      if (root.loaderInfo.parameters["font_color"]) {
+        fontColor = parseInt(root.loaderInfo.parameters["font_color"], 16);
       }
       var fontSize:Number = 12;
-      if(this.root.loaderInfo.parameters["font_size"]) {
-        fontSize = parseInt(this.root.loaderInfo.parameters["font_size"], 10);
+      if (root.loaderInfo.parameters["font_size"]) {
+        fontSize = parseInt(root.loaderInfo.parameters["font_size"], 10);
       }
       format.color = fontColor;
       format.fontSize = fontSize;
       var textBlock:TextBlock = new TextBlock();
       var saveText:String = "Save";
-      if(this.root.loaderInfo.parameters["save_text"]) {
-        saveText = this.root.loaderInfo.parameters["save_text"];
+      if (root.loaderInfo.parameters["save_text"]) {
+        saveText = root.loaderInfo.parameters["save_text"];
       }
       textBlock.content = new TextElement(saveText, format);
       var textLine:TextLine = textBlock.createTextLine();
@@ -80,14 +76,14 @@ package flashwavrecorder {
       saveLink.addChild(textLine);
       textLine.y = textLine.ascent;
 
-      if(this.root.loaderInfo.parameters["background_color"]) {
-        saveLink.graphics.beginFill(parseInt(this.root.loaderInfo.parameters["background_color"], 16));
+      if (root.loaderInfo.parameters["background_color"]) {
+        saveLink.graphics.beginFill(parseInt(root.loaderInfo.parameters["background_color"], 16));
         saveLink.graphics.drawRect(0, 0, saveLink.width, saveLink.height);
       }
 
       saveLink.graphics.lineStyle(1, fontColor);
-      saveLink.graphics.moveTo(0, textLine.height-1);
-      saveLink.graphics.lineTo(saveLink.width, textLine.height-1);
+      saveLink.graphics.moveTo(0, textLine.height - 1);
+      saveLink.graphics.lineTo(saveLink.width, textLine.height - 1);
 
       return saveLink;
     }
@@ -108,7 +104,7 @@ package flashwavrecorder {
     }
 
     private function imageIoErrorHandler(event:Event):void {
-      saveButton = createSaveLink();
+      _saveButton = createSaveLink();
       ready();
     }
   }
