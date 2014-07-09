@@ -136,4 +136,9 @@ $(function() {
   function recorderEl() {
     return $('#recorderApp');
   }
+
+  window.microphonePermission = function() {
+    recorderEl().addClass("floating");
+    FWRecorder.showPermissionWindow({permanent: true});
+  }
 });
