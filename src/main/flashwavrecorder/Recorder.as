@@ -23,7 +23,8 @@ package flashwavrecorder {
       stage.align = StageAlign.TOP_LEFT;
       stage.scaleMode = StageScaleMode.NO_SCALE;
       var microphoneRecorder:MicrophoneRecorder = new MicrophoneRecorder();
-      var permissionPanel:MicrophonePermissionPanel = new MicrophonePermissionPanel(microphoneRecorder.mic, stage);
+      var panelObserver:SettingsPanelObserver = new SettingsPanelObserver(stage);
+      var permissionPanel:MicrophonePermissionPanel = new MicrophonePermissionPanel(microphoneRecorder.mic, panelObserver);
       _recorderInterface = new RecorderJSInterface(microphoneRecorder, permissionPanel);
 
       var url:String = root.loaderInfo.parameters["upload_image"];
