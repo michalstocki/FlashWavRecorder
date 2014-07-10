@@ -14,6 +14,8 @@ package flashwavrecorder {
   import flash.text.engine.TextElement;
   import flash.text.engine.TextLine;
 
+  import flashwavrecorder.wrappers.SecurityWrapper;
+
   public class Recorder extends Sprite {
 
     private var _recorderInterface:RecorderJSInterface;
@@ -24,7 +26,9 @@ package flashwavrecorder {
       stage.scaleMode = StageScaleMode.NO_SCALE;
       var microphoneRecorder:MicrophoneRecorder = new MicrophoneRecorder();
       var panelObserver:SettingsPanelObserver = new SettingsPanelObserver(stage);
-      var permissionPanel:MicrophonePermissionPanel = new MicrophonePermissionPanel(microphoneRecorder.mic, panelObserver);
+      var security:SecurityWrapper = new SecurityWrapper();
+      var permissionPanel:MicrophonePermissionPanel = new MicrophonePermissionPanel(microphoneRecorder.mic,
+          panelObserver, security);
       _recorderInterface = new RecorderJSInterface(microphoneRecorder, permissionPanel);
 
       var url:String = root.loaderInfo.parameters["upload_image"];
