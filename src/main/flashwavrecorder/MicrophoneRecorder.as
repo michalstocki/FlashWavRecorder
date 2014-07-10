@@ -10,6 +10,8 @@ package flashwavrecorder {
   import flash.utils.Dictionary;
   import flash.utils.Endian;
 
+  import flashwavrecorder.wrappers.MicrophoneWrapper;
+
   public class MicrophoneRecorder extends EventDispatcher {
     public static var SOUND_COMPLETE:String = "sound_complete";
     public static var PLAYBACK_STARTED:String = "playback_started";

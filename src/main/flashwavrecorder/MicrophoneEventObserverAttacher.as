@@ -2,6 +2,8 @@ package flashwavrecorder {
 
   import flash.events.SampleDataEvent;
 
+  import flashwavrecorder.wrappers.MicrophoneWrapper;
+
   public class MicrophoneEventObserverAttacher {
 
     private var _observing:Boolean = false;

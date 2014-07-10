@@ -6,7 +6,7 @@ $(function() {
 
 
   window.fwr_event_handler = function fwr_event_handler() {
-    $('#status').text("Microphone recorder event: " + arguments[0]);
+    $('#status').text("Last recorder event: " + arguments[0]);
     var name, $controls;
     switch(arguments[0]) {
       case "ready":
@@ -24,21 +24,18 @@ $(function() {
         break;
 
       case "microphone_user_request":
+        recorderEl().addClass("floating");
         FWRecorder.showPermissionWindow();
         break;
 
       case "microphone_connected":
-        var mic = arguments[1];
-        FWRecorder.defaultSize();
         FWRecorder.isReady = true;
-        if(configureMicrophone) {
-          configureMicrophone();
-        }
-        $uploadStatus.css({'color': '#000'}).text("Microphone: " + mic.name);
+        $uploadStatus.css({'color': '#000'});
         break;
 
-      case "microphone_not_connected":
+      case "permission_panel_closed":
         FWRecorder.defaultSize();
+        recorderEl().removeClass("floating");
         break;
 
       case "microphone_activity":
@@ -134,5 +131,14 @@ $(function() {
 
   function controlsEl(name) {
     return $('.control_panel.'+name);
+  }
+
+  function recorderEl() {
+    return $('#recorderApp');
+  }
+
+  window.microphonePermission = function() {
+    recorderEl().addClass("floating");
+    FWRecorder.showPermissionWindow({permanent: true});
   }
 });

@@ -5,12 +5,14 @@ package flashwavrecorder {
   import flash.events.IOErrorEvent;
   import flash.events.ProgressEvent;
   import flash.events.SecurityErrorEvent;
-  import flash.events.StatusEvent;
   import flash.external.ExternalInterface;
   import flash.media.Microphone;
   import flash.net.URLLoader;
   import flash.net.URLRequest;
   import flash.utils.ByteArray;
+
+  import flashwavrecorder.events.MicrophoneLevelEvent;
+  import flashwavrecorder.events.MicrophoneSamplesEvent;
 
   public class RecorderJSInterface {
 
@@ -20,6 +22,7 @@ package flashwavrecorder {
     private static const MICROPHONE_USER_REQUEST:String = "microphone_user_request";
     private static const MICROPHONE_CONNECTED:String = "microphone_connected";
     private static const MICROPHONE_NOT_CONNECTED:String = "microphone_not_connected";
+    private static const PERMISSION_PANEL_CLOSED:String = "permission_panel_closed";
     private static const MICROPHONE_ACTIVITY:String = "microphone_activity";
     private static const MICROPHONE_LEVEL:String = "microphone_level";
     private static const MICROPHONE_SAMPLES:String = "microphone_samples";
@@ -47,12 +50,14 @@ package flashwavrecorder {
     public var saveButton:DisplayObject;
     
     private var _recorder:MicrophoneRecorder;
+    private var _permissionPanel:MicrophonePermissionPanel;
     private var _uploadUrl:String;
     private var _uploadFormData:Array;
     private var _uploadFieldName:String;
 
-    public function RecorderJSInterface() {
-      _recorder = new MicrophoneRecorder();
+    public function RecorderJSInterface(recorder:MicrophoneRecorder, permissionPanel:MicrophonePermissionPanel) {
+      _recorder = recorder;
+      _permissionPanel = permissionPanel;
       if(ExternalInterface.available && ExternalInterface.objectID) {
         ExternalInterface.addCallback("configure", configureMicrophone); // TODO: Rename to "configureMicrophone"
         ExternalInterface.addCallback("duration", getDuration); // TODO: Rename to "getDuration"
@@ -65,6 +70,7 @@ package flashwavrecorder {
         ExternalInterface.addCallback("observeSamples", observeSamples);
         ExternalInterface.addCallback("pausePlayBack", pausePlayBack);
         ExternalInterface.addCallback("permit", requestMicrophoneAccess);
+        ExternalInterface.addCallback("permitPermanently", requestPermanentMicrophoneAccess);
         ExternalInterface.addCallback("playBack", playBack);
         ExternalInterface.addCallback("playBackFrom", playBackFrom);
         ExternalInterface.addCallback("record", record);
@@ -81,12 +87,15 @@ package flashwavrecorder {
       _recorder.addEventListener(MicrophoneRecorder.ACTIVITY, microphoneActivity);
       _recorder.levelForwarder.addEventListener(MicrophoneLevelEvent.LEVEL_VALUE, microphoneLevel);
       _recorder.samplesForwarder.addEventListener(MicrophoneSamplesEvent.RAW_SAMPLES_DATA, microphoneSamples);
+      _permissionPanel.addEventListener(MicrophonePermissionPanel.PANEL_CLOSED, announcePanelClosed);
+      _permissionPanel.addEventListener(MicrophonePermissionPanel.MICROPHONE_ALLOWED, announceMicrophoneConnected);
+      _permissionPanel.addEventListener(MicrophonePermissionPanel.MICROPHONE_DENIED, announceMicrophoneNotConnected);
     }
 
     public function ready(width:int, height:int):void {
       ExternalInterface.call(EVENT_HANDLER, READY, width, height);
-      if (!_recorder.mic.isMuted()) {
-        onMicrophoneStatus(new StatusEvent(StatusEvent.STATUS, false, false, "Microphone.Unmuted", "status"));
+      if (isMicrophoneAccessible()) {
+        announceMicrophoneConnected(new Event(MicrophonePermissionPanel.MICROPHONE_ALLOWED));
       }
     }
 
@@ -121,18 +130,24 @@ package flashwavrecorder {
     }
 
     private function requestMicrophoneAccess():void {
-      _recorder.mic.addEventListener(StatusEvent.STATUS, onMicrophoneStatus);
-      _recorder.mic.setLoopBack(true);
+      _permissionPanel.showSimple();
     }
 
-    private function onMicrophoneStatus(event:StatusEvent):void {
-      _recorder.mic.setLoopBack(false);
-      if(event.code == "Microphone.Unmuted") {
-        configureMicrophone();
-        ExternalInterface.call(EVENT_HANDLER, MICROPHONE_CONNECTED, _recorder.mic);
-      } else {
-        ExternalInterface.call(EVENT_HANDLER, MICROPHONE_NOT_CONNECTED);
-      } 
+    private function requestPermanentMicrophoneAccess():void {
+      _permissionPanel.showAdvanced();
+    }
+
+    private function announcePanelClosed(event:Event):void {
+      ExternalInterface.call(EVENT_HANDLER, PERMISSION_PANEL_CLOSED);
+    }
+
+    private function announceMicrophoneConnected(event:Event):void {
+      configureMicrophone();
+      ExternalInterface.call(EVENT_HANDLER, MICROPHONE_CONNECTED);
+    }
+
+    private function announceMicrophoneNotConnected(event:Event):void {
+      ExternalInterface.call(EVENT_HANDLER, MICROPHONE_NOT_CONNECTED);
     }
 
 //  Configuring microphone ---------------------------------------------------------------------------------------------
@@ -290,7 +305,7 @@ package flashwavrecorder {
       if (eventObserverAttacher.observing) {
         eventObserverAttacher.stopObserving();
       }
-      return eventObserverAttacher.observing;
+      return !eventObserverAttacher.observing;
     }
 
 

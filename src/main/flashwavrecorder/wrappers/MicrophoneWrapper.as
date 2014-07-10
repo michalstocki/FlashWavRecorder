@@ -1,4 +1,4 @@
-package flashwavrecorder {
+package flashwavrecorder.wrappers {
 
   import flash.media.Microphone;
 

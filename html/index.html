@@ -69,6 +69,18 @@
     .play_button { display: inline-block; }
     .pause_button { display: inline-block; }
     .mic_config ul, .mic_config li { list-style: none; margin: 0; padding: 0; font-size: 12px}
+
+    #recorderApp {
+        position: absolute;
+    }
+
+    #recorderApp.floating {
+        top: 50%;
+        left: 50%;
+        margin-left: -120px;
+        margin-top: -80px;
+    }
+
   </style>
 </head>
 
@@ -113,6 +125,7 @@
           <p>Your browser must have JavaScript enabled and the Adobe Flash Player installed.</p>
         </span>
       </span>
+      <div><button class="show_settings" onclick="microphonePermission()">Microphone permission</button></div>
       <div id="status">
        Recorder Status...
       </div>

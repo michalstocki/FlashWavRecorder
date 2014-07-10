@@ -1,4 +1,4 @@
-package flashwavrecorder {
+package flashwavrecorder.events {
 
   import flash.events.Event;
 
@@ -15,7 +15,6 @@ package flashwavrecorder {
     public function get levelValue():Number {
       return _levelValue;
     }
-
 
   }
 }
