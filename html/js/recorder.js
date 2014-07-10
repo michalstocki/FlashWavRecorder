@@ -104,6 +104,10 @@
     	return Recorder.recorder.getCurrentTime(name);
     },
 
+    isMicrophoneAccessible: function() {
+      return Recorder.recorder.isMicrophoneAccessible();
+    },
+
     updateForm: function() {
       var frm = $(Recorder.uploadFormId); 
       Recorder.recorder.update(frm.serializeArray());
