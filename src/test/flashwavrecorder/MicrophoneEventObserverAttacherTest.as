@@ -2,6 +2,8 @@ package flashwavrecorder {
 
   import flash.events.SampleDataEvent;
 
+  import flashwavrecorder.wrappers.MicrophoneWrapper;
+
   import mockolate.received;
   import mockolate.runner.MockolateRule;
 

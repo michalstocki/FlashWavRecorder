@@ -6,6 +6,7 @@ package flashwavrecorder {
   import flash.system.Security;
   import flash.system.SecurityPanel;
 
+  import flashwavrecorder.wrappers.MicrophoneWrapper;
   public class MicrophonePermissionPanel extends EventDispatcher {
 
     public static const PANEL_CLOSED:String = "panel_closed";
