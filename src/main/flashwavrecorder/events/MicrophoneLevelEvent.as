@@ -16,6 +16,5 @@ package flashwavrecorder.events {
       return _levelValue;
     }
 
-
   }
 }
