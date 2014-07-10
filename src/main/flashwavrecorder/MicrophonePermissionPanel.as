@@ -3,8 +3,10 @@ package flashwavrecorder {
   import flash.events.Event;
   import flash.events.EventDispatcher;
   import flash.events.StatusEvent;
-  import flash.system.Security;
   import flash.system.SecurityPanel;
+
+  import flashwavrecorder.wrappers.MicrophoneWrapper;
+  import flashwavrecorder.wrappers.SecurityWrapper;
 
   public class MicrophonePermissionPanel extends EventDispatcher {
 
@@ -13,10 +15,12 @@ package flashwavrecorder {
     public static const MICROPHONE_DENIED:String = "microphone_denied";
     private var _microphone:MicrophoneWrapper;
     private var _panelObserver:SettingsPanelObserver;
+    private var _security:SecurityWrapper;
 
-    public function MicrophonePermissionPanel(microphone:MicrophoneWrapper, panelObserver:SettingsPanelObserver) {
+    public function MicrophonePermissionPanel(microphone:MicrophoneWrapper, panelObserver:SettingsPanelObserver, security:SecurityWrapper) {
       _microphone = microphone;
       _panelObserver = panelObserver;
+      _security = security;
       _panelObserver.addEventListener(SettingsPanelObserver.PANEL_CLOSED, handlePanelClosed);
     }
 
@@ -31,7 +35,7 @@ package flashwavrecorder {
     public function showAdvanced():void {
       _panelObserver.startListeningPanelClose();
       _microphone.addEventListener(StatusEvent.STATUS, handleMicrophoneStatus);
-      Security.showSettings(SecurityPanel.PRIVACY);
+      _security.showSettings(SecurityPanel.PRIVACY);
     }
 
     private function handleMicrophoneStatus(event:StatusEvent):void {

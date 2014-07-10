@@ -11,17 +11,17 @@ package flashwavrecorder {
     }
 
     public function handleMicSampleData(event:SampleDataEvent):void {
-      var inputSamples:ByteArray = event.data;
-      inputSamples.position = 0;
-      var outputSamples:Array = [];
-      while (inputSamples.bytesAvailable) {
-        outputSamples.push(inputSamples.readFloat());
-      }
-      dispatchSamplesEvent(outputSamples);
+      var outputSamples:Array = readFloatsFromBytes(event.data);
+      dispatchEvent(new MicrophoneSamplesEvent(outputSamples));
     }
 
-    private function dispatchSamplesEvent(samples:Array):void {
-      dispatchEvent(new MicrophoneSamplesEvent(samples));
+    private function readFloatsFromBytes(bytes:ByteArray):Array {
+      var floats:Array = [];
+      bytes.position = 0;
+      while (bytes.bytesAvailable > 0) {
+        floats.push(bytes.readFloat());
+      }
+      return floats;
     }
   }
 }

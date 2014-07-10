@@ -1,4 +1,4 @@
-package flashwavrecorder {
+package flashwavrecorder.wrappers {
 
   import flash.events.ActivityEvent;
   import flash.events.EventDispatcher;
