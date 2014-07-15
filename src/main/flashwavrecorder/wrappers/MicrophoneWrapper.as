@@ -1,6 +1,7 @@
 package flashwavrecorder.wrappers {
 
   import flash.events.ActivityEvent;
+  import flash.events.Event;
   import flash.events.EventDispatcher;
   import flash.events.SampleDataEvent;
   import flash.events.StatusEvent;
@@ -50,7 +51,7 @@ package flashwavrecorder.wrappers {
       _microphone.setUseEchoSuppression(useEchoSuppression);
     }
 
-    private function forwardEvent(event:StatusEvent):void {
+    private function forwardEvent(event:Event):void {
       dispatchEvent(event);
     }
 
