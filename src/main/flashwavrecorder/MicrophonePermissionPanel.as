@@ -39,9 +39,9 @@ package flashwavrecorder {
     }
 
     private function handleMicrophoneStatus(event:StatusEvent):void {
-      _microphone.setLoopBack(false);
-      _microphone.removeEventListener(StatusEvent.STATUS, handleMicrophoneStatus);
       if (event.code == "Microphone.Unmuted") {
+        _microphone.setLoopBack(false);
+        _microphone.removeEventListener(StatusEvent.STATUS, handleMicrophoneStatus);
         dispatchEvent(new Event(MICROPHONE_ALLOWED));
       }
     }
