@@ -1,10 +1,6 @@
 package flashwavrecorder.wrappers {
 
-  import flash.events.ActivityEvent;
-  import flash.events.Event;
   import flash.events.EventDispatcher;
-  import flash.events.SampleDataEvent;
-  import flash.events.StatusEvent;
   import flash.media.Microphone;
 
   public class MicrophoneWrapper extends EventDispatcher {
@@ -13,9 +9,14 @@ package flashwavrecorder.wrappers {
 
     public function MicrophoneWrapper() {
       _microphone = Microphone.getMicrophone();
-      _microphone.addEventListener(SampleDataEvent.SAMPLE_DATA, forwardEvent);
-      _microphone.addEventListener(ActivityEvent.ACTIVITY, forwardEvent);
-      _microphone.addEventListener(StatusEvent.STATUS, forwardEvent);
+    }
+
+    override public function addEventListener(typeName:String, handler:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
+      _microphone.addEventListener.apply(this, arguments);
+    }
+
+    override public function removeEventListener(typeName:String, handler:Function, useCapture:Boolean=false):void {
+      _microphone.removeEventListener.apply(this, arguments);
     }
 
     public function getRate():Number {
@@ -39,7 +40,6 @@ package flashwavrecorder.wrappers {
     }
 
     public function setLoopBack(loopBack:Boolean):void {
-
       _microphone.setLoopBack(loopBack);
     }
 
@@ -49,10 +49,6 @@ package flashwavrecorder.wrappers {
 
     public function setUseEchoSuppression(useEchoSuppression:Boolean):void {
       _microphone.setUseEchoSuppression(useEchoSuppression);
-    }
-
-    private function forwardEvent(event:Event):void {
-      dispatchEvent(event);
     }
 
   }
