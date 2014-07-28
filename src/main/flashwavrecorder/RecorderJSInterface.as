@@ -38,12 +38,13 @@ package flashwavrecorder {
 
     private static const PLAYING:String = "playing";
     private static const STOPPED:String = "stopped"; // TODO: Rename to "playing_stopped"
+    private static const PLAYING_PAUSED:String = "playing_paused";
 
     private static const SAVE_PRESSED:String = "save_pressed";
     private static const SAVING:String = "saving";
-    private static const SAVED:String = "saved"; // TODO: Rename to "save_success"
-    private static const SAVE_FAILED:String = "save_failed";
-    private static const SAVE_PROGRESS:String = "save_progress";
+    private static const SAVED:String = "saved"; // TODO: Rename to "saving_succeeded" (?)
+    private static const SAVE_FAILED:String = "save_failed"; // TODO: Rename to "saving_failed"
+    private static const SAVE_PROGRESS:String = "save_progress"; // TODO: Rename to "saving_progress"
 
     private static const EVENT_HANDLER:String = "fwr_event_handler";
 
@@ -68,18 +69,19 @@ package flashwavrecorder {
         ExternalInterface.addCallback("isMicrophoneAccessible", isMicrophoneAccessible);
         ExternalInterface.addCallback("observeLevel", observeLevel);
         ExternalInterface.addCallback("observeSamples", observeSamples);
-        ExternalInterface.addCallback("pausePlayBack", pausePlayBack);
+        ExternalInterface.addCallback("pausePlayBack", pausePlayback);
         ExternalInterface.addCallback("permit", requestMicrophoneAccess);
         ExternalInterface.addCallback("permitPermanently", requestPermanentMicrophoneAccess);
-        ExternalInterface.addCallback("playBack", playBack);
-        ExternalInterface.addCallback("playBackFrom", playBackFrom);
+        ExternalInterface.addCallback("playBack", playback);
+        ExternalInterface.addCallback("playBackFrom", playbackFrom);
         ExternalInterface.addCallback("record", record);
         ExternalInterface.addCallback("setLoopBack", setLoopBack);
         ExternalInterface.addCallback("setUseEchoSuppression", setUseEchoSuppression);
         ExternalInterface.addCallback("show", showButton); // TODO: Rename to "showButton"
         ExternalInterface.addCallback("stopObservingLevel", stopObservingLevel);
         ExternalInterface.addCallback("stopObservingSamples", stopObservingSamples);
-        ExternalInterface.addCallback("stopPlayBack", stopPlayBack);
+        ExternalInterface.addCallback("stopPlayBack", stopPlayback);
+        ExternalInterface.addCallback("stopRecording", stopRecording);
         ExternalInterface.addCallback("update", updateUploadForm); // TODO: Rename to "updateUploadForm"
       }
       _recorder.addEventListener(MicrophoneRecorder.SOUND_COMPLETE, playComplete);
@@ -173,13 +175,9 @@ package flashwavrecorder {
 
     private function record(name:String, filename:String=null):Boolean {
       if (isMicrophoneAccessible()) {
-        if(_recorder.recording) {
-          _recorder.stop();
-          ExternalInterface.call(EVENT_HANDLER, RECORDING_STOPPED, _recorder.currentSoundName, _recorder.duration());
-        } else {
-          _recorder.record(name, filename);
-          ExternalInterface.call(EVENT_HANDLER, RECORDING, _recorder.currentSoundName);
-        }
+        stopRecording();
+        _recorder.record(name, filename);
+        ExternalInterface.call(EVENT_HANDLER, RECORDING, _recorder.currentSoundName);
         return _recorder.recording;
       } else {
         announceMicrophoneInaccessibility();
@@ -187,23 +185,22 @@ package flashwavrecorder {
       }
     }
 
-    private function playBack(name:String):Boolean {
-      if(_recorder.playing) {
+    private function stopRecording():void {
+      if(_recorder.recording) {
         _recorder.stop();
-        ExternalInterface.call(EVENT_HANDLER, STOPPED, _recorder.currentSoundName);
-      } else {
-        _recorder.playBack(name);
-        ExternalInterface.call(EVENT_HANDLER, PLAYING, _recorder.currentSoundName);
+        ExternalInterface.call(EVENT_HANDLER, RECORDING_STOPPED, _recorder.currentSoundName, _recorder.duration());
       }
+    }
 
+    private function playback(name:String):Boolean {
+      stopPlayback();
+      _recorder.playBack(name);
+      ExternalInterface.call(EVENT_HANDLER, PLAYING, _recorder.currentSoundName);
       return _recorder.playing;
     }
 
-    private function playBackFrom(name:String, time:Number):Boolean {
-      if(_recorder.playing) {
-        _recorder.stop();
-        ExternalInterface.call(EVENT_HANDLER, STOPPED, _recorder.currentSoundName);
-      }
+    private function playbackFrom(name:String, time:Number):Boolean {
+      stopPlayback();
       _recorder.playBackFrom(name, time);
       if (_recorder.playing) {
         ExternalInterface.call(EVENT_HANDLER, PLAYING, _recorder.currentSoundName);
@@ -211,20 +208,18 @@ package flashwavrecorder {
       return _recorder.playing;
     }
 
-    private function pausePlayBack(name:String):void {
+    private function pausePlayback(name:String):void {
       if(_recorder.playing) {
         _recorder.pause(name);
-        ExternalInterface.call(EVENT_HANDLER, STOPPED, _recorder.currentSoundName);
+        ExternalInterface.call(EVENT_HANDLER, PLAYING_PAUSED, _recorder.currentSoundName);
       }
     }
 
-    private function stopPlayBack():void {
-      if(_recorder.recording) {
-        ExternalInterface.call(EVENT_HANDLER, RECORDING_STOPPED, _recorder.currentSoundName, _recorder.duration());
-      } else {
+    private function stopPlayback():void {
+      if(_recorder.playing) {
+        _recorder.stop();
         ExternalInterface.call(EVENT_HANDLER, STOPPED, _recorder.currentSoundName);
       }
-      _recorder.stop();
     }
 
     private function playbackStarted(event:Event):void {
