@@ -82,6 +82,10 @@ Flash Events
 
 * name - of the recording that was specified when play was called
 
+**playing_paused**: paused playing the recorded audio
+
+* name - of the recording which was playing
+
 ### Uploading recorded audio ###
 
 **save_pressed**: save button was pressed in the recorder, good place to update the form data in the recorder
@@ -144,13 +148,11 @@ Recorder JS Interface
 * name - of the recording, basically a reference to the recording, use this name for playback
 * filename - [optional] if saving the file on the server, this is the name of the file to save the WAV file as
 
-*will also stop recording if currently recording*
+**stopRecording**: tells the recorder to stop recording
 
 **playBack**: tells the recorder to playback the recorded audio
 
 * name - of the recording
-
-*will stop playback if called before playback ends*
 
 **playBackFrom**: tells the recorder to playback from given second in recorded audio
 
@@ -159,7 +161,9 @@ Recorder JS Interface
 
 **pausePlayBack**: tells the recorder to pause playback of recorded audio
 
-**stopPlayBack**: tells the recorder to stop recording or playback
+* name - of the recording
+
+**stopPlayBack**: tells the recorder to stop playback
 
 **duration**: returns the duration of the recording
 
