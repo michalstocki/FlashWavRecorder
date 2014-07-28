@@ -80,6 +80,39 @@
         margin-left: -120px;
         margin-top: -80px;
     }
+    .control_panel button {
+      width: 24px;
+      height: 24px;
+      padding: 2px 0 0 0;
+    }
+
+    .control_panel button img {
+      width: 16px;
+      height: 16px;
+    }
+
+
+    .control_panel.idle .stop_recording_button,
+    .control_panel.idle .play_button,
+    .control_panel.idle .pause_playing_button,
+    .control_panel.idle .stop_playing_button,
+
+    .control_panel.recording .record_button,
+    .control_panel.recording .play_button,
+    .control_panel.recording .pause_playing_button,
+    .control_panel.recording .stop_playing_button,
+
+    .control_panel.playback_ready .stop_recording_button,
+    .control_panel.playback_ready .pause_playing_button,
+    .control_panel.playback_ready .stop_playing_button,
+
+    .control_panel.playing .stop_recording_button,
+    .control_panel.playing .play_button,
+
+    .control_panel.playback_paused .stop_recording_button,
+    .control_panel.playback_paused .pause_playing_button {
+      display: none;
+    }
 
   </style>
 </head>
@@ -91,29 +124,41 @@
     <p><strong>Upload requires php, i.e. example will not work on github.com</strong></p>
 
 
-    <div class="control_panel audio">
-      <a class="record_button" onclick="FWRecorder.record('audio', 'audio.wav');" href="javascript:void(0);" title="Record">
-          <img src="images/record.png" width="24" height="24" alt="Record"/>
-      </a>
-      <a class="play_button" style="display:none;" onclick="FWRecorder.playBack('audio');" href="javascript:void(0);" title="Play">
-          <img src="images/play.png" width="24" height="24" alt="Play"/>
-      </a>
-      <a class="pause_button" style="display:none;" onclick="FWRecorder.pausePlayBack('audio');" href="javascript:void(0);" title="Pause">
-          <img src="images/pause.png" width="24" height="24" alt="Pause"/>
-      </a>
+    <div id="recorder-audio" class="control_panel idle">
+      <button class="record_button" onclick="FWRecorder.record('audio', 'audio.wav');" title="Record">
+        <img src="images/record.png" alt="Record"/>
+      </button>
+      <button class="stop_recording_button" onclick="FWRecorder.stopRecording('audio');" title="Stop Recording">
+        <img src="images/stop.png" alt="Stop Recording"/>
+      </button>
+      <button class="play_button" onclick="FWRecorder.playBack('audio');" title="Play">
+          <img src="images/play.png" alt="Play"/>
+      </button>
+      <button class="pause_playing_button" onclick="FWRecorder.pausePlayBack('audio');" title="Pause Playing">
+          <img src="images/pause.png" alt="Pause Playing"/>
+      </button>
+      <button class="stop_playing_button" onclick="FWRecorder.stopPlayBack();" title="Stop Playing">
+        <img src="images/stop.png" alt="Stop Playing"/>
+      </button>
       <div class="level"></div>
     </div>
 
-    <div class="control_panel audio2">
-      <a class="record_button" onclick="FWRecorder.record('audio2', 'audio2.wav');" href="javascript:void(0);" title="Record">
-          <img src="images/record.png" width="24" height="24" alt="Record"/>
-      </a>
-      <a class="play_button" style="display:none;" onclick="FWRecorder.playBack('audio2');" href="javascript:void(0);" title="Play">
-          <img src="images/play.png" width="24" height="24" alt="Play"/>
-      </a>
-      <a class="pause_button" style="display:none;" onclick="FWRecorder.pausePlayBack('audio2');" href="javascript:void(0);" title="Pause">
-          <img src="images/pause.png" width="24" height="24" alt="Pause"/>
-      </a>
+    <div id="recorder-audio2" class="control_panel idle">
+      <button class="record_button" onclick="FWRecorder.record('audio2', 'audio2.wav');" title="Record">
+        <img src="images/record.png" alt="Record"/>
+      </button>
+      <button class="stop_recording_button" onclick="FWRecorder.stopRecording('audio2');" title="Stop Recording">
+        <img src="images/stop.png" alt="Stop Recording"/>
+      </button>
+      <button class="play_button" onclick="FWRecorder.playBack('audio2');" title="Play">
+        <img src="images/play.png" alt="Play"/>
+      </button>
+      <button class="pause_playing_button" onclick="FWRecorder.pausePlayBack('audio2');" title="Pause Playing">
+        <img src="images/pause.png" alt="Pause Playing"/>
+      </button>
+      <button class="stop_playing_button" onclick="FWRecorder.stopPlayBack();" title="Stop Playing">
+        <img src="images/stop.png" alt="Stop Playing"/>
+      </button>
       <div class="level"></div>
     </div>
 

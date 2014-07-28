@@ -4,6 +4,11 @@ $(function() {
     $hideLevelButton = $('.hide_level'),
     $level = $('.control_panel .level');
 
+    var CLASS_CONTROLS = "control_panel";
+    var CLASS_RECORDING = "recording";
+    var CLASS_PLAYBACK_READY = "playback_ready";
+    var CLASS_PLAYING = "playing";
+    var CLASS_PLAYBACK_PAUSED = "playback_paused";
 
   window.fwr_event_handler = function fwr_event_handler() {
     $('#status').text("Last recorder event: " + arguments[0]);
@@ -46,8 +51,7 @@ $(function() {
         name = arguments[1];
         $controls = controlsEl(name);
         FWRecorder.hide();
-        $controls.find('.record_button img').attr('src', 'images/stop.png');
-        $controls.find('.play_button').hide();
+        setControlsClass($controls, CLASS_RECORDING);
         break;
 
       case "recording_stopped":
@@ -55,9 +59,8 @@ $(function() {
         $controls = controlsEl(name);
         var duration = arguments[2];
         FWRecorder.show();
-        $controls.find('.record_button img').attr('src', 'images/record.png');
+        setControlsClass($controls, CLASS_PLAYBACK_READY);
         $('#duration').text(duration.toFixed(4) + " seconds");
-        $controls.find('.play_button').show();
         break;
 
       case "microphone_level":
@@ -78,9 +81,7 @@ $(function() {
       case "playing":
         name = arguments[1];
         $controls = controlsEl(name);
-        $controls.find('.record_button img').attr('src', 'images/record.png');
-        $controls.find('.play_button img').attr('src', 'images/stop.png');
-        $controls.find('.pause_button').show();
+        setControlsClass($controls, CLASS_PLAYING);
         break;
 
       case "playback_started":
@@ -91,9 +92,13 @@ $(function() {
       case "stopped":
         name = arguments[1];
         $controls = controlsEl(name);
-        $controls.find('.record_button img').attr('src', 'images/record.png');
-        $controls.find('.play_button img').attr('src', 'images/play.png');
-        $controls.find('.pause_button').hide();
+        setControlsClass($controls, CLASS_PLAYBACK_READY);
+        break;
+
+      case "playing_paused":
+        name = arguments[1];
+        $controls = controlsEl(name);
+        setControlsClass($controls, CLASS_PLAYBACK_PAUSED);
         break;
 
       case "save_pressed":
@@ -129,8 +134,13 @@ $(function() {
     }
   };
 
+  function setControlsClass($controls, className) {
+    $controls.attr('class', CLASS_CONTROLS + ' ' + className);
+  }
+
   function controlsEl(name) {
-    return $('.control_panel.'+name);
+      console.log('#recorder-' + name);
+    return $('#recorder-' + name);
   }
 
   function recorderEl() {
