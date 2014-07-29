@@ -1,5 +1,6 @@
 package flashwavrecorder.wrappers {
 
+  import flash.events.Event;
   import flash.events.EventDispatcher;
   import flash.media.Microphone;
 
@@ -17,6 +18,10 @@ package flashwavrecorder.wrappers {
 
     override public function removeEventListener(typeName:String, handler:Function, useCapture:Boolean=false):void {
       _microphone.removeEventListener.apply(this, arguments);
+    }
+
+    override public function dispatchEvent(event:Event):Boolean {
+      return _microphone.dispatchEvent(event);
     }
 
     public function getRate():Number {
