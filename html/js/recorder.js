@@ -38,19 +38,31 @@
     },
 
     playBack: function(name) {
+      // TODO: Rename to `playback`
       Recorder.recorder.playBack(name);
     },
 
     pausePlayBack: function(name) {
+      // TODO: Rename to `pausePlayback`
       Recorder.recorder.pausePlayBack(name);
     },
     
     playBackFrom: function(name, time) {
+      // TODO: Rename to `playbackFrom`
       Recorder.recorder.playBackFrom(name, time);
     },
 
     record: function(name, filename) {
       Recorder.recorder.record(name, filename);
+    },
+
+    stopRecording: function() {
+      Recorder.recorder.stopRecording();
+    },
+
+    stopPlayBack: function() {
+      // TODO: Rename to `stopPlayback`
+      Recorder.recorder.stopPlayBack();
     },
 
     observeLevel: function() {
@@ -87,6 +99,7 @@
     },
 
     duration: function(name) {
+      // TODO: rename to `getDuration`
       return Recorder.recorder.duration(name || Recorder.uploadFieldName);
     },
 
