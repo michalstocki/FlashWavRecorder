@@ -1,53 +1,59 @@
 package flashwavrecorder.wrappers {
 
+  import flash.events.Event;
+  import flash.events.EventDispatcher;
   import flash.media.Microphone;
 
-  public class MicrophoneWrapper {
+  public class MicrophoneWrapper extends EventDispatcher {
 
-    private var microphone:Microphone;
+    private var _microphone:Microphone;
 
     public function MicrophoneWrapper() {
-      microphone = Microphone.getMicrophone();
+      _microphone = Microphone.getMicrophone();
     }
 
-    public function addEventListener(typeName:String, handler:Function):void {
-      microphone.addEventListener(typeName, handler);
+    override public function addEventListener(typeName:String, handler:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
+      _microphone.addEventListener.apply(this, arguments);
     }
 
-    public function removeEventListener(typeName:String, handler:Function):void {
-      microphone.removeEventListener(typeName, handler);
+    override public function removeEventListener(typeName:String, handler:Function, useCapture:Boolean=false):void {
+      _microphone.removeEventListener.apply(this, arguments);
+    }
+
+    override public function dispatchEvent(event:Event):Boolean {
+      return _microphone.dispatchEvent(event);
     }
 
     public function getRate():Number {
-      return microphone.rate;
+      return _microphone.rate;
     }
 
     public function setRate(rate:Number):void {
-      microphone.rate = rate;
+      _microphone.rate = rate;
     }
 
     public function setGain(gain:Number):void {
-      microphone.gain = gain;
+      _microphone.gain = gain;
     }
 
     public function getActivityLevel():Number {
-      return microphone.activityLevel;
+      return _microphone.activityLevel;
     }
 
     public function isMuted():Boolean {
-      return microphone.muted;
+      return _microphone.muted;
     }
 
     public function setLoopBack(loopBack:Boolean):void {
-      microphone.setLoopBack(loopBack);
+      _microphone.setLoopBack(loopBack);
     }
 
     public function setSilenceLevel(silenceLevel:Number, silenceTimeout:int):void {
-      microphone.setSilenceLevel(silenceLevel, silenceTimeout);
+      _microphone.setSilenceLevel(silenceLevel, silenceTimeout);
     }
 
     public function setUseEchoSuppression(useEchoSuppression:Boolean):void {
-      microphone.setUseEchoSuppression(useEchoSuppression);
+      _microphone.setUseEchoSuppression(useEchoSuppression);
     }
 
   }
