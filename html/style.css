@@ -1,0 +1,110 @@
+h1 a {
+    color: red;
+    text-decoration: none;
+}
+
+.container {
+    width: 400px;
+    margin: 50px auto;
+    background-color: #f4f4f4;
+    padding: 30px;
+    font-family: sans-serif;
+    font-size: 14px;
+    border-radius: 22px;
+}
+
+.control_panel {
+    white-space: nowrap;
+    padding: 0;
+    margin: 2px;
+    vertical-align: middle;
+    height: 24px;
+    background-color: #e7e7e7;
+    position: relative;
+}
+
+.control_panel a {
+    outline: none;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    text-decoration: none;
+}
+
+.control_panel a img {
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.control_panel .level {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(to right, #8bb300 0%, #3b9d00 100%);
+}
+
+.details {
+    font-size: 12px;
+}
+
+#save_button {
+    padding: 0;
+    margin: 0;
+}
+
+.play_button {
+    display: inline-block;
+}
+
+.pause_button {
+    display: inline-block;
+}
+
+.mic_config ul, .mic_config li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 12px
+}
+
+#recorderApp {
+    position: absolute;
+}
+
+#recorderApp.floating {
+    top: 50%;
+    left: 50%;
+    margin-left: -120px;
+    margin-top: -80px;
+}
+
+.control_panel button {
+    width: 24px;
+    height: 24px;
+    padding: 2px 0 0 0;
+}
+
+.control_panel button img {
+    width: 16px;
+    height: 16px;
+}
+
+.control_panel.idle .stop_recording_button,
+.control_panel.idle .play_button,
+.control_panel.idle .pause_playing_button,
+.control_panel.idle .stop_playing_button,
+.control_panel.recording .record_button,
+.control_panel.recording .play_button,
+.control_panel.recording .pause_playing_button,
+.control_panel.recording .stop_playing_button,
+.control_panel.playback_ready .stop_recording_button,
+.control_panel.playback_ready .pause_playing_button,
+.control_panel.playback_ready .stop_playing_button,
+.control_panel.playing .stop_recording_button,
+.control_panel.playing .play_button,
+.control_panel.playback_paused .stop_recording_button,
+.control_panel.playback_paused .pause_playing_button {
+    display: none;
+}

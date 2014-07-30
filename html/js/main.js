@@ -1,19 +1,31 @@
-$(function() {
+$(function () {
   var $uploadStatus = $('#upload_status'),
     $showLevelButton = $('.show_level'),
     $hideLevelButton = $('.hide_level'),
     $level = $('.control_panel .level');
 
-    var CLASS_CONTROLS = "control_panel";
-    var CLASS_RECORDING = "recording";
-    var CLASS_PLAYBACK_READY = "playback_ready";
-    var CLASS_PLAYING = "playing";
-    var CLASS_PLAYBACK_PAUSED = "playback_paused";
+  var CLASS_CONTROLS = "control_panel";
+  var CLASS_RECORDING = "recording";
+  var CLASS_PLAYBACK_READY = "playback_ready";
+  var CLASS_PLAYING = "playing";
+  var CLASS_PLAYBACK_PAUSED = "playback_paused";
+
+//  Embedding flash object ---------------------------------------------------------------------------------------------
+
+  setUpFormOptions();
+  var appWidth = 24;
+  var appHeight = 24;
+  var flashvars = {'upload_image': 'images/upload.png'};
+  var params = {};
+  var attributes = {'id': "recorderApp", 'name': "recorderApp"};
+  swfobject.embedSWF("recorder.swf", "flashcontent", appWidth, appHeight, "11.0.0", "", flashvars, params, attributes);
+
+//  Handling FWR events ------------------------------------------------------------------------------------------------
 
   window.fwr_event_handler = function fwr_event_handler() {
     $('#status').text("Last recorder event: " + arguments[0]);
     var name, $controls;
-    switch(arguments[0]) {
+    switch (arguments[0]) {
       case "ready":
         var width = parseInt(arguments[1]);
         var height = parseInt(arguments[2]);
@@ -112,7 +124,7 @@ $(function() {
       case "saved":
         name = arguments[1];
         var data = $.parseJSON(arguments[2]);
-        if(data.saved) {
+        if (data.saved) {
           $('#upload_status').css({'color': '#0F0'}).text(name + " was saved");
         } else {
           $('#upload_status').css({'color': '#F00'}).text(name + " was not saved");
@@ -134,12 +146,22 @@ $(function() {
     }
   };
 
+//  Helper functions ---------------------------------------------------------------------------------------------------
+
+  function setUpFormOptions() {
+    var gain = $('#gain')[0];
+    var silenceLevel = $('#silenceLevel')[0];
+    for (var i = 0; i <= 100; i++) {
+      gain.options[gain.options.length] = new Option(100 - i);
+      silenceLevel.options[silenceLevel.options.length] = new Option(i);
+    }
+  }
+
   function setControlsClass($controls, className) {
     $controls.attr('class', CLASS_CONTROLS + ' ' + className);
   }
 
   function controlsEl(name) {
-      console.log('#recorder-' + name);
     return $('#recorder-' + name);
   }
 
@@ -147,8 +169,21 @@ $(function() {
     return $('#recorderApp');
   }
 
-  window.microphonePermission = function() {
+
+//  Button actions -----------------------------------------------------------------------------------------------------
+
+  window.microphonePermission = function () {
     recorderEl().addClass("floating");
     FWRecorder.showPermissionWindow({permanent: true});
-  }
+  };
+
+  window.configureMicrophone = function () {
+    if (!FWRecorder.isReady) {
+      return;
+    }
+    FWRecorder.configure($('#rate').val(), $('#gain').val(), $('#silenceLevel').val(), $('#silenceTimeout').val());
+    FWRecorder.setUseEchoSuppression($('#useEchoSuppression').is(":checked"));
+    FWRecorder.setLoopBack($('#loopBack').is(":checked"));
+  };
+
 });
