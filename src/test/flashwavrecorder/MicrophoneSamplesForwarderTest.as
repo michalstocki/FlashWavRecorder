@@ -2,6 +2,8 @@ package flashwavrecorder {
 import flash.events.SampleDataEvent;
 import flash.utils.ByteArray;
 
+import flashwavrecorder.events.MicrophoneSamplesEvent;
+
 import org.flexunit.async.Async;
 import org.hamcrest.assertThat;
 import org.hamcrest.core.isA;

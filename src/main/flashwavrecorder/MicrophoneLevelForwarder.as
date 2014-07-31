@@ -4,21 +4,19 @@ package flashwavrecorder {
   import flash.events.SampleDataEvent;
   import flash.utils.ByteArray;
 
-  public class MicrophoneLevelForwarder extends EventDispatcher implements IMicrophoneEventForwarder  {
+  import flashwavrecorder.events.MicrophoneLevelEvent;
 
-    private var sampleCalculator:SampleCalculator;
+  public class MicrophoneLevelForwarder extends EventDispatcher implements IMicrophoneEventForwarder {
+
+    private var _sampleCalculator:SampleCalculator;
 
     public function MicrophoneLevelForwarder(sampleCalculator:SampleCalculator) {
-      this.sampleCalculator = sampleCalculator;
+      _sampleCalculator = sampleCalculator;
     }
 
     public function handleMicSampleData(event:SampleDataEvent):void {
-      var levelValue:Number = sampleCalculator.getHighestSample(ByteArray(event.data));
-      dispatchLevelEvent(levelValue);
-    }
-
-    private function dispatchLevelEvent(level:Number):void {
-      dispatchEvent(new MicrophoneLevelEvent(level));
+      var levelValue:Number = _sampleCalculator.getHighestSample(ByteArray(event.data));
+      dispatchEvent(new MicrophoneLevelEvent(levelValue));
     }
 
   }

@@ -5,5 +5,6 @@
 html/audio
 
 .gradle/
+.idea/
 build/
 *.iml
