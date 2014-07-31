@@ -237,13 +237,28 @@ Build with `gradlew dist`
 Change Log
 ---------------------
 
+**0.9.0** - _August 1, 2014_
+
+- Added `isMicrophoneAccessible` function which allows to check whether microphone is ready to use or not.
+- Renamed function for requesting permission dialog. For now on we can also request **permanent microphone permission** by calling `showPermissionWindow({permanent: true})`.
+- Added **`stopRecording`** function (`record` no longer stops recording).
+- Added `playing_paused` event which announces playback pause.
+- Added `permission_panel_closed` event which announces close of permission dialog.
+- Updated demo (multiple action buttons toggled by CSS).
+
+Upgrading to 0.9.0:
+
+- Replace usage of `getMicrophone` with `isMicrophoneAccessible` to check whether microphone is ready for recording or not.
+- Replace calls of `permit` function with `showPermissionWindow`.
+- **Use `stopRecording` function instead of `record` to stop recording** (`record` no longer stops recording).
+
 **0.8.0** - _May 21, 2014_
 
 - Fixed [XSS vulnerability issue](https://github.com/cykod/FlashWavRecorder/issues/23)
 - Added ability to get **BLOB object** of recorded audio
 - Added ability to get **Base64** of recorded audio
 
-Updating to 0.8.0:
+Upgrading to 0.8.0:
 
 - Callback used by Flash to communicate with JavaScript for now on, has to be defined as `fwr_event_handler`.
 Specifying name of custom function in "Flash vars" as `event_handler` is no longer supported.
