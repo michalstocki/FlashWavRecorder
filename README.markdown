@@ -52,9 +52,9 @@ Flash Events
 
 **microphone_connected**: user allowed access to the microphone
 
-* microphone - Microphone object from flash, can be used to get the name of the microphone, i.e. microphone.name
-
 **microphone_not_connected**: user denied access to the microphone, *at this point the recorder CAN NOT be used until the user reloads the page*
+
+**permission_panel_closed**: user closed permission dialog
 
 ### Recording ###
 
@@ -81,6 +81,10 @@ Flash Events
 **stopped**: stopped playing back the recorded audio data
 
 * name - of the recording that was specified when play was called
+
+**playing_paused**: paused playing the recorded audio
+
+* name - of the recording which was playing
 
 ### Uploading recorded audio ###
 
@@ -144,13 +148,11 @@ Recorder JS Interface
 * name - of the recording, basically a reference to the recording, use this name for playback
 * filename - [optional] if saving the file on the server, this is the name of the file to save the WAV file as
 
-*will also stop recording if currently recording*
+**stopRecording**: tells the recorder to stop recording
 
 **playBack**: tells the recorder to playback the recorded audio
 
 * name - of the recording
-
-*will stop playback if called before playback ends*
 
 **playBackFrom**: tells the recorder to playback from given second in recorded audio
 
@@ -159,7 +161,9 @@ Recorder JS Interface
 
 **pausePlayBack**: tells the recorder to pause playback of recorded audio
 
-**stopPlayBack**: tells the recorder to stop recording or playback
+* name - of the recording
+
+**stopPlayBack**: tells the recorder to stop playback
 
 **duration**: returns the duration of the recording
 
@@ -194,7 +198,9 @@ object which can be used to send recorded audio to server (via JavaScript) or sa
 * field_name - name of the form field for the WAV file
 * form_data - additional form data. Specified as an array of name/value pairs. ex: [{"name": 'authenticity_token', "value": "xxxx"}, {"name": "format", "value": "json"}]
 
-**permit**: show the permissions dialog for microphone access, make sure the flash application is large enough for the dialog box before calling this method. Must be at least 240x160.
+**showPermissionWindow**: show the permissions dialog for microphone access. The function also enlarges flash object to be 240x160 (the minimum size of flash application which allows displaying settings dialog).
+
+*The function called with `{permanent: true}` option, displays flash settings dialog with "Remember" option, which allow granting permanent microphone access for the site.*
 
 **show**: show the save button
 
@@ -219,7 +225,7 @@ object which can be used to send recorded audio to server (via JavaScript) or sa
 
 * yes_no
 
-**getMicrophone**: returns the microphone object
+**isMicrophoneAccessible**: returns true if microphone is connected and user has allowed use microphone.
 
 Gradle Build
 ---------------------
@@ -231,13 +237,28 @@ Build with `gradlew dist`
 Change Log
 ---------------------
 
+**0.9.0** - _August 1, 2014_
+
+- Added `isMicrophoneAccessible` function which allows to check whether microphone is ready to use or not.
+- Renamed function for requesting permission dialog. For now on we can also request **permanent microphone permission** by calling `showPermissionWindow({permanent: true})`.
+- Added **`stopRecording`** function (`record` no longer stops recording).
+- Added `playing_paused` event which announces playback pause.
+- Added `permission_panel_closed` event which announces close of permission dialog.
+- Updated demo (multiple action buttons toggled by CSS).
+
+Upgrading to 0.9.0:
+
+- Replace usage of `getMicrophone` with `isMicrophoneAccessible` to check whether microphone is ready for recording or not.
+- Replace calls of `permit` function with `showPermissionWindow`.
+- **Use `stopRecording` function instead of `record` to stop recording** (`record` no longer stops recording).
+
 **0.8.0** - _May 21, 2014_
 
 - Fixed [XSS vulnerability issue](https://github.com/cykod/FlashWavRecorder/issues/23)
 - Added ability to get **BLOB object** of recorded audio
 - Added ability to get **Base64** of recorded audio
 
-Updating to 0.8.0:
+Upgrading to 0.8.0:
 
 - Callback used by Flash to communicate with JavaScript for now on, has to be defined as `fwr_event_handler`.
 Specifying name of custom function in "Flash vars" as `event_handler` is no longer supported.

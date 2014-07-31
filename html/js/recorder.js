@@ -38,19 +38,31 @@
     },
 
     playBack: function(name) {
+      // TODO: Rename to `playback`
       Recorder.recorder.playBack(name);
     },
 
     pausePlayBack: function(name) {
+      // TODO: Rename to `pausePlayback`
       Recorder.recorder.pausePlayBack(name);
     },
     
     playBackFrom: function(name, time) {
+      // TODO: Rename to `playbackFrom`
       Recorder.recorder.playBackFrom(name, time);
     },
 
     record: function(name, filename) {
       Recorder.recorder.record(name, filename);
+    },
+
+    stopRecording: function() {
+      Recorder.recorder.stopRecording();
+    },
+
+    stopPlayBack: function() {
+      // TODO: Rename to `stopPlayback`
+      Recorder.recorder.stopPlayBack();
     },
 
     observeLevel: function() {
@@ -74,7 +86,7 @@
       Recorder.recorder.height = height + "px";
     },
 
-    defaultSize: function(width, height) {
+    defaultSize: function() {
       Recorder.resize(Recorder.recorderOriginalWidth, Recorder.recorderOriginalHeight);
     },
 
@@ -87,6 +99,7 @@
     },
 
     duration: function(name) {
+      // TODO: rename to `getDuration`
       return Recorder.recorder.duration(name || Recorder.uploadFieldName);
     },
 
@@ -104,16 +117,26 @@
     	return Recorder.recorder.getCurrentTime(name);
     },
 
+    isMicrophoneAccessible: function() {
+      return Recorder.recorder.isMicrophoneAccessible();
+    },
+
     updateForm: function() {
       var frm = $(Recorder.uploadFormId); 
       Recorder.recorder.update(frm.serializeArray());
     },
 
-    showPermissionWindow: function() {
+    showPermissionWindow: function(options) {
       Recorder.resize(240, 160);
       // need to wait until app is resized before displaying permissions screen
-      var recorder = Recorder.recorder;
-      setTimeout(function(){recorder.permit();}, 1);
+      var permissionCommand = function() {
+        if (options && options.permanent) {
+          Recorder.recorder.permitPermanently();
+        } else {
+          Recorder.recorder.permit();
+        }
+      };
+      setTimeout(permissionCommand, 1);
     },
 
     configure: function(rate, gain, silenceLevel, silenceTimeout) {

@@ -1,4 +1,7 @@
 package flashwavrecorder {
+
+import flashwavrecorder.events.MicrophoneSamplesEvent;
+
 import org.hamcrest.assertThat;
 import org.hamcrest.core.isA;
 import org.hamcrest.object.equalTo;
