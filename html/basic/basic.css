@@ -1,0 +1,39 @@
+/* Styles for demo page - can be omitted */
+
+h1 {
+    margin: 50px 0;
+    text-align: center;
+    font-family: sans-serif;
+    color: #686868;
+    position: relative;
+}
+
+h1 span {
+    display: block;
+}
+
+h1 .basic {
+    position: relative;
+    top: 5px;
+    left: -150px;
+    font-family: serif;
+    font-style: italic;
+    color: lightgray;
+    -webkit-transform: rotate(-12deg);
+    -moz-transform: rotate(-12deg);
+    transform: rotate(-12deg);
+    font-size: 70%;
+}
+
+h1 .project-name {
+    letter-spacing: 1px;
+}
+
+.recorder-container {
+    width: 250px;
+    margin: 30px auto;
+    border: 4px solid #EBEBEB;
+    text-align: center;
+    padding: 20px;
+    border-radius: 30px;
+}

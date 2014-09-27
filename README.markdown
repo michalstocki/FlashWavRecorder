@@ -4,6 +4,13 @@ Simple Microphone Recorder
 Use flash to record audio data from a microphone. Converts the audio data to a WAV file. Uploads the WAV file to the server. The WAV file is POSTed as a multpart form-data request. Additional fields can be added to the request, such as authenticity_token, (response) formart, etc... The flash recorder creates serveral external interfaces. This allows the recorder to be controlled through javascript. Only the save button must be clicked inside the flash application, see [Upload and download require user interaction](http://www.adobe.com/devnet/flashplayer/articles/fplayer10_security_changes.html#head3) for more information.
 
 
+Demo
+----
+There are two pages demonstrating embedding the audio recorder:
+
+ - [Basic FlashWavRecorder demo](http://cykod.github.io/FlashWavRecorder/html/basic/)
+ - [Advanced FlashWavRecorder demo](http://cykod.github.io/FlashWavRecorder/html/)
+
 Embedding the Recorder
 ----------------------
 
