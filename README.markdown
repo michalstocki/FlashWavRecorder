@@ -8,8 +8,8 @@ Demo
 ----
 There are two pages demonstrating embedding the audio recorder:
 
- - [Basic FlashWavRecorder demo](http://cykod.github.io/FlashWavRecorder/html/basic/)
- - [Advanced FlashWavRecorder demo](http://cykod.github.io/FlashWavRecorder/html/)
+ - [Basic FlashWavRecorder demo](http://michalstocki.github.io/FlashWavRecorder/html/basic/)
+ - [Advanced FlashWavRecorder demo](http://michalstocki.github.io/FlashWavRecorder/html/)
 
 Embedding the Recorder
 ----------------------
@@ -244,4 +244,4 @@ Build with `gradlew dist`
 Change Log
 ---------------------
 
-Releases history is available on [FlashWavRecorder releases](https://github.com/cykod/FlashWavRecorder/releases) page.
+Releases history is available on [FlashWavRecorder releases](https://github.com/michalstocki/FlashWavRecorder/releases) page.
