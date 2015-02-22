@@ -245,3 +245,9 @@ Change Log
 ---------------------
 
 Releases history is available on [FlashWavRecorder releases](https://github.com/michalstocki/FlashWavRecorder/releases) page.
+
+Support & Sponsors
+---------------------
+Code quality improved by
+
+![IntelliJ IDEA logo](docs/logo_intellij_idea.png)
