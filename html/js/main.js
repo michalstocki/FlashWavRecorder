@@ -49,7 +49,10 @@ $(function () {
         FWRecorder.isReady = true;
         $uploadStatus.css({'color': '#000'});
         break;
-
+      case "show_premission_window_failed":
+        //microphone is not exist or not available
+        FWRecorder.resize(1,1);
+        break;
       case "permission_panel_closed":
         FWRecorder.defaultSize();
         recorderEl().removeClass("floating");
