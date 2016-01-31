@@ -49,6 +49,19 @@ h1 a {
     font-size: 12px;
 }
 
+.details #status {
+    margin: 10px 0;
+    padding-left: 20px;
+    max-height: 100px;
+    overflow-y: scroll;
+    color: lightgray;
+}
+
+.details #status .recorder-event {
+    animation: text-fade-out 5s;
+}
+
+
 #save_button {
     padding: 0;
     margin: 0;
@@ -107,4 +120,14 @@ h1 a {
 .control_panel.playback_paused .stop_recording_button,
 .control_panel.playback_paused .pause_playing_button {
     display: none;
+}
+
+@keyframes text-fade-out {
+    from {
+        color: black;
+    }
+
+    to {
+        color: lightgray;
+    }
 }
