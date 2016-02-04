@@ -114,7 +114,7 @@
     },
 
     getCurrentTime: function(name) {
-    	return Recorder.recorder.getCurrentTime(name);
+      return Recorder.recorder.getCurrentTime(name);
     },
 
     isMicrophoneAccessible: function() {
@@ -130,10 +130,14 @@
       Recorder.resize(240, 160);
       // need to wait until app is resized before displaying permissions screen
       var permissionCommand = function() {
-        if (options && options.permanent) {
-          Recorder.recorder.permitPermanently();
-        } else {
-          Recorder.recorder.permit();
+        try{
+          if (options && options.permanent) {
+            Recorder.recorder.permitPermanently();
+          } else {
+            Recorder.recorder.permit();
+          }
+        }catch(e){
+          window.fwr_event_handler("show_premission_window_failed");
         }
       };
       setTimeout(permissionCommand, 1);
