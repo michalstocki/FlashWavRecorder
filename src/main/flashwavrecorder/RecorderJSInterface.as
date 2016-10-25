@@ -63,6 +63,7 @@ package flashwavrecorder {
         ExternalInterface.addCallback("configure", configureMicrophone); // TODO: Rename to "configureMicrophone"
         ExternalInterface.addCallback("duration", getDuration); // TODO: Rename to "getDuration"
         ExternalInterface.addCallback("getBase64", getBase64);
+        ExternalInterface.addCallback("getWAV", getWAV);
         ExternalInterface.addCallback("getCurrentTime", getCurrentTime);
         ExternalInterface.addCallback("hide", hideButton); // TODO: Rename to "hideButton"
         ExternalInterface.addCallback("init", init);
@@ -248,6 +249,16 @@ package flashwavrecorder {
         data = new ByteArray();
       }
       return MultiPartFormUtil.base64_encdode(data);
+    }
+
+    private function getWAV(name:String):ByteArray {
+      var data:ByteArray;
+      try {
+        data = _recorder.convertToWav(name);
+      } catch (e:Error) {
+        data = new ByteArray();
+      }
+      return data;
     }
 
 //  Frequent events observing ------------------------------------------------------------------------------------------
