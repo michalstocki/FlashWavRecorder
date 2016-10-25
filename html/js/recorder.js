@@ -109,12 +109,11 @@
     },
 
     getBlob: function(name) {
-      var base64Data = Recorder.getBase64(name).split(',')[1];
-      return base64toBlob(base64Data, RECORDED_AUDIO_TYPE);
+      return Recorder.recorder.getWAV(name);
     },
 
     getCurrentTime: function(name) {
-    	return Recorder.recorder.getCurrentTime(name);
+      return Recorder.recorder.getCurrentTime(name);
     },
 
     isMicrophoneAccessible: function() {
